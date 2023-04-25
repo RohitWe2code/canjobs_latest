@@ -71,7 +71,7 @@ class Admin_api extends REST_Controller{
     $headers = $this->input->request_headers(); 
 		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
     $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
-   echo $this->user_type = $this->decodedToken['data']->user_type ?? null;
+    $this->user_type = $this->decodedToken['data']->user_type ?? null;
       if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
    
             $err = array(
