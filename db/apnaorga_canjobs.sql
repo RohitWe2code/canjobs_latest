@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 25, 2023 at 10:37 AM
+-- Generation Time: May 12, 2023 at 06:15 PM
 -- Server version: 5.7.41
 -- PHP Version: 7.4.33
 
@@ -22,6 +22,16 @@ SET time_zone = "+00:00";
 -- Database: `apnaorga_canjobs`
 --
 
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`apnaorga`@`localhost` PROCEDURE `otp` ()   BEGIN
+    DELETE FROM otp WHERE created_at < (NOW() - INTERVAL 2 MINUTE);
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -38,26 +48,29 @@ CREATE TABLE `admin` (
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `is_deleted` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(151) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`admin_id`, `email`, `password`, `name`, `contact_no`, `admin_type`, `is_active`, `is_deleted`, `created_at`, `updated_at`) VALUES
-(1, 'virat.we2code@gmail.com', '5156798cabc8a6f2563192d1a40495d4', 'virat', NULL, 'super-admin', 1, 0, '2023-04-01 09:54:18', '2023-04-01 09:54:18'),
-(2, 'mayur.we2code@gmail.com', '0af5c9de59e048c54feb9a06c93d7d6e', 'Jack', NULL, 'sub-admin', 1, 0, '2023-04-01 09:54:35', '2023-04-01 09:54:35'),
-(3, 'jhon.we2code@gmail.com', '4f1058b235cc3827fb8888a5d1aab930', 'Jhon', NULL, 'manager', 1, 0, '2023-04-01 09:55:35', '2023-04-04 11:43:18'),
-(7, 'jyotish.we2code@gmail.com', '3c125bbfb7336d1b48aab3478f786e04', 'don', NULL, 'manager', 1, 0, '2023-04-06 11:43:48', '2023-04-07 11:41:27'),
-(9, 'myur.we2code@gmail.com', '4f1058b235cc3827fb8888a5d1aab930', 'ww', NULL, 'manager', 1, 1, '2023-04-08 06:52:06', '2023-04-08 06:52:06'),
-(10, 'aashi.we2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 'Aashi', NULL, 'super-admin', 1, 0, '2023-04-11 11:31:20', '2023-04-22 05:35:36'),
-(12, 'ram.we2code@gmail.com', '3db66ceb605c1bcb779c63e180c4f2d0', 'Rama', NULL, 'admin', 1, 0, '2023-04-11 12:24:04', '2023-04-24 13:07:29'),
-(16, 'shivani.we2code@gmail.com', 'd54eb6798656cb9723cdfa2a5f882960', 'shivani', NULL, 'admin', 1, 1, '2023-04-12 13:01:49', '2023-04-22 10:15:03'),
-(23, 'rajul@gmail.com', '0e04a9c1149c5c665e63b6f335b99129', 'Rajul', NULL, 'admin', 1, 1, '2023-04-15 05:37:42', '2023-04-15 05:37:57'),
-(24, 'customer@fashion.com', '18fcdde322e9b6fdde227dde7930570c', 'jyotish', NULL, 'super-admin', 1, 1, '2023-04-20 10:06:43', '2023-04-20 10:09:35'),
-(25, 'aashish.we2code@gmail.com', 'd318b513924075fa03dfcda86928b79e', 'Sakshi', NULL, 'manager', 1, 1, '2023-04-22 11:30:49', '2023-04-22 11:31:26'),
-(26, 'Shekar.we2code@gmail.com', 'ad01db0762274016495050a704cf879a', 'Shekar', NULL, 'admin', 1, 1, '2023-04-24 06:32:10', '2023-04-24 06:32:10');
+INSERT INTO `admin` (`admin_id`, `email`, `password`, `name`, `contact_no`, `admin_type`, `is_active`, `is_deleted`, `created_at`, `updated_at`, `token`) VALUES
+(1, 'aashi.we2code@gmail.com', '1f333b2aaaa0b36c18aaccad6eec2ffe', 'Aashi', 9977445566, 'super-admin', 1, 0, '2023-04-27 10:13:38', '2023-05-10 08:28:27', ''),
+(2, 'raj.we2code@gmail.com', '4ea66a6c68cde0ae7c4a157b4738fbb6', 'Raj sir', NULL, 'super-admin', 1, 0, '2023-04-27 11:17:23', '2023-05-10 09:42:16', ''),
+(3, 'ram.we2code@gmail.com', '3db66ceb605c1bcb779c63e180c4f2d0', 'virat ', 9977445566, 'admin', 1, 0, '2023-04-28 09:11:19', '2023-05-10 09:42:06', ''),
+(4, 'raj.wfdfgfe2code@gmail.com', 'c8722562fc46b2842f7e398ec32913d9', 'Ramghhgj', NULL, 'manager', 1, 1, '2023-04-28 12:01:24', '2023-05-02 05:55:27', ''),
+(5, 'raj.fghgh@fdgg.com', 'd040a933f0b7ce5ecae1788af24495e2', 'Ram', NULL, 'manager', 1, 1, '2023-05-02 05:55:49', '2023-05-02 05:55:49', ''),
+(6, 'raj.w@gmail.com', 'cef3716fbd0b7899de14c932929339b7', 'Raj', NULL, 'manager', 1, 1, '2023-05-03 10:10:28', '2023-05-03 10:10:28', ''),
+(7, 'Manager@gmail.com', 'b17190ac27bd85559a39b822e2eaf824', 'Manager', NULL, 'manager', 1, 0, '2023-05-04 08:42:07', '2023-05-04 08:42:07', ''),
+(8, 'Manafgbfhbger@gmail.com', '6b524aa1d9b1433febdf751e93376b31', 'fg', NULL, 'manager', 1, 1, '2023-05-04 09:14:10', '2023-05-04 09:14:10', ''),
+(9, 'utkarsh.we2code@gmail.com', 'fe6717eb62ed9eef1de1163f02b6e1b1', 'Ut', NULL, 'admin', 1, 0, '2023-05-05 10:12:08', '2023-05-10 06:15:15', '716435ac874e7229afdd9007f7b744e2'),
+(10, 'sagar.we2code@gmail.com', '4ff691f69007c66f2c03e45a0ed6b760', 'Ra', NULL, 'manager', 1, 1, '2023-05-09 08:49:05', '2023-05-10 05:38:56', ''),
+(11, 'Rajsagar@we2codegmail.com', '6effc401334e7778f051166be2bc7d93', 'Rajsagar', NULL, 'manager', 1, 1, '2023-05-10 05:35:46', '2023-05-10 05:35:46', ''),
+(12, 'sagar.we2code@gmail.com', '4ff691f69007c66f2c03e45a0ed6b760', 'Sagar sah', NULL, 'manager', 1, 1, '2023-05-10 06:36:36', '2023-05-10 06:36:36', ''),
+(13, 'sagar.we2code@gmail.com', '4ff691f69007c66f2c03e45a0ed6b760', 'Sagar shah', NULL, 'super-admin', 1, 0, '2023-05-10 06:41:57', '2023-05-11 04:59:26', ''),
+(14, 'Rajsagar@we2codegmail.com', 'f96c8f8c5ac4dc823f20967f5153d0d7', 'Rajsagar', NULL, 'sub-admin', 1, 0, '2023-05-11 05:54:18', '2023-05-11 05:54:18', '');
 
 -- --------------------------------------------------------
 
@@ -69,7 +82,7 @@ CREATE TABLE `apply_on_job` (
   `apply_id` int(101) NOT NULL,
   `job_id` int(101) NOT NULL,
   `employee_id` int(101) NOT NULL,
-  `is_viewed` int(101) NOT NULL DEFAULT '1',
+  `is_viewed` smallint(11) NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -79,20 +92,33 @@ CREATE TABLE `apply_on_job` (
 --
 
 INSERT INTO `apply_on_job` (`apply_id`, `job_id`, `employee_id`, `is_viewed`, `created_at`, `updated_at`) VALUES
-(1, 0, 2, 1, '2023-04-05 12:24:58', '2023-04-20 10:50:23'),
-(2, 11, 1, 0, '2023-04-05 12:53:24', '2023-04-20 11:25:05'),
-(3, 0, 2, 0, '2023-04-06 08:29:37', '2023-04-22 07:07:20'),
-(4, 13, 4, 1, '2023-04-19 05:07:53', '2023-04-19 12:41:07'),
-(5, 2, 7, 0, '2023-04-19 10:45:08', '2023-04-24 06:25:57'),
-(6, 14, 1, 0, '2023-04-19 11:17:36', '2023-04-20 06:05:08'),
-(7, 11, 4, 0, '2023-04-20 06:05:21', '2023-04-20 11:26:17'),
-(8, 2, 5, 0, '2023-04-20 06:11:36', '2023-04-22 07:07:09'),
-(9, 14, 6, 0, '2023-04-20 06:12:29', '2023-04-20 06:12:51'),
-(10, 13, 7, 0, '2023-04-20 06:13:00', '2023-04-24 09:53:35'),
-(11, 0, 8, 0, '2023-04-20 06:15:07', '2023-04-20 11:00:16'),
-(12, 0, 9, 0, '2023-04-20 06:15:48', '2023-04-20 11:05:56'),
-(13, 14, 10, 0, '2023-04-20 06:16:26', '2023-04-20 06:16:39'),
-(14, 14, 11, 0, '2023-04-20 06:18:28', '2023-04-20 11:12:00');
+(1, 3, 1, 0, '2023-04-28 07:28:57', '2023-05-02 11:27:41'),
+(2, 8, 4, 0, '2023-04-29 07:29:19', '2023-05-06 06:05:36'),
+(3, 5, 4, 0, '2023-04-29 07:32:43', '2023-04-29 07:34:26'),
+(4, 5, 6, 2, '2023-04-29 08:39:18', '2023-04-29 08:39:30'),
+(6, 1, 4, 0, '2023-05-01 07:21:50', '2023-05-01 07:21:50'),
+(7, 9, 4, 0, '2023-05-01 08:46:59', '2023-05-06 06:09:53'),
+(8, 6, 4, 1, '2023-05-02 05:03:11', '2023-05-02 11:27:49'),
+(9, 2, 6, 1, '2023-05-03 10:38:48', '2023-05-03 10:38:48'),
+(10, 3, 6, 1, '2023-05-03 10:53:19', '2023-05-03 10:53:19'),
+(23, 14, 12, 0, '2023-05-06 04:22:48', '2023-05-08 11:05:23'),
+(24, 7, 12, 0, '2023-05-06 04:30:39', '2023-05-06 06:08:47'),
+(25, 15, 12, 0, '2023-05-06 04:37:32', '2023-05-06 10:06:30'),
+(26, 15, 12, 0, '2023-05-06 04:39:25', '2023-05-08 10:37:09'),
+(27, 21, 12, 3, '2023-05-08 04:35:06', '2023-05-08 04:37:08'),
+(28, 14, 11, 3, '2023-05-08 04:45:31', '2023-05-08 04:45:31'),
+(29, 9, 13, 3, '2023-05-08 04:55:31', '2023-05-08 04:55:31'),
+(30, 9, 14, 0, '2023-05-08 04:59:30', '2023-05-11 10:10:28'),
+(31, 10, 12, 0, '2023-05-08 08:58:58', '2023-05-08 08:58:58'),
+(32, 14, 18, 0, '2023-05-08 11:38:21', '2023-05-08 11:38:21'),
+(33, 15, 17, 0, '2023-05-08 11:39:08', '2023-05-08 11:39:08'),
+(34, 3, 18, 0, '2023-05-09 06:46:20', '2023-05-09 06:46:20'),
+(35, 3, 17, 0, '2023-05-09 06:46:43', '2023-05-09 06:46:43'),
+(36, 15, 18, 0, '2023-05-09 06:47:14', '2023-05-09 06:47:14'),
+(37, 12, 18, 0, '2023-05-09 06:54:49', '2023-05-09 06:54:49'),
+(38, 12, 12, 0, '2023-05-09 06:55:04', '2023-05-09 06:55:04'),
+(39, 12, 31, 0, '2023-05-11 06:57:18', '2023-05-11 06:57:18'),
+(40, 10, 31, 0, '2023-05-11 06:57:20', '2023-05-11 06:57:20');
 
 -- --------------------------------------------------------
 
@@ -745,17 +771,10 @@ CREATE TABLE `company_kyc` (
 --
 
 INSERT INTO `company_kyc` (`id`, `company_id`, `pan_no`, `name`, `pan_date`, `address`, `pincode`, `city`, `state`, `country`, `gstin`, `fax_number`, `tan_number`, `document`, `created_at`, `updated_at`) VALUES
-(1, 1, 'ADTRP4521L', 'Niranter', '1989-02-16', 'PU4 45 Universal Tower 2nd Floor Indore Madhya Pradesh ', 789654, 'indore', 'mp', 'india', '29GGGGG1314R9Z6', '+524-582-4100', 'AAAA99009A', NULL, '2023-04-05 12:03:51', '2023-04-11 10:08:43'),
-(2, 2, 'LKJHG2236P', 'Ram', '2023-04-06', 'Ram nagar', 450001, 'Khandwa', 'mp', 'india', '29GGGGG1314R9Z6', '555-852-6985', 'GBHI78654P', 'https://apnaorganicstore.in/canjobs/uploads/1681203987.pdf', '2023-04-06 11:12:45', '2023-04-11 09:06:27'),
-(4, 5, 'ASDFS0987Y', 'Gopal desai', '1985-02-07', 'Rajwada', 852147, 'Indore', 'Madhya Pradesh', 'India', '29GGGGG1314R9Z6', '123-456-7890', 'PDES03028F', NULL, '2023-04-12 04:23:17', '2023-04-13 06:43:37'),
-(5, 7, 'LKJHG2236P', 'Aashi', '2023-04-03', 'Ram nagar', 456321, 'indore', 'mp', 'india', NULL, NULL, NULL, NULL, '2023-04-13 07:11:59', '2023-04-13 07:11:59'),
-(6, 9, 'LKJHG2236P', 'Ram', '2023-03-30', '555442', 222555, 'indore', 'goa', 'USA', NULL, NULL, NULL, NULL, '2023-04-13 09:56:24', '2023-04-13 09:56:24'),
-(7, 12, 'LKJHG2236P', 'Ram', '2000-01-01', '44begum pet ', 525825, 'indore', 'mp', 'india', '29GGGGG1314R9Z6', NULL, NULL, NULL, '2023-04-14 12:52:48', '2023-04-14 12:52:48'),
-(8, 20, 'LKJHG2236P', 'Ram', '2019-02-07', 'Ram nagar', 222222, 'indore', 'mp', 'india', NULL, NULL, NULL, NULL, '2023-04-15 05:54:25', '2023-04-15 05:54:25'),
-(9, 33, 'BAJPC4350M', 'jatin tiwari', '2023-04-20', 'indore', 452020, 'indore', 'india', 'India', NULL, NULL, NULL, NULL, '2023-04-20 06:04:28', '2023-04-20 06:04:28'),
-(10, 31, 'BAJPC4350M', 'jatin tiwari', '2023-04-20', 'indore', 452020, 'indore', 'india', 'India', NULL, NULL, NULL, NULL, '2023-04-20 06:22:41', '2023-04-20 06:22:41'),
-(11, 34, 'LKJHG2236S', 'Ram', '2023-03-29', 'Ram nagar', 456321, 'indore', 'mp', 'india', '07AAGFF2194N1Z1', NULL, NULL, NULL, '2023-04-21 10:24:56', '2023-04-22 09:07:25'),
-(12, 35, 'LKJHG2236P', 'FF', '2023-04-21', 'Ram nagar', 159951, 'indore', 'mp', 'india', NULL, NULL, NULL, NULL, '2023-04-24 07:00:12', '2023-04-24 07:00:12');
+(1, 2, 'LKJHG2236P', 'Gourav choudhary', '1998-04-13', 'Ram nagar', 2147483647, 'indore', 'mp', 'india', '37AADCS0472N1Z1', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1683537447.pdf', '2023-04-28 06:56:24', '2023-05-08 09:17:27'),
+(2, 13, 'ABCTY1234D', 'Gourav choudary', '1998-05-02', 'Ram nagar', 752963, 'indore', 'mp', 'India', NULL, NULL, NULL, NULL, '2023-05-04 09:04:51', '2023-05-11 10:57:08'),
+(3, 15, 'ABCTY1234D', 'Gourav choudary', '1999-04-30', 'Ram nagar', 752963, 'indore', 'mp', 'India', NULL, NULL, NULL, NULL, '2023-05-06 09:25:59', '2023-05-06 09:25:59'),
+(4, 23, 'ABCTY1234D', 'Gourav choudary', '1999-02-02', 'Ram nagar', 752963, 'indore', 'mp', 'India', NULL, NULL, NULL, NULL, '2023-05-06 09:46:26', '2023-05-06 09:46:48');
 
 -- --------------------------------------------------------
 
@@ -1028,6 +1047,49 @@ INSERT INTO `countries` (`id`, `countrycode`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `email`
+--
+
+CREATE TABLE `email` (
+  `id` int(101) NOT NULL,
+  `email_template_id` int(101) NOT NULL,
+  `email_json` json NOT NULL,
+  `status` varchar(21) NOT NULL DEFAULT 'PENDING',
+  `group_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `email`
+--
+
+INSERT INTO `email` (`id`, `email_template_id`, `email_json`, `status`, `group_id`, `created_at`) VALUES
+(1, 0, '{\"to\": \"raj.we2code@gmail.com\", \"message\": \"hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 13810, '2023-05-12 06:32:06'),
+(2, 0, '{\"to\": \"aashi.we2code@gmail.com\", \"message\": \"new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 13810, '2023-05-12 06:32:06'),
+(3, 0, '{\"to\": \"raj.we2code@gmail.com\", \"message\": \"hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 13912, '2023-05-12 06:43:59'),
+(4, 0, '{\"to\": \"aashi.we2code@gmail.com\", \"message\": \"new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 13912, '2023-05-12 06:43:59'),
+(5, 0, '{\"to\": \"raj.we2code@gmail.com\", \"message\": \"hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 41675, '2023-05-12 06:44:30'),
+(6, 0, '{\"to\": \"aashi.we2code@gmail.com\", \"message\": \"new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency \", \"subject\": \"new interview scheduled\"}', 'SENT', 41675, '2023-05-12 06:44:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_template`
+--
+
+CREATE TABLE `email_template` (
+  `id` int(101) NOT NULL,
+  `email_type` varchar(101) NOT NULL,
+  `subject` longtext NOT NULL,
+  `message` longtext NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `employee`
 --
 
@@ -1050,7 +1112,7 @@ CREATE TABLE `employee` (
   `experience` varchar(100) DEFAULT NULL,
   `work_permit_canada` char(100) DEFAULT NULL,
   `work_permit_other_country` text,
-  `posted` varchar(251) NOT NULL,
+  `is_posted` tinyint(1) NOT NULL DEFAULT '0',
   `posted_company_id` int(51) NOT NULL,
   `date_of_posting` date NOT NULL,
   `designation``` varchar(251) NOT NULL,
@@ -1067,30 +1129,24 @@ CREATE TABLE `employee` (
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`employee_id`, `name`, `email`, `password`, `contact_no`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `posted`, `posted_company_id`, `date_of_posting`, `designation``, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `token`) VALUES
-(1, 'shivam', 'shivam.canjobs@gmail.com', '', 8699357000, 'dfvgdxfzc', '2001-03-29', 'male', 'married', 'indian', 'india', 'india', 'hindi english,', 'hindu', 'swap', '1-3', 'no', 'no', '', 0, '0000-00-00', '', NULL, NULL, '2023-04-05 11:48:20', 10, '2023-04-06 09:31:20', 0, ''),
-(2, 'UV', 'utkarsh.we2code@gmail.com', '6d15ce9fd7a85016907876466c36f353', 9876543201, 'dfcdxfgvdfxvdxv', '2014-02-06', 'male', 'married', 'indian', 'indore', 'india', 'hindi', 'hindu', 'swap', '3-5', 'yes', 'Yes', '', 0, '0000-00-00', '', NULL, NULL, '2023-04-05 11:56:03', 16, '2023-04-14 12:58:57', 0, '716435ac874e7229afdd9007f7b744e2'),
-(3, 'shivani', 'shivanik.we2code@gmail.com', '', 7470920540, 'fgsgasfg', '2023-04-06', 'male', 'single', 'sagfasdf', 'sadfsd', 'India', 'asdfasd', 'asdf', 'swap', '1-3', 'no', 'sadfsd', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1680782989.pdf', NULL, '2023-04-06 10:03:13', 10, '2023-04-11 10:16:06', 0, '00152015ec917ccd79197f0d64c2c49c'),
-(4, 'testing', 'jyotish.we2code@gmail.m', '', 7470925044, 'gfhjukl', '2023-04-06', 'other', 'single', 'asdfads', 'asdfasf', 'fdasad', 'English', 'asfdfasf', 'swap', '1-3', 'yes', 'India', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682069614.pdf', NULL, '2023-04-06 10:05:24', 10, '2023-04-21 09:33:34', 0, ''),
-(5, 'Aashu', 'mayur.we2code@gmail.com', '', 8521449630, 'Good boy', '2002-02-02', 'male', 'married', 'indian', 'indore', 'india', 'English', 'marathi', 'all', '1-3', 'no', 'no', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1680842524.pdf', NULL, '2023-04-06 12:16:01', 0, '2023-04-07 04:42:04', 0, ''),
-(6, 'Employee', 'abc@b.com', 'cccf82fe07cfb1c5ef48bd3973633b75', 7410258963, 'cdxcfzjhnsudyurejhfdjnvfvg', '2023-03-30', 'female', 'single', 'indian', 'india', 'india', 'English', 'asdf', 'swap', '0-1', 'no', 'Yes', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681187603.pdf', NULL, '2023-04-07 04:57:54', 0, '2023-04-11 04:33:23', 1, ''),
-(7, 'jhon', 'abcs@b.com', '', 9998885552, 'akljsd klqjhndf lsda joidjv oidjasckjkodas poijdsj asdjvcolikjdocv adsrfgv', '1990-12-12', 'male', 'married', 'American', 'ibiza', 'span', 'english', 'hindu', 'development', '5+ yrs', 'Yes', 'Yes', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681898757.pdf', NULL, '2023-04-07 05:11:00', 16, '2023-04-19 10:05:57', 0, ''),
-(8, 'dwayne rock', 'rock@gmail.com', '', 9165100000, 'Today is a beautiful day.', '1995-01-01', 'male', 'unmarried', 'American', 'bankok', 'thailand', 'English', 'christian', 'hr', '0-1', 'Yes', 'Yes', 'Yes', 1, '2022-05-07', '', 'https://apnaorganicstore.in/canjobs/uploads/1681289312.pdf', NULL, '2023-04-08 10:46:27', 0, '2023-04-12 08:48:32', 0, ''),
-(9, 'Ganesh ji', 'fdvf@gmail.om', '', 1010101005, 'dscdscx', '2000-04-02', 'female', 'married', 'insian', 'india', 'span', 'French', 'hindu', 'swap', '1-3', 'no', 'Yes', 'Yes', 5, '2023-04-12', '', 'https://apnaorganicstore.in/canjobs/uploads/1681290031.pdf', NULL, '2023-04-11 04:39:24', 10, '2023-04-12 09:00:31', 0, ''),
-(11, 'moh', 'mohini@gmail.com', '', 85202556545133, 'Required a hopility job', '1995-02-24', 'female', 'married', 'Indian', 'Indore', 'India', 'English', 'Hindu', 'swap', '0-1', 'no', 'no', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681290204.pdf', NULL, '2023-04-12 04:44:30', 0, '2023-04-12 09:03:24', 1, ''),
-(13, NULL, 'hr@we2code.com', '5a675c782fb5afb8d8e90035e236fe25', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 0, '0000-00-00', '', NULL, NULL, '2023-04-12 06:28:32', 0, '2023-04-12 06:28:32', 1, ''),
-(14, NULL, 'aashi.we2code@gmail.com', '47b6fb0b99ab1fce1d5459c9e82e2efc', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'No', 4, '2023-04-30', '', NULL, NULL, '2023-04-12 06:50:22', 0, '2023-04-12 09:01:56', 1, ''),
-(15, NULL, 'kane@gmail.com', '73d341f10897b327379a906c8aca7a0f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 0, '0000-00-00', '', NULL, NULL, '2023-04-12 06:51:46', 0, '2023-04-12 06:51:46', 1, ''),
-(16, 'ghftyuijkl', 'jason@gmail.com', 'aec25e64f5a233007bb732979e603467', 1747092054, 'describtion', '2019-02-06', 'female', 'single', 'indian', 'indore', 'India', 'English', 'hindu', 'parttime', '0-1', 'no', 'India', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681296805.pdf', NULL, '2023-04-12 09:23:12', 0, '2023-04-12 10:53:25', 1, ''),
-(17, 'Rajaram Patidar', 'jyotish.we2code@gmail.com', '', 7470920481, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', '2023-04-12', 'female', 'married', 'Indian', 'Indore', 'India', 'Hindi', 'Hindu', 'parttime', '1-3', 'no', 'India', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681967103.pdf', NULL, '2023-04-12 10:57:31', 0, '2023-04-20 05:05:03', 0, ''),
-(18, 'fgbdf', 'dhruti@gmail.com', '', 8520147963, 'bdfgvdg', '2023-03-30', 'female', 'single', 'indian', 'india', 'india', 'Hindi', 'marathi', 'swap', '0-1', 'yes', 'sadfsd', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681297615.pdf', NULL, '2023-04-12 11:04:13', 0, '2023-04-12 11:06:55', 1, ''),
-(24, 'virat', 'roger@gmail.com', '018e1818f30ebeff399883e2ed930981', 8520147963, 'dsfdzvfdxfvg', '2023-04-07', 'female', 'single', 'American', 'india', 'span', 'Hindi', 'asdf', 'swap', '0-1', 'no', 'India', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681389847.pdf', NULL, '2023-04-12 13:00:07', 0, '2023-04-13 12:44:07', 0, ''),
-(25, 'ddsfdvg', 'fgfgvf@gmail.com', '', 8520147896, 'sdczgfvdxg', '2023-03-29', 'male', 'single', 'asdfads', 'ddsda', 'canada', 'English', 'asdf', 'swap', '0-1', 'no', 'Yes', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681361343.pdf', NULL, '2023-04-13 04:48:39', 0, '2023-04-13 04:49:03', 1, ''),
-(26, NULL, 'pantagon@gmail.com', '744c8c20120d2e784d3764630389abfd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 0, '0000-00-00', '', NULL, NULL, '2023-04-14 04:47:17', 0, '2023-04-14 04:47:17', 1, ''),
-(27, 'Raj', 'ranjitsingh@gmail.com', '62371239a535ebc274788f1e6590f507', 1234456789, 'New Live test', '2023-03-30', 'male', 'single', 'indian', 'hawai', 'span', 'Hindi', 'hindu', 'swap', '0-1', 'no', 'Yes', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681494197.pdf', NULL, '2023-04-14 05:12:11', 0, '2023-04-14 17:43:17', 0, ''),
-(28, 'jatin tiwari', 'jyotish.we2code@gmail.com', '', 7470920481, 'sdfghj@#$%1556', '2023-04-20', 'male', 'single', 'Indian', 'Indore', 'India', 'Hindi', 'Hindu', 'swap', '1-3', 'no', 'India', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1681983225.pdf', NULL, '2023-04-20 08:51:28', 0, '2023-04-20 09:33:45', 1, ''),
-(29, 'Aashi vyas', 'aashi.we2code@gmail.com', '', 6266987373, 'A frontend developer with thr technical skills of HTML, CSS ,BOOTSTRAP, JAVASCRIPT and REACT JS', '2001-10-07', 'female', 'single', 'indian', 'indore', 'India', 'English', 'hindu', 'parttime', '0-1', 'no', 'no', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682148591.pdf', NULL, '2023-04-20 10:11:47', 0, '2023-04-22 07:29:51', 0, ''),
-(30, 'Ram', 'ram@gmail.com', '', 9685741033, 'gdtrhrftgdsyregthjygkyhujm rdtjhfghb thfgb ', '0001-03-29', 'male', 'single', 'American', 'ayodha', 'india', 'Other', 'hindu', 'all', '5+', 'yes', 'Yes', '', 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682068025.pdf', NULL, '2023-04-21 09:07:05', 0, '2023-04-21 09:07:05', 1, '');
+INSERT INTO `employee` (`employee_id`, `name`, `email`, `password`, `contact_no`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `is_posted`, `posted_company_id`, `date_of_posting`, `designation``, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `token`) VALUES
+(1, 'UV', 'utkarsh.we2code@gmail.com', '88bfe17c1492f6fd173127b33099403c', 1234556789, 'testing', '2023-04-01', 'male', 'single', 'Indian', 'Indore', 'india', 'Hindi', 'Hindu', 'swap', '0-1', 'no', 'Yes', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682672246.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1682672246.jpeg', '2023-04-28 05:49:18', 0, '2023-04-28 08:57:26', 0, ''),
+(2, 'darbar', 'darbar.we2code@gmail.com', 'fd93edd5b0aa948a7fd39fbf9a7b9aab', 1234556789, 'testing two', '1923-04-01', 'male', 'single', 'Indian', 'Indore', 'india', 'Hindi', 'Hindu', 'swap', 'fresher', 'no', 'Yes', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682672236.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1682672236.jpeg', '2023-04-28 05:49:18', 0, '2023-04-28 08:57:16', 0, ''),
+(3, 'Shefali dubey', 'shefali@gmail.com', '', 7539518246, 'A job description is a useful, plain-language tool that explains the tasks, duties, function and responsibilities of a position. It details who performs a specific type of work, how that work is to be completed, and the frequency and the purpose of the work as it relates to the organization\'s mission and goals.', '1996-04-12', 'female', 'married', 'indian', 'indore', 'india', 'Hindi', 'hindu', 'parttime', '1-3', 'no', 'India', 1, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1682744173.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1682744173.jpeg', '2023-04-29 04:50:16', 0, '2023-04-29 04:56:13', 0, ''),
+(5, 'kkkk', 'fgdfgdf@gmail.com', '', 4985741360, 'fdsf fr sdf dfdgfg dfgdfg ', '2023-05-01', 'other', 'single', 'dasasdds', 'ddsda', 'ddsadasd', 'Gujrati', 'snatani', 'parttime', '3-5', 'no', 'n44', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683006832.pdf', NULL, '2023-05-02 05:37:33', 0, '2023-05-02 05:53:52', 1, ''),
+(6, NULL, 'gourav.we2code@gmail.com', '3f30aff52f55a2a0c2d7a0e02e7872eb', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-03 06:54:02', 0, '2023-05-03 06:54:02', 1, ''),
+(8, NULL, 'rarne@gmail.com', '5276a0ea81f3dd1c7c8ae8ed1d016a84', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-04 05:05:39', 0, '2023-05-04 05:05:39', 1, ''),
+(9, NULL, 'rffffe@gmail.com', '355f3867467c25667be8d53f4b39d86c', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-04 05:07:12', 0, '2023-05-04 05:07:12', 1, ''),
+(11, NULL, 'Babulal@gmail.com', '0a10371b30b5e68f5448ce81a1f7aaeb', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-04 05:47:58', 0, '2023-05-04 05:47:58', 1, ''),
+(12, 'Babu', 'Babulal@gmail.com', 'ee9512dae61bfe84fb87a39c7f31ccf4', 9517532683, 'stfd bfhf ghghf t ghbg tghbtg ', '2005-02-03', 'male', 'single', 'korean', 'india', 'India', 'English', 'korean', 'swap', '1-3', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683346956.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1683289585.jpeg', '2023-05-04 06:04:08', 0, '2023-05-08 11:20:44', 0, ''),
+(13, 'Gourav choudary', 'fgfhfoudhary.we2code@gmail.com', '', 87459634516, 'fghfh sg sfgh sfgh', '1996-06-05', 'male', 'single', ' rtg gf fg ', 'g fg fg ', 'India', 'English', ' fg fg ', 'swap', '0-1', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683287284.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1683287284.jpeg', '2023-05-04 09:12:15', 0, '2023-05-05 11:48:04', 0, ''),
+(14, 'Sham choudary', 'fhgfhghary.we2code@gmail.com', '', 5555555524, 'ftghfghfg', '2023-05-02', 'male', 'married', ' rtg gf fg ', 'g fg fg ', 'India', 'English', ' fg fg ', 'parttime', '0-1', 'no', 'gh', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683369023.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1683289574.jpeg', '2023-05-04 09:17:34', 7, '2023-05-06 10:30:23', 1, ''),
+(15, NULL, 'Managxxxxer@gmail.com', '5cef673115809572ec103ad16f33b304', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-04 09:25:54', 0, '2023-05-04 09:25:54', 1, ''),
+(16, NULL, 'Manager00@gmail.com', '6cac7180ed50312d2f3597fa0265e029', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-04 09:26:42', 0, '2023-05-04 09:26:42', 1, ''),
+(17, 'Ram', 'Ram@gmail.com', '', 98745631118, 'dsfd dfghdfgb fdghfgbhth fghfgbh gfhfgbh tfyh hgghnghj gdhghn fghyhvgh fgthfghfgtjh ghfgjhgjghj gyhjgv fghgfhg ghfgjhfg fghgh fgh fghgh ', '2023-04-30', 'male', 'single', ' rtg gf fg ', 'india', 'India', 'English', 'hindu', 'parttime', '1-3', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683369251.pdf', NULL, '2023-05-06 10:34:11', 2, '2023-05-06 10:34:11', 0, ''),
+(18, 'Gourav choudary', 'g.choudhary.we2code@gmail.com', '', 5741133692, 'sdfsfdfsc', '2023-05-03', 'female', 'single', 'korean', 'india', 'India', 'Hindi', 'korean', 'all', '1-3', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683369291.pdf', NULL, '2023-05-06 10:34:51', 2, '2023-05-06 10:34:51', 0, ''),
+(30, NULL, 'utkarsh.we2code@gmail.com', '88bfe17c1492f6fd173127b33099403c', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-10 11:15:53', 0, '2023-05-10 11:15:53', 1, ''),
+(31, 'Sagar sah', 'sagar.we2code@gmail.com', 'f96c8f8c5ac4dc823f20967f5153d0d7', 1234567890, 'asdzf', '2023-05-04', 'male', 'single', 'afsd', 'sdfa', 'asdfdf', 'English', 'dfsa', 'parttime', '7+ ', 'no', 'fdzsg', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1683788060.pdf', NULL, '2023-05-11 06:46:23', 0, '2023-05-11 06:54:20', 0, '');
 
 -- --------------------------------------------------------
 
@@ -1119,15 +1175,8 @@ CREATE TABLE `employee_career` (
 --
 
 INSERT INTO `employee_career` (`career_id`, `employee_id`, `company`, `designation`, `company_location`, `industry`, `functional_area`, `work_level`, `start_date`, `end_date`, `currently_work_here`, `created_at`, `updated_at`) VALUES
-(2, 5, 'tcs', 'senior developer', 'mumbai', 'IT', 'Product Design', 'hard', '2010-08-07', '2021-12-31', NULL, '2023-04-08 04:42:15', '2023-04-08 04:49:16'),
-(6, 7, 'Base', 'Office Boy', 'indore', 'call', 'fresh graduate', 'fresh graduate', '2013-04-06', '2023-05-07', NULL, '2023-04-08 04:47:58', '2023-04-08 04:47:58'),
-(11, 9, 'sysko', 'auditor', 'indore', 'accounting', 'intern', 'entry level', '2022-12-06', '2023-11-15', NULL, '2023-04-11 05:49:44', '2023-04-11 05:49:44'),
-(13, 11, 'appy', 'junior manager', 'indore', 'accounting', 'fresh graduate', 'fresh graduate', '2022-06-09', '2023-08-26', NULL, '2023-04-12 04:46:47', '2023-04-12 04:46:47'),
-(14, 13, 'rtfgyuhij', 'ftgyhujiko', 'drtfgyuhji', 'accounting', 'fresh graduate', 'intern', '2023-04-07', '2023-04-07', NULL, '2023-04-12 06:44:20', '2023-04-12 06:44:20'),
-(15, 17, 'Zooka', 'Accountant', 'Indore', 'accounting', 'fresh graduate', 'fresh graduate', '2023-03-27', '2023-05-07', NULL, '2023-04-13 04:55:56', '2023-04-14 12:45:43'),
-(16, 24, 'Zooka', 'CEO', 'indore', 'accounting', 'intern', 'intern', '2023-03-27', '2023-05-07', NULL, '2023-04-13 12:44:38', '2023-04-13 12:44:38'),
-(17, 17, 'DLF', 'Accountant', 'Indore', 'accounting', 'fresh graduate', 'fresh graduate', '2023-04-01', '2023-04-13', 1, '2023-04-14 12:46:13', '2023-04-14 12:46:13'),
-(18, 8, 'Zooka', 'CEO', 'ffc', 'bank', 'fresh graduate', 'intern', '2023-03-27', '2023-05-07', NULL, '2023-04-20 10:07:56', '2023-04-20 10:07:56');
+(1, 1, 'tcs', 'developer', 'mumbai', 'IT', NULL, NULL, '2021-04-01', '2022-12-31', 0, '2023-04-28 09:18:47', '2023-04-28 09:18:47'),
+(2, 4, 'Tr', 'CEO', 'indore', 'accounting', 'intern', 'intern', '2021-01-08', '2023-04-30', NULL, '2023-05-08 09:09:41', '2023-05-08 09:09:41');
 
 -- --------------------------------------------------------
 
@@ -1153,23 +1202,12 @@ CREATE TABLE `employee_education` (
 --
 
 INSERT INTO `employee_education` (`education_id`, `employee_id`, `qualification`, `university_institute`, `course`, `specialization`, `institute_location`, `passing_year`, `created_at`, `updated_at`) VALUES
-(2, 2, 'Post graduate', 'rgpv', 'MA', 'Maths', 'India', 2027, '2023-04-05 11:56:48', '2023-04-05 11:56:48'),
-(4, 3, 'PHD', 'sfgsdgf', 'B.com', 'Bio', 'USA', 20014, '2023-04-06 10:19:17', '2023-04-06 10:19:17'),
-(8, 5, 'PHD', 'rgpv', 'CPCT', 'Bio', 'USA', 2022, '2023-04-07 04:40:14', '2023-04-07 04:40:14'),
-(9, 2, 'graduate', 'columbia', 'ms', 'science', 'usa', 2018, '2023-04-07 06:01:28', '2023-04-07 06:01:28'),
-(12, 7, 'Graduate', 'davv', 'B.com', 'Social Studies', 'USA', 2010, '2023-04-07 10:11:05', '2023-04-19 12:47:58'),
-(14, 5, 'Graduate', 'davv', 'CA', 'Bio', 'UK', 1, '2023-04-07 10:14:46', '2023-04-07 10:14:46'),
-(15, 7, 'PHD', 'davv', 'M.com', 'Bio', 'Canada', 2022, '2023-04-07 12:46:51', '2023-04-07 12:46:51'),
-(23, 9, 'Graduate', 'rgpv', 'B.com', 'Bio', 'USA', 1, '2023-04-11 05:28:33', '2023-04-11 05:28:33'),
-(25, 8, 'Graduate', 'davv', 'B.com', 'core', 'India', 2022, '2023-04-11 05:54:45', '2023-04-11 05:54:45'),
-(28, 11, 'Post graduate', 'sfgsdgf', 'B.tech', 'Maths', 'Russia', 1, '2023-04-12 05:44:52', '2023-04-12 05:44:52'),
-(30, 7, '12th Pass', 'rgpv', 'M.com', 'phy', 'India', 2002, '2023-04-12 10:10:15', '2023-04-12 10:12:03'),
-(32, 17, 'Post graduate', 'DAVV', 'Post Metric', 'Bio', 'India', 2017, '2023-04-12 11:26:32', '2023-04-19 12:24:54'),
-(33, 25, '12th Pass', 'kv', 'CPCT', 'Social studies', 'India', 2019, '2023-04-13 04:49:35', '2023-04-13 04:49:53'),
-(35, 24, 'Graduate', 'rgpv', 'BA', 'Social studies', 'USA', 2011, '2023-04-14 04:51:42', '2023-04-14 04:51:42'),
-(36, 17, 'Graduate', 'RGPV', 'Graduate', 'Social Studies', 'India', 2015, '2023-04-19 12:24:36', '2023-04-19 12:24:36'),
-(38, 30, 'PHD', 'rgpv', 'Other', 'Other', 'India', 1, '2023-04-21 09:10:24', '2023-04-21 09:10:24'),
-(39, 29, 'Graduate', 'davv', 'Metric', 'Maths', 'Canada', 2018, '2023-04-22 07:13:41', '2023-04-22 07:13:41');
+(1, 1, 'Graduate', 'RGPV', 'BE', 'Information Technology', 'Indore', 2018, '2023-04-28 09:21:16', '2023-04-28 10:04:06'),
+(2, 1, 'Post-Graduate', 'IIT-M', 'ME', 'AI', 'Mumbai', 2020, '2023-04-28 09:21:16', '2023-04-28 09:21:16'),
+(3, 1, 'Graduate', 'RGPV', 'B. Tech', 'Computer Science Engineer', 'India', 2012, '2023-04-28 09:29:46', '2023-04-28 10:03:41'),
+(4, 3, 'Metric', 'ssm', 'Other', '10th', 'India', 2010, '2023-04-29 05:10:04', '2023-04-29 05:10:04'),
+(5, 3, 'Post Metric', 'ssm', 'Other', '12th', 'India', 2012, '2023-04-29 05:10:37', '2023-04-29 05:10:37'),
+(7, 14, 'Post Metric', 'gfhghb', 'Bsc', 'ghfghfghf', 'USA', 20016, '2023-05-04 09:17:44', '2023-05-04 09:17:44');
 
 -- --------------------------------------------------------
 
@@ -1188,41 +1226,28 @@ CREATE TABLE `employee_skill` (
 --
 
 INSERT INTO `employee_skill` (`skill_id`, `employee_id`, `skill`) VALUES
-(1, 1, 'Good communication'),
-(2, 2, 'criket'),
-(3, 4, 'd'),
-(4, 3, 'fzfgsd'),
-(5, 4, 'html'),
-(6, 3, 'html'),
-(7, 7, 'Reacy Native'),
-(8, 7, 'Java'),
-(9, 2, 'a'),
-(10, 6, 'd'),
-(12, 7, 'Next js'),
-(13, 7, 'Reacy Native'),
-(14, 7, 'Good communication'),
-(16, 9, 'Reacy Native'),
-(17, 9, 'java script'),
-(18, 9, 'java script'),
-(21, 13, 'fghujkl'),
-(23, 25, 'Cpct'),
-(25, 17, 'PHP'),
-(26, 17, 'Java script'),
-(27, 5, 'PHP'),
-(28, 5, 'REACT'),
-(29, 17, 'REACT'),
-(30, 17, 'JAVA'),
-(31, 17, 'CodeIgniter'),
-(32, 17, 'Html'),
-(33, 27, 'Reacy Native'),
-(39, 28, 'java'),
-(40, 8, 'PHP'),
-(41, 8, 'Reacy Native'),
-(42, 8, 'Good communication'),
-(44, 17, 'React js'),
-(46, 17, 'Css'),
-(47, 30, 'archrey'),
-(48, 29, 'PHP');
+(1, 1, 'REACT'),
+(2, 1, 'PHP'),
+(3, 1, 'JAVA'),
+(4, 1, 'CodeIgniter'),
+(5, 2, 'REACT'),
+(6, 2, 'PHP'),
+(7, 3, 'Good communication'),
+(8, 3, 'Tally ERP nine'),
+(9, 4, 'Good communication'),
+(10, 4, 'React js'),
+(11, 4, 'HTML'),
+(12, 4, 'CSS'),
+(15, 14, 'jhhjghj'),
+(16, 14, 'ghgjgj'),
+(18, 17, 'Html'),
+(20, 12, 'Html'),
+(21, 12, 'Css'),
+(22, 18, 'REACT'),
+(23, 18, 'PHP'),
+(24, 18, 'JAVA'),
+(25, 18, 'Html'),
+(26, 18, 'java');
 
 -- --------------------------------------------------------
 
@@ -1249,7 +1274,7 @@ CREATE TABLE `employee_view` (
 ,`experience` varchar(100)
 ,`work_permit_canada` char(100)
 ,`work_permit_other_country` text
-,`posted` varchar(251)
+,`is_posted` tinyint(1)
 ,`posted_company_id` int(51)
 ,`date_of_posting` date
 ,`designation``` varchar(251)
@@ -1260,6 +1285,7 @@ CREATE TABLE `employee_view` (
 ,`updated_at` timestamp
 ,`is_deleted` tinyint(1)
 ,`token` varchar(301)
+,`profile_complete` decimal(23,2)
 ,`education` text
 ,`specialization` text
 ,`skill` varchar(256)
@@ -1308,42 +1334,24 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`company_id`, `company_name`, `industry`, `corporation`, `alias`, `company_start_date`, `company_size`, `website_url`, `vacancy_for_post`, `about`, `contact_person_name`, `email`, `password`, `contact_no`, `contact_no_other`, `address`, `pin_code`, `city`, `state`, `country`, `designation`, `logo`, `is_active`, `created_at`, `updated_at`, `created_by_admin`, `is_deleted`, `franchise`, `token`) VALUES
-(1, 'We2code', 'IT', ' Director of employee experience', 'W2c', '2018-01-14', '20', 'we2code.com', 'business executive', 'We2Code is an imerging web design and development company of India. We have wide range of technical skill to provide better services to our clients.@We2Code, core strength lies in our super energetic and gigantic team, forming an excellent blend of IT minds along with a creative bent. Our endeavor is to continuously improve and deliver maximum – enriching products & solutions. That’s what we mean – We code your dreams.\nOur Web development solutions are most comprehensive and impactful as it include all web based services from establishing conceptual framework, drawing inferential backdrop, web interfaces, programmed system architecture, web services, and system support to database management. Our extremely prolific web development solutions also include content management, custom web development, E commerce website development, payment gateway integration, 3rd party API integration, Web Portal development and Ecommerce shopping cart. We develop websites and web apps to suit your business growth and to get you best leads.', 'Niranter sing pandya', 'niranter.we2code@gmail.com', NULL, 9632587410, NULL, 'PU4  45 Universal Tower 2nd Floor  Indore Madhya Pradesh 4', 789654, 'indore', 'mp', 'india', 'CEO', NULL, 0, '2023-04-05 12:01:38', '2023-04-11 09:48:51', 16, 0, '', ''),
-(2, 'Techlog', 'IT', 'G2C', 'info', '2023-04-06', '5', 'infosys.com', 'Tele caller', 'Our organisation is to serve you', 'utk', 'utkarsh.we2code@gmail.com', '4fddc644e3fe073e6e6a6f80f2da4124', 7410255555, NULL, 'd', 8, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-06 05:01:51', '2023-04-18 10:00:31', 16, 0, 'vijay nagar', '716435ac874e7229afdd9007f7b744e2'),
-(3, 'Punjab national bank', 'Bank', ' Human resource assistant', 'PNB', '1978-02-08', '500000', 'pnb.com', 'recovery boy', 'Urgent recovery boy needed', 'd', 'd@gmail.xcom', NULL, 2145879632, NULL, 'rajwada', 33, 'panji', 'goa', 'India', NULL, NULL, 0, '2023-04-07 07:04:56', '2023-04-11 06:28:39', 10, 0, '', ''),
-(4, 'szzz', 'szzz', 'B2G', 'sx', '2023-04-02', 'szz', 'szz.com', 'szzz', 'szz', 'dx', 'mayusdasdxr.we2code@gmail.com', NULL, 8741256390, NULL, 'dxfvgfcv', 147852, 'indore', 'california', 'earth', 'vc', NULL, 0, '2023-04-11 09:14:42', '2023-04-13 07:00:14', 0, 0, '', ''),
-(5, 'Apollo', 'Hospital', 'C2C', 'ollo', '2001-01-01', '10000', 'apollo.com', 'nurse', 'Registered nurses are required to have at least an associates degree which typically takes less time and costs less than other educational options However RNs who earn a bachelors or advanced degree have a higher earning potential and an advantage when applying for jobs', 'Gopal desai', 'Gopal2@gmail.com', NULL, 9517538426, NULL, 'Sector D Scheme No 74C Vijay Nagar Indore  Madhya Pradesh', 456987, 'Indore', 'Madhya Pradesh', 'India', 'Management', NULL, 0, '2023-04-12 04:18:40', '2023-04-13 07:00:11', 0, 1, '', ''),
-(6, 'redtfgyhujk', 'Ikj', 'Chief accounting officer (CAO)', 'ghjkl', '2023-04-12', '50', 'wipr.com', 'rtyui', 'erdtfgyhujkl', 'Rakesh', 'aasdfgdfbgvi.we2code@gmail.com', NULL, 7539518246, NULL, 'Ram nagar', 741025, 'hyderabad', 'california', 'USA', 'dfvd', NULL, 0, '2023-04-12 07:00:04', '2023-04-13 06:31:37', 0, 1, '', ''),
-(7, 'Aashi electronics', 'agency', 'B2B', 'it', '2020-07-25', '20', 'aashie.com', 'business executive', 'Consumer electronics devices include those used for. entertainment (flatscreen TVs, television sets, MP3 players, video recorders, DVD players, radio receivers, etc.) communications (telephones, cell phones, e-mail-capable personal computers, desktop computers, laptops, printers, paper shredders, etc.)', 'Aashi vyas', 'aashi.we2cod@gmail.com', NULL, 9632587410, NULL, 'Ram nagar', 456321, 'indore', 'mp', 'india', 'manager', NULL, 0, '2023-04-13 07:10:05', '2023-04-13 07:11:33', 10, 0, '', ''),
-(8, 'sikah center', 'Hospitality', 'B2B', 'id', '2002-02-02', '6', '55iuhkj.hjuk', 'khj', 'jnbknjkhjygjhykl', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-13 08:59:15', '2023-04-13 08:59:15', 0, 0, '', ''),
-(9, 'Hp Gas', 'Other', 'B2C', 'indore road', '2023-03-28', '5', NULL, 'Delivery boy', 'db t5cv hvtrgf cv', 'Rakesh', 'mayur.we2code@gmail.com', NULL, 88888888888, 99999999999, 'andher nagari chor gali kholi no 420', 888999, 'san fransisco', 'mp', 'earth', 'Junior developer', NULL, 0, '2023-04-13 09:55:00', '2023-04-13 09:56:54', 0, 0, '', ''),
-(10, 'cfdscfwesdc', 'Tourism', 'B2B', NULL, '2023-04-01', '20', 'we2code.com', 'delivery boy', 'dcfsfc', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-13 12:41:42', '2023-04-13 12:41:42', 0, 0, '', ''),
-(11, 'Apollo', 'Transport', 'B2C', NULL, '2019-06-12', '5', NULL, 'Delivery boy', 'dddddd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-13 12:42:38', '2023-04-13 12:42:38', 0, 1, '', ''),
-(12, 'WIPRO', 'IT', 'B2G', NULL, '2000-04-08', '10000', NULL, 'business executive', 'Our organization is to serve you the best', 'Shivraj', 'shiv.we2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 6266987300, NULL, 'Ram nagar', 456321, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-14 06:01:39', '2023-04-14 12:57:32', 16, 0, '', ''),
-(13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aash.we2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 6266987374, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:05:16', '2023-04-14 06:05:16', 0, 1, '', ''),
-(14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashiwe2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 9632587410, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:15:53', '2023-04-14 06:15:53', 0, 1, '', ''),
-(15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aawe2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 9632587410, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:18:15', '2023-04-14 06:18:15', 0, 1, '', ''),
-(16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aawee@gmail.com', 'f523370044c04615aea88f46e44978cf', 9632587410, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:19:15', '2023-04-14 06:19:15', 0, 1, '', ''),
-(17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi@gmail.com', 'f523370044c04615aea88f46e44978cf', 9632587410, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:19:34', '2023-04-14 06:19:34', 0, 1, '', ''),
-(18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'lllaashi@gmail.com', '3208a3497eb38368d049eb592d33dc35', 9977884455, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 06:20:39', '2023-04-14 06:20:39', 0, 1, '', ''),
-(19, 'WE2CODE', 'Hospitality', 'B2C', 'W2C', '2023-04-06', '11', 'chat.openai.com', 'Driver', 'Consumer electronics devices include those used for. entertainment (flatscreen TVs, television sets, MP3 players, video recorders, DVD players, radio receivers, etc.) communications (telephones, cell phones, e-mail-capable personal computers, desktop computers, laptops, printers, paper shredders, etc.)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-14 13:00:37', '2023-04-14 13:00:37', 0, 0, '', ''),
-(20, 'HIreNshare', 'IT', 'B2G', 'HNS', '2023-04-06', '20', 'ocalhost.com', 'Driver', 'THis is testing', 'Rakesh', 'kkk.we2code@gmail.com', NULL, 7895401236, NULL, 'Ram nagar', 222222, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-14 17:21:21', '2023-04-15 05:53:57', 0, 1, '', ''),
-(21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'apple@gmail.com', '1f3870be274f6c49b3e31a0c6728957f', 9977884455, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 06:01:01', '2023-04-15 06:01:01', 0, 0, '', ''),
-(22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sevphal@gmail.com', 'b3182bf98ed6bd382961494c89f59864', 9977884455, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 06:06:06', '2023-04-15 06:06:06', 0, 1, '', ''),
-(23, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'abc@gmail.com', '900150983cd24fb0d6963f7d28e17f72', 9977884455, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 06:11:35', '2023-04-15 06:11:35', 0, 1, '', ''),
-(24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'rashi@gmail.com', '2d841879342d2b31b3b569165f2c8bd7', 9977884455, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 06:12:44', '2023-04-15 06:12:44', 0, 1, '', ''),
-(25, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi01@gmail.com', 'd7c3b6020c30e8bbab33b07d05a88646', 96362587410, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 10:05:41', '2023-04-15 10:05:41', 0, 1, '', ''),
-(26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'uv@gmail.com', 'a99c7cc994bd438b0c3bb53790cd9621', 8520025800, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 10:08:51', '2023-04-15 10:08:51', 0, 1, '', ''),
-(27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi.we2code@gmail.com', 'f523370044c04615aea88f46e44978cf', 8521479630, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-15 10:51:51', '2023-04-15 12:21:51', 0, 0, '', '587ea74f1e1c1b667fcfa0826f5ac338'),
-(28, 'Hp Gas', 'Other', 'C2C', NULL, '2019-01-02', '20', NULL, 'Office boy', 'Need a office boy', 'Rakesh', 'Rakesh@gmail.com', NULL, 8520147963, NULL, 'Ram nagar', 852025, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-17 12:19:39', '2023-04-17 12:22:44', 0, 0, 'Ram nagar', ''),
-(29, 'Shushil academy', 'Health', 'C2C', NULL, '2023-03-27', '20', NULL, 'manager', 'The Dance Academy, established since October 1988 aims to provide students with a professional dance curriculum exposing them to well structured training programmes in the various dance disciplines. Students are encouraged to develop their dance skills and performance qualities to the maximum.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-17 12:24:39', '2023-04-17 12:27:09', 0, 0, 'LIG', ''),
-(30, 'Poonam academy', 'Health', 'C2C', NULL, '2023-03-27', '20', NULL, 'manager', 'The Dance Academy, established since October 1988 aims to provide students with a professional dance curriculum exposing them to well structured training programmes in the various dance disciplines. Students are encouraged to develop their dance skills and performance qualities to the maximum.', 'jatin tiwari', 'jyotish.we2code@gmail.m', NULL, 7471031820, NULL, 'indore', 452020, 'indore', 'india', 'India', NULL, NULL, 0, '2023-04-17 12:27:23', '2023-04-20 06:30:15', 0, 0, '', ''),
-(31, 'Teach radix pvt.ltd', 'IT', 'B2C', 'radix', '2021-10-15', '35', 'tech-radix.com', 'python develop', 'We at Tech Radix are an employee-first new age software product and services company that delivers innovative and custom-built technology solutions for Start-ups and SMB companies across the world. We offer a variety of time-tested engagement, delivery and partnership models to help our customers ideate, create, road test, launch and grow their business. \n\nWe employ business-first approach, innovative thinking and platform & product mindset to build the right digital solutions which are meaningful, flexible, scalable and easy to maintain.\n\nOur founding team consists of industry veterans and Gen Z newbies. The veteran founders bring in more than 100 man-years of experience building technology products & business solutions. They have worked across the world and have served hundreds of customers across various geographies. While our newbies, the Gen Z workforce bring in the energy, enthusiasm, disruptive thinking and the dare-to-dream attitude', 'jatin tiwari', 'tanmay@techradix.com', NULL, 8956327410, 852014796, 'indore', 452020, 'indore', 'india', 'India', 'Manager', NULL, 0, '2023-04-18 04:45:42', '2023-04-20 06:26:14', 0, 0, 'bicholi mardana', ''),
-(32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'jatin tiwari', 'aashi010@gmail.com', 'f523370044c04615aea88f46e44978cf', 8520147963, NULL, 'indore', 452020, 'indore', 'india', 'India', NULL, NULL, 0, '2023-04-18 09:51:37', '2023-04-20 06:25:48', 0, 1, '', ''),
-(33, 'eeee', 'Transport', 'G2C', NULL, '2023-04-20', '5', '1254565', 'tyghjlk', 'wertyuiop[\';lkmjnbvcdsa', 'jatin tiwari', 'jish.we2code@gmail.com', NULL, 7470920482, 799913836, 'indore', 452022, 'indore', 'india', 'India', 'qa', NULL, 0, '2023-04-20 05:44:20', '2023-04-20 06:13:41', 0, 1, '#$%^', ''),
-(34, 'Basics and off beat', 'Other', 'B2C', NULL, '2019-01-09', '22', NULL, 'delivery boy', 'A cloths company to serve you the best with your outfit.', 'Ram lal', 'ramlal@gmail.com', NULL, 8520147963, NULL, 'Ram nagar', 456321, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-21 10:12:31', '2023-04-22 06:37:53', 0, 0, 'indore', ''),
-(35, 'ff', 'Transport', 'B2B', 'ff', '2023-04-16', '5', NULL, 'ff ff ', 'ff ff ff ff ff ff ff ff ff ff ', 'Rakesh', 'fdgfb.wgfh@gmail.com', NULL, 8528528520, NULL, 'Ram nagar', 951753, 'hyderabad', 'comma', 'earth', NULL, NULL, 0, '2023-04-24 06:42:10', '2023-04-24 07:01:14', 0, 0, 'ff', ''),
-(36, 'Infosys', 'IT', 'B2C', 'Info', '2010-02-01', '50000', NULL, 'business executive', 'We Create Best Digital gifts for you.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-24 06:51:29', '2023-04-24 06:54:29', 0, 1, '', '');
+(1, 'We2code', 'IT', 'B2C', 'w2c', '2021-11-03', '15', 'we2code.com', 'business executive', '\"We are Web Development, Design company. We offer various service like Web Development, Web Design, E commerce Development, Graphics Design, Web Service, Web Portal Development etc.\"', 'Niranter sing pandya', 'nirantar.we2code@gmail.com', NULL, 9517538246, 8526547539, '2nd Floor, 45 Universal Tower, P. U. 4, Scheme 54 PU4,', 452001, 'indore', 'mp', 'india', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1682593173.png', 0, '2023-04-27 10:59:33', '2023-04-27 11:04:03', 0, 1, '', ''),
+(2, 'Gourav Agency ', 'Tourism', 'B2C', 'GOR', '2020-02-20', '20', 'ghfg.com', 'driver ', 'The primary role of a travel agent is to help people make travel arrangements, which might include booking flights, hotels, sightseeing tours, and making dining recommendations. A travel agent assesses each customer\'s unique needs, preferences, and budget to ensure their trip goes as smoothly as possible.', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', 'f1ed9271ef2e3edadb24e6b73689b918', 7247395400, 7519532684, 'Ram nagar', 752963, 'indore', 'mp', 'india', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1682665145.jpeg', 0, '2023-04-28 05:13:42', '2023-05-08 09:47:39', 0, 0, 'Indore', '25d6e76919563bf280487934df5fcd37'),
+(3, 'Microsoft', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Sham mohe', 'utkarsh.we2code@gmail.com', 'fe6717eb62ed9eef1de1163f02b6e1b1', 9632587410, 857412369, 'gvjhk', 555555, 'indore', 'mp', 'india', NULL, NULL, 0, '2023-04-28 08:51:49', '2023-05-09 07:22:08', 0, 0, '', '716435ac874e7229afdd9007f7b744e2'),
+(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'raj.we2code@gmail.com', 'cef3716fbd0b7899de14c932929339b7', 1234567890, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-04-28 09:00:47', '2023-04-28 09:00:47', 0, 0, '', ''),
+(7, 'Shreeji jwellers', 'Other', 'B2C', NULL, '1991-01-07', '15', NULL, 'office boy', 'asdfg fdg bjdfh dgh gh', 'Shreeji', 'shree.we2code@gmail.com', '87a2261bfb7915eeb1903942466091aa', 1574268935, 8965412370, 'Ram nagar', 752963, 'indore', 'mp', 'India', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1683346845.jpeg', 0, '2023-05-03 09:10:30', '2023-05-09 05:03:04', 0, 0, '', ''),
+(8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'raj.we2codee@gmail.com', 'cef3716fbd0b7899de14c932929339b7', 9993266886, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-03 09:14:04', '2023-05-03 09:14:04', 0, 0, '', ''),
+(12, 'hhhhhhhhhhhhhh', 'It', 'B2B', NULL, '2001-01-01', '55', 'ghfg.com', 'fgdfghfhd', ' ngh sfghvb dfh fd', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', NULL, 555555555555555555, 55555555555555555, 'Ram nagar', 752963, 'indore', 'mp', 'India', NULL, NULL, 0, '2023-05-04 08:43:23', '2023-05-11 11:16:36', 7, 0, 'gfgh', ''),
+(13, 'Dezzy', 'GY', 'C2C', NULL, '2005-05-05', '9', NULL, 'tyh bnth', 'teb rtfyb ertyr bntyu byerty brtytyu u ntyu tyu ', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', NULL, 78965412154, 8520147963, 'Ram nagar', 752963, 'indore', 'mp', 'India', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1683290351.png', 0, '2023-05-04 09:02:24', '2023-05-11 11:16:28', 7, 0, '', ''),
+(15, 'hululululu', 'Transport', 'B2C', NULL, '2015-04-30', '9', NULL, 'office boy', 'dfg btfrgftg fdyh fb', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', NULL, 1547823687, NULL, 'Ram nagar', 752963, 'indore', 'mp', 'India', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1683365081.png', 0, '2023-05-06 09:24:41', '2023-05-06 10:07:49', 2, 0, '', ''),
+(22, 'lala', 'IT', 'B2C', NULL, '2019-05-28', 'cvbvb', NULL, 'vbvbcvb', 'cvbcvb', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', NULL, 9998567412, NULL, 'Ram nagar', 752963, 'indore', 'mp', 'India', NULL, NULL, 0, '2023-05-06 09:35:09', '2023-05-06 09:50:54', 2, 1, '', ''),
+(23, 'yoyoyo', 'Transport', 'B2C', NULL, '2020-02-04', 'ttttt', NULL, 'ttttttt', 'Testtttting ', 'Gourav choudary', 'g.choudhary.we2code@gmail.com', NULL, 9517426283, NULL, 'Ram nagar', 752963, 'indore', 'mp', 'India', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1683366513.png', 0, '2023-05-06 09:36:27', '2023-05-06 09:48:33', 2, 1, '', ''),
+(24, 'Amazon India', 'Hospitality', 'B2B', NULL, '2023-02-02', 'uuuuuuu', NULL, 'Manager', 'uuu', 'Shivam', 'aaa@cc.com', NULL, 1221212221, NULL, '121. Alok Nagar', 452001, 'Indore', 'MP', 'India', 'Manager', 'https://apnaorganicstore.in/canjobs/uploads/1683367558.png', 0, '2023-05-06 09:36:53', '2023-05-06 10:05:58', 2, 0, '', ''),
+(25, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'gourav.we2code@gmail.com', '3f30aff52f55a2a0c2d7a0e02e7872eb', 9874563210, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-09 06:37:01', '2023-05-09 06:37:01', 0, 0, '', ''),
+(29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi.we2code@gmail.com', '4f1058b235cc3827fb8888a5d1aab930', 8974563210, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-10 12:06:07', '2023-05-10 12:06:07', 0, 0, '', ''),
+(30, 'greenbay tech', 'GE', 'C2B', 'fcgvhbjn', '2023-05-11', 'sdfgh', NULL, 'fgvhb', 'zsxdcgvhbnm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://apnaorganicstore.in/canjobs/uploads/1683802889.png', 0, '2023-05-11 11:01:29', '2023-05-11 11:01:29', 7, 0, '', ''),
+(31, 'Cognizant', 'GE', '@#$%^', 'fcgvhbjn', '2023-05-01', 'wearfs', NULL, 'werfdweafsdweasfd', 'wersdfg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-11 11:18:03', '2023-05-11 11:18:03', 7, 0, '', ''),
+(32, '1wqidah', 'GY', 'B2B', NULL, '2023-05-10', 'sdfgh', NULL, 'fgvhb', 'dasf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-11 12:23:14', '2023-05-11 12:23:14', 7, 0, '', ''),
+(33, 'greenbay tech', 'GY', 'B2B', NULL, '2023-05-12', 'sdfgh', 'WWW.GOO@!GLS12E.COM', 'aaaaaaaaaaaaaaaaa', 'Introduction\nDuring 2016, employment in the EU finally returned to\nthe same level as before the global financial crisis. The\nrecovery that began in 2013 has resulted in the net\ncreation of eight million new jobs. Most of this net new\nemployment has been created in services, but there has\nalso been a marked rebound in manufacturing\nemployment, with around 1.5 million new jobs.\nThis, the sixth annual European Jobs Monitor report,\nlooks in more detail at recent shifts (from the second\nquarter (Q2) of 2011 to 2016 Q2) in employment at\nMember State and aggregate EU levels. Part 1 of the\nreport applies a ‘jobs-based approach’ to describe\nemployment shifts quantitatively (how many jobs were\ncreated or destroyed and in what sectors) and\nqualitatively (what kinds of jobs they were, primarily in\nterms of average hourly pay). Part 2, a more analytical\nsection, discusses the role that occupations play in\nstructuring European wage inequality, and to what\nextent the observed patterns of job polarisation and\nupgrading have contributed to wage inequality trends\nin the last decade.\nPolicy context\nThe EU’s Europe 2020 strategy for smart, sustainable\nand inclusive growth includes a commitment to\nfostering high levels of employment and productivity.\nThis implies a renewed focus on the goals of the earlier\nLisbon Agenda, ‘more and better jobs’. More jobs are\nneeded to address the problem of unacceptably high\nunemployment rates. But Europe also needs better and\nmore productive jobs if it is to succeed once again in\nimproving living standards for its citizens in an\nexpanding, integrated global economy. The European\nCommission’s 2012 Employment Package (‘Towards a\njob-rich recovery’) identifies some sectors in which\nemployment growth is considered most likely: health\nservices, information and communications technology,\nand personal and household services, as well as the\npromising if hard-to-define category of ‘green jobs’. The\njobs-based approach adopted in this report provides\nup-to-date data about employment levels and job\nquality in growing and declining sectors and\noccupations.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-05-12 08:37:50', '2023-05-12 09:19:16', 13, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -1366,50 +1374,22 @@ CREATE TABLE `follow_up` (
 --
 
 INSERT INTO `follow_up` (`id`, `admin_id`, `job_id`, `employee_id`, `remark`, `next_followup_date`, `created_at`) VALUES
-(1, 3, 1, 2, 'meet soon', '0000-00-00', '2023-04-05 12:45:39'),
-(2, 3, 1, 2, 'meeting', '0000-00-00', '2023-04-05 12:48:08'),
-(3, 2, 1, 1, 'Agreement', '0000-00-00', '2023-04-05 12:58:25'),
-(4, 2, 1, 1, 'Hello Your Interview is schedule at 10th april ', '0000-00-00', '2023-04-07 05:54:41'),
-(5, 2, 1, 2, 'Salary decision ', '0000-00-00', '2023-04-11 10:33:57'),
-(6, 2, 1, 2, 's', '0000-00-00', '2023-04-11 10:34:11'),
-(7, 2, 2, 2, 'xx', '0000-00-00', '2023-04-11 10:35:16'),
-(8, 10, 1, 2, 'hello', '0000-00-00', '2023-04-11 12:28:32'),
-(9, 10, 1, 2, 'Next will be the last round', '0000-00-00', '2023-04-11 12:30:42'),
-(10, 10, 1, 2, '!@#^%$', '0000-00-00', '2023-04-12 07:10:07'),
-(11, 10, 1, 2, 'dfghjkl;', '0000-00-00', '2023-04-12 07:10:26'),
-(12, 10, 1, 2, 'gfhjgjyygu', '0000-00-00', '2023-04-12 07:13:38'),
-(13, 10, 1, 2, 'ygjfj', '0000-00-00', '2023-04-12 07:17:31'),
-(14, 10, 2, 2, 'Happy customer', '0000-00-00', '2023-04-13 10:44:00'),
-(15, 10, 2, 2, 'Time', '0000-00-00', '2023-04-13 10:44:10'),
-(16, 10, 2, 2, 'cdfsdfcs d', '0000-00-00', '2023-04-13 10:45:36'),
-(17, 10, 1, 1, 'sfczdsf', '0000-00-00', '2023-04-13 10:46:26'),
-(18, 10, 2, 2, 'dfgfdgfchb', '0000-00-00', '2023-04-13 10:47:21'),
-(19, 10, 2, 2, 'zzzzzzzz', '0000-00-00', '2023-04-13 10:47:53'),
-(20, 10, 2, 2, 'xxxxxx', '0000-00-00', '2023-04-13 10:48:26'),
-(21, 10, 2, 2, 'sxdzfc ', '0000-00-00', '2023-04-13 10:48:55'),
-(22, 10, 2, 2, 'zzzzzzzzzzzzzzz', '0000-00-00', '2023-04-13 10:49:29'),
-(23, 10, 2, 2, 'op', '0000-00-00', '2023-04-13 10:50:12'),
-(24, 10, 1, 1, 'Joining on 15', '0000-00-00', '2023-04-13 10:52:19'),
-(25, 10, 1, 2, 'hkjhk', '0000-00-00', '2023-04-13 10:54:27'),
-(26, 21, 1, 2, 'Job assigned', '0000-00-00', '2023-04-14 17:45:37'),
-(27, 10, 1, 2, 'hello', '0000-00-00', '2023-04-15 05:51:34'),
-(28, 10, 1, 2, 'hhhhhh', '0000-00-00', '2023-04-15 08:53:59'),
-(29, 10, 1, 2, 'SDCFD', '0000-00-00', '2023-04-15 08:55:07'),
-(30, 10, 1, 1, 'gggggggggggggggggggggggggggg', '0000-00-00', '2023-04-15 08:55:47'),
-(31, 10, 1, 1, 'Rahul', '2023-04-25', '2023-04-15 08:59:07'),
-(32, 21, 1, 2, 'dasd', '2023-04-20', '2023-04-17 11:13:50'),
-(33, 21, 1, 1, 'dasdasd', '2023-04-18', '2023-04-17 11:14:51'),
-(34, 21, 5, 5, 'dadadaD', '2023-04-22', '2023-04-21 11:40:31'),
-(35, 10, 5, 7, 'hello', '0000-00-00', '2023-04-22 06:44:19'),
-(36, 10, 5, 7, 'Meeting', '2023-04-27', '2023-04-24 04:30:32'),
-(37, 10, 5, 7, 'Meeting On Saturday At 5:00 Pm', '2023-04-29', '2023-04-24 06:19:50'),
-(38, 10, 2, 5, 'kjhguj', '0000-00-00', '2023-04-24 07:52:09'),
-(39, 10, 16, 7, 'ggggg', '2023-04-28', '2023-04-24 08:40:02'),
-(40, 10, 2, 5, 'xsccc ', '2023-04-27', '2023-04-24 09:32:44'),
-(41, 10, 2, 5, 'ggggggggg', '0000-00-00', '2023-04-24 09:33:05'),
-(42, 10, 2, 5, 'Hello', '0000-00-00', '2023-04-24 09:35:28'),
-(43, 10, 16, 7, 'hello ', '0000-00-00', '2023-04-24 09:50:53'),
-(44, 10, 2, 7, 'sss', '0000-00-00', '2023-04-24 11:28:48');
+(1, 2, 3, 1, 'Have to scheduled interview next week.', '2023-05-01', '2023-04-28 11:03:06'),
+(2, 2, 3, 1, 'Interview is preponderate tomorrow.', '2023-04-29', '2023-04-28 11:03:56'),
+(3, 3, 1, 1, 'Interview tomorrow.', '2023-04-30', '2023-04-28 11:03:56'),
+(4, 3, 1, 1, 'Interview tomorrow.', '0000-00-00', '2023-04-28 11:03:56'),
+(5, 2, 2, 1, 'Testing', '2023-05-02', '2023-05-02 10:15:32'),
+(6, 2, 2, 1, 'dadasd', '2023-05-17', '2023-05-02 10:15:42'),
+(7, 2, 2, 4, 'Hello', '2023-05-02', '2023-05-02 10:33:03'),
+(8, 2, 2, 1, 'Testing0000987654321', '0000-00-00', '2023-05-02 10:34:11'),
+(9, 2, 12, 12, 'fddgdgv', '2023-05-17', '2023-05-06 10:03:00'),
+(10, 2, 12, 12, 'ftghgfhfghfg', '0000-00-00', '2023-05-06 10:06:21'),
+(11, 2, 21, 12, 'New Followw up', '2023-05-10', '2023-05-08 10:36:44'),
+(12, 2, 9, 4, 'new stattuususk ', '2023-05-11', '2023-05-08 11:15:18'),
+(13, 2, 21, 12, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s,', '2023-05-10', '2023-05-08 11:16:12'),
+(14, 2, 15, 17, 'thfgjhnfghn', '2023-05-19', '2023-05-08 13:01:01'),
+(15, 2, 21, 12, 'tgdfgv', '2023-05-20', '2023-05-08 13:01:59'),
+(16, 13, 15, 18, 'Testing', '2023-05-13', '2023-05-12 05:52:34');
 
 -- --------------------------------------------------------
 
@@ -1450,36 +1430,35 @@ CREATE TABLE `jobs` (
 --
 
 INSERT INTO `jobs` (`job_id`, `company_id`, `job_title`, `experience_required`, `salary`, `location`, `industry_type`, `apply_link`, `job_description`, `your_duties`, `requirement`, `department`, `job_type`, `role_category`, `education`, `language`, `keyskill`, `employement`, `job_category_id`, `is_active`, `created_at`, `updated_at`, `created_by_admin`, `is_featured`, `is_deleted`) VALUES
-(1, 1, 'Bussiness Development officer', '0-1 Year', '9Lac-10Lac', 'ukrain', 'IT', 'we2code.com', 'Required a good bussiness development....', 'htbytnbhjbn', 'hello', 'yhjbhybv', 'Full Time with SWAP', NULL, 'Graduate', 'english', 'Other', 'Full Time', 1, 1, '2023-04-05 12:10:19', '2023-04-15 05:08:41', 16, 0, 0),
-(2, 12, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', 'hello', 'helo', 'hello', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-04-06 06:13:51', '2023-04-14 12:37:20', 0, 0, 0),
-(3, 2, 'developer', 'Fresher', '3', 'India', 'IT', 'd', 'eWDa', 'adfaSD', 'ads', 'Adas', 'Full Time with SWAP', NULL, 'Post Metric', 'hindi', 'eWDd', 'Full Time', 1, 1, '2023-04-06 08:36:58', '2023-04-06 08:36:58', 0, 0, 1),
-(4, 2, 'erwtwq', '3-5 Year', '5Lac-8Lac', 'India', 'Transport', 'jhgbh.com', 'sdfgasfg', 'dsfgsfdg', 'sdgsadfd', 'sfgadsg', 'SWAP Only', NULL, 'Graduate', 'sfgasgd', 'hindi', 'Part Time', 2, 1, '2023-04-06 09:54:26', '2023-04-12 10:32:06', 0, 0, 1),
-(5, 2, 'React Developeer', '0-1 Year', '5Lac-8Lac', 'India', 'IT', 'www.careerattcs.com', 'Frontend', 'Development', 'HTML CSS JAVASCRIPT', 'Frontend', 'Full Time', NULL, 'Graduate', 'HTML CSS JAVASCRIPT', 'java', 'Full Time', 3, 1, '2023-04-06 10:53:36', '2023-04-13 09:48:20', 10, 0, 0),
-(6, 1, 'Developer', '0-1 Year', 'Below 1 Lac', 'India', 'IT', '1234.com', '@#$%^&*', 'sss', 'sss', 'its', 'Other than SWAP', NULL, 'Post Metric', 'English', 'aaas', 'Full Time', 2, 1, '2023-04-07 09:39:13', '2023-04-13 04:22:46', 0, 0, 1),
-(7, 1, 'tttttt', '0-1 Year', '3', 'UK', 'Transport', 'www.canjobs.com', 'tyrrt', 'rtrt', 'werwer', 'ewrer', 'Part Time with SWAP', NULL, 'Post Metric', 'wrwer', 'wrwer', 'Part Time', 3, 1, '2023-04-07 09:50:24', '2023-04-07 09:50:24', 0, 0, 1),
-(8, 1, 'developer', '0-1 Year', '0', 'Canada', 'Hospitality', 'ertwar.com', 'ncfjncghnc', 'gvhnvghncf', 'fbghvhjgvnhcf', 'rawtwe', 'Part Time', NULL, 'Metric', 'English', 'artwet', 'Full Time', 2, 1, '2023-04-11 13:01:09', '2023-04-12 07:16:29', 0, 0, 1),
-(9, 5, 'Nursedfgh', '5+ Year', '0', 'India', 'Transport', 'apollo.com', 'Identifying patients care requirements focus on their needs and act on them Nurturing a compassion', 'bed making changing of bed sheets  mouth care  back care etc', 'Identifying patients ', 'fdghjk', 'Full Time', NULL, 'Diploma', 'English', 'certified@^%$', 'Full Time', 6, 1, '2023-04-12 04:30:11', '2023-04-12 05:03:44', 0, 0, 1),
-(10, 5, 'erfghjm', '1-3 Year', '0', 'UK', 'Transport', 'www.c', '!@#$%^sdfghjkl4523651', 'dfgh', '.......', 'Alfghjk', 'Part Time', NULL, 'Other', 'English', '!@#', 'Other', 1, 1, '2023-04-12 04:47:39', '2023-04-12 04:53:54', 0, 0, 1),
-(11, 1, 'developer', '1-3 ', '9Lac-10Lac', 'Mexico', 'Tourism', 'www.c', 'ertyuio', 'dfghjk', 'dgfhjkl', 'dtghjijuug', 'SWAP Only', NULL, 'Other', 'Gujrati', 'python', 'Full Time', 5, 1, '2023-04-12 09:29:50', '2023-04-14 12:36:18', 0, 0, 0),
-(12, 5, 'developer', '3-5 Year', 'Not Disclosed', 'UK', 'Tourism', 'www.careerattcs.com', 'sdfghjkl', 'sdfghjk', 'sdfghjk', 'typing', 'Full Time with SWAP', NULL, 'Graduate', 'Gujrati', 'react,html,css', 'Part Time', 5, 1, '2023-04-12 10:21:06', '2023-04-13 09:44:59', 0, 0, 0),
-(13, 5, 'BDO', '5+yrs', '5Lac-8Lac', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', 'Hello sir ', 'Good morning', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'html,css', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-04-12 10:29:27', '2023-04-13 09:44:32', 0, 0, 0),
-(14, 2, 'php developer', '1-3 Year', 'Below 1 Lac', 'India', 'IT', 'www.canjobs.com', 'safhgyythytyth ynbyuhty n yutn', 'nyhnbytbh ynyuhb yunjht', 'yhtyb gyunyh uhh gyuh ', 'Backend', 'Full Time with SWAP', NULL, 'Graduate', 'English', 'php,sql', 'Full Time', 3, 1, '2023-04-12 10:33:39', '2023-04-13 04:51:08', 0, 0, 0),
-(15, 2, 'developer', '1-3 Year', 'Below 1 Lac', 'Canada', 'IT', '1234.com', 'xcvgxv ', 'dfxfcfdf', 'dfdfc ', 'Frontend', 'Part Time with SWAP', NULL, 'Post Metric', 'Hindi', 'b.tech', 'Full Time', 3, 1, '2023-04-13 04:39:49', '2023-04-13 04:40:08', 0, 0, 1),
-(16, 1, 'Office boy', '3-5 Year', 'Below 1 Lac', 'India', 'Other', '1234.com', 'safdx dbfcfdb ', 'fcv  sdjvlg jdsvl djdv jdv skokdcshfhxjv  :d\'Jx ', 'jdjkjkd dhd jdkck ', 'its', 'Full Time', NULL, 'Metric', 'English', 'html', 'Full Time', 13, 1, '2023-04-13 09:38:54', '2023-04-13 09:43:48', 0, 0, 0),
-(17, 12, 'Developer', 'Fresher', '3Lac-5Lac', 'USA', 'Hospitality', 'www.careerattcs.com', 'ghn g', 'hjyunyu', 'unyujh', 'njuyhn', 'Part Time', NULL, 'Metric', 'Marathi', 'php,sql,react,android', 'Part Time', 2, 1, '2023-04-14 12:33:25', '2023-04-14 12:33:25', 0, 0, 0),
-(18, 12, 'developer', '3-5 ', '1Lac-3Lac', 'USA', 'IT', '1234.com', 'asfdgd', 'fghdfhgfh', 'dfghfdh', 'hyrtfh', 'Part Time', NULL, 'Metric', 'Marathi', 'b.tech', 'Full Time', 3, 1, '2023-04-14 12:40:44', '2023-04-14 12:40:44', 0, 0, 0),
-(19, 20, 'Web Developer', '1-3 ', '3Lac-5Lac', 'Mexico', 'IT', 'we2code.com', 'Testing', 'Testig', 'testing', 'HR', 'Other than SWAP', NULL, 'Post Graduate', 'French', 'Driving', 'Full Time', 14, 1, '2023-04-14 17:36:37', '2023-04-14 17:36:37', 0, 0, 0),
-(20, 1, 'Manager', '0-1 ', 'Below 1 Lac', 'USA', 'Other', 'www.careerattcs.com', 'kkkkkkkkkkkkkkkkkkybbbbhyg', 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', 'kkkkkkkkkkkkkkkkkkkkkkkkk', 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', 'Full Time with SWAP', NULL, 'Metric', 'English', 'certified', 'Full Time', 1, 1, '2023-04-15 05:57:11', '2023-04-21 06:26:25', 0, 0, 0),
-(21, 5, 'developer', '5+yrs', '140000', 'hyderabad', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-04-15 09:40:17', '2023-04-15 09:40:17', 0, 0, 1),
-(22, 12, 'legal advisor', '7+yrs', '140000', 'pune', 'legal', 'www.legaleagle.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'legal', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-04-15 09:47:04', '2023-04-15 09:47:04', 0, 0, 1),
-(23, 12, 'legal advisor', '7+yrs', '140000', 'pune', 'legal', 'www.legaleagle.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'legal', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-04-15 09:48:18', '2023-04-15 09:48:18', 0, 0, 0),
-(24, 17, 'Delivery boy', 'Fresher', 'Below 1 Lac', 'Canada', 'Hospitality', 'www.careerattcs.com', ';KISJFDC DKJHGVKD GJF JKJhdigjl jg jothjyfhn jglkfujkhjerweg vrge begb ', 'fdhbgjnh bfgn g', 'dfhbfgc fgn fhgb', 'ppopikj', 'Full Time', NULL, 'Metric', 'English', 'certified', 'Full Time', 15, 1, '2023-04-15 09:55:55', '2023-04-21 10:52:42', 0, 0, 0),
-(25, 1, 'Sweaper', '0-1 ', 'Below 1 Lac', 'India', 'IT', 'we2code.com', 'Want a sweeper to clean the office.', 'Clean the office very nicely', 'A good sweeper', 'Hospility', 'Part Time', NULL, 'Metric', 'Hindi', 'certified', 'Part Time', 47, 1, '2023-04-17 06:55:32', '2023-04-17 06:55:32', 0, 0, 0),
-(26, 1, 'Sweaper', '0-1 ', 'Below 1 Lac', 'India', 'IT', 'we2code.com', 'Want a sweeper to clean the office.', 'Clean the office very nicely', 'A good sweeper', 'Hospility', 'Part Time', NULL, 'Metric', 'Hindi', 'certified', 'Part Time', 47, 1, '2023-04-17 06:55:39', '2023-04-17 06:55:39', 0, 0, 0),
-(27, 4, 'home', '1-3 ', '1Lac-3Lac', 'Japan', 'Tourism', 'www.c', 'dsfdghjj@#', 'dfgfhjkl;\'#$', 'dfgh#$', 'Alfghjk', 'Other', NULL, 'Other', 'Other', 'hghjk', 'Other', 12, 1, '2023-04-20 04:49:54', '2023-04-20 04:49:54', 0, 0, 1),
-(28, 2, 'home', 'Fresher', '9Lac-10Lac', 'Nepal', 'Other', 'www.caattcs.com', 'dsfdghjj@#', 'dfgfhjkl;\'#$', 'dfgh#$', 'Alfghjk', 'SWAP Only', NULL, 'Post Graduate', 'Marathi', 'hghjk', 'Full Time', 47, 1, '2023-04-20 04:49:57', '2023-04-22 06:33:08', 0, 0, 0),
-(29, 1, 'ho', 'Other', 'Other', 'Other', 'Other', 'www.caattcs.com', 'dfi', 'ertyu', 'ertyui', 'ewr', 'Other', NULL, 'Other', 'Other', '!@#@', 'Other', 49, 1, '2023-04-20 04:51:01', '2023-04-20 05:14:46', 0, 0, 1),
-(30, 1, 'UI and UX developer', '1-3 ', 'Below 1 Lac', 'India', 'IT', 'ertwar.com', 'Required a ui/ux developer.', 'Creating ui designs of all language', 'professional designer  ', 'Frontend', 'Full Time', NULL, 'Graduate', 'English', 'HTML,CSS,Javacript', 'Full Time', 3, 1, '2023-04-21 06:49:33', '2023-04-22 06:34:02', 0, 0, 0);
+(1, 1, 'develo', '0-1 ', '1Lac-3Lac', 'Turkey', 'IT', 'www.c', 'hjkdfghjkl', 'jhgffgh', 'dfgh', 'Al', 'Other than SWAP', NULL, 'Metric', 'French', 'artwet', 'Part Time', 3, 1, '2023-04-27 11:38:22', '2023-04-27 11:38:55', 0, 0, 1),
+(2, 1, 'developer', '1-3 ', '3Lac-5Lac', 'Russia', 'Hospitality', 'www.caattcs.com', 'dfghbjnk', 'jthrgfe', 'rhtgfds', 'rawtwe', 'Part Time with SWAP', NULL, 'Diploma', 'Marathi', '!@#', 'Part Time', 2, 1, '2023-04-27 12:09:01', '2023-04-27 12:19:34', 0, 0, 0),
+(3, 2, 'Driver', '1-3 ', '3Lac-5Lac', 'India', 'Transport', 'www.careerattcs.com', '\nThe primary role of a travel agent is to help people make travel arrangements, which might include booking flights, hotels, sightseeing tours, and making dining recommendations. A travel agent assesses each customer\'s unique needs, preferences, and budget to ensure their trip goes as smoothly as possible.', '\nThe primary role of a travel agent is to help people make travel arrangements, which might include ', '\nThe primary role of a travel ', ' The primary role of a travel ', 'Full Time', NULL, 'Metric', 'English', 'aaas', 'Full Time', 5, 1, '2023-04-28 07:05:03', '2023-04-28 07:05:03', 0, 0, 0),
+(4, 5, 'developer', '0-1 ', 'Below 1 Lac', 'India', 'IT', 'www.canjobs.com', 'gfhgn ghjghj ghjh ghjg ghjhg fthytuytgkm ', 'ghjgh ghj j hgjj', 'ghjghj y fghjghjgjh fgjh', ' yh hy yh', 'Full Time with SWAP', NULL, 'M. Tech', 'Hindi', 'koqdv kja  jio okjoa jojoqjdo', 'Full Time', 3, 1, '2023-05-01 07:19:45', '2023-05-01 07:19:45', 0, 0, 0),
+(5, 1, 'php developer', '0-1 ', '3Lac-5Lac', 'UK', 'IT', 'apollo.com', 'fgbr dhrthg ydyt hft dt rtgty th th', 'fghfh fhfh fgfgh wtt ', 'gtf ty tyh ', 'fhfgh gfh g dfhg ', 'Full Time', NULL, 'Msc', 'French', 'artwet', 'Full Time', 3, 1, '2023-05-01 08:36:05', '2023-05-01 08:36:05', 0, 0, 0),
+(6, 2, 'Sweaper ', '1-3 ', '5Lac-10Lac', 'India', 'Tourism', 'cdsvdfv.com', 'sdgdfb dfg dgdg ', 'dfg dfg fgdf dgb fg ', 'fgfdg gf  fgfdghfb dfhf fghf g', 'gf fgf gfh', 'Part Time', NULL, 'M. Tech', 'French', 'metric', 'Other', 5, 1, '2023-05-01 08:40:06', '2023-05-01 08:40:06', 0, 0, 0),
+(7, 5, 'Watchmen', '7+ ', 'Above 10Lac', 'UK', 'Transport', 'cdsvdfv.com', 'dfg fgdfg  ', 'fgfdg fgfdb fghf ', 'dfgfb fgf hf fgf g ', ' rtdf ', 'Full Time with SWAP', NULL, 'Msc', 'Hindi', 'fgdfg', 'Full Time', 3, 1, '2023-05-01 08:44:56', '2023-05-01 08:44:56', 0, 0, 0),
+(8, 11, 'fgbhvfgh ', '0-1 ', 'Below 1 Lac', 'India', 'Transport', 'fg.com', 'gh thy fdgh hj dghjnbvhjtyj ghj tyhvb ghnbngfhjg hfghhn ghvngmg fghfg ghnht gnv fghfh hnvnvbfhf hgyhjm fgvc fhj gh', 'fhf fgh ftghfh fgh fgjh', ' yhfgh nmgh g jnfghf ', 'hfg fghfgh ', 'Full Time with SWAP', NULL, 'Bsc', 'Hindi', 'fgh fgh ', 'Full Time', 3, 1, '2023-05-04 09:07:44', '2023-05-04 09:07:44', 0, 0, 0),
+(9, 3, 'mjhm', '0-1 ', 'Below 1 Lac', 'India', 'IT', 'fgfdgvb.com', 'fgdfhg', 'h bsfrtgh tyhb jn', 'fgh drtghf ', 'hfg fghfgh hb', 'Full Time', NULL, 'Bsc', 'Hindi', 'fgh fgh ', 'Other', 4, 1, '2023-05-04 09:08:51', '2023-05-04 09:08:51', 0, 0, 0),
+(10, 11, 'hhhhhhhhhhhhh', 'Fresher', '5Lac-10Lac', 'Canada', 'Hospitality', 'ghg.com', 'df df df dsf sdf ', 'sdf sdf sdf sdf sdf ', 'sdf zdrfgv df df rdsfre dfgvrd', 'dfsd f df', 'Full Time', NULL, 'Msc', 'French', 'fgh fgh ', 'Full Time', 4, 1, '2023-05-04 09:13:03', '2023-05-04 09:16:26', 7, 0, 1),
+(11, 7, 'Delivery boy', '0-1 ', '1Lac-3Lac', 'USA', 'Other', 'ddd.com', 'cfghcvh xfgvfgb dfg shg dgh ', 'fghfh fgh gh dgyh', ' dfgh dfgh dfh dfgh fh dgh ', 'fgh fgh ', 'Full Time with SWAP', NULL, 'M. Tech', 'English', 'fgh fgh ', 'Part Time', 7, 1, '2023-05-04 09:45:01', '2023-05-06 06:52:47', 0, 0, 0),
+(12, 13, 'Drawing ', '0-1 ', '1Lac-3Lac', 'India', 'Transport', 'ddd.com', 'dfd gf', 'dfghfhfgh', 'fgfgh', 'fgdfgh', 'Full Time', NULL, 'Mcom', 'Gujrati', 'fgh fgh ', 'Full Time', 7, 1, '2023-05-04 10:10:49', '2023-05-06 08:36:33', 7, 0, 0),
+(13, 6, 'Shristha soni', 'Fresher', '1Lac-3Lac', 'India', 'IT', 'fgfdgvb.com', 'dfgd dg dffg ', 'sdf g dfg fg', 'fdg fgdfg ', 'hfg fghfgh ', 'Full Time with SWAP', NULL, 'B. Tech', 'Hindi', 'fgh fgh ', 'Part Time', 4, 1, '2023-05-06 08:55:56', '2023-05-06 09:02:49', 2, 0, 0),
+(14, 6, 'Driver', '0-1 ', 'Below 1 Lac', 'Canada', 'Hospitality', 'ghg.com', 'fgdfg fg sfg sfg', 'dfgdf g', ' fgfdgf fgfg ', 'ffg fg fg', 'Part Time', NULL, 'Bsc', 'Hindi', 'fgh fgh ', 'Part Time', 4, 1, '2023-05-06 09:03:20', '2023-05-06 09:03:20', 2, 0, 0),
+(15, 7, 'Shreestha soni', '0-1 ', '3Lac-5Lac', 'India', 'Other', 'ddd.com', 'drtyhy btgh f', 'gf hdfghf gnh ', 'fgf h', 'fghg', 'Full Time with SWAP', NULL, 'B. Tech', 'English', 'fgh fgh ', 'Part Time', 7, 1, '2023-05-06 09:05:15', '2023-05-06 09:41:21', 2, 0, 0),
+(16, 6, 'Driver', 'Fresher', '1Lac-3Lac', 'Canada', 'Transport', 'ghg.com', 'fdg ftgh fgh fgb fgh ', 'fghf fgfgh fgh fghfg ', 'gfhgh fghyhfg gvfh htg', 'fgh h', 'Full Time', NULL, 'Bsc', 'Hindi', 'fgh fgh ', 'Full Time', 4, 1, '2023-05-06 09:06:57', '2023-05-06 09:06:57', 2, 0, 1),
+(17, 6, 'jeweler ', '0-1 ', '1Lac-3Lac', 'USA', 'Transport', 'fgfdgvb.com', 'sedf dtgh ', 'fghfg g', 'h fghf ghfh ', 'fgh dgh', 'Part Time', NULL, 'Msc', 'Hindi', 'fgh fgh ', 'Full Time', 5, 1, '2023-05-06 09:09:07', '2023-05-06 09:12:10', 2, 0, 1),
+(18, 2, 'Shristha soni', '0-1 ', 'Below 1 Lac', 'USA', 'Tourism', 'ghg.com', 'cvgdfgvdf ', 'edfeg', 'redfvVDCVcv', 'FWFF', 'Full Time', NULL, 'Bsc', 'English', 'fgh fgh ', 'Full Time', 5, 1, '2023-05-06 09:11:40', '2023-05-06 09:11:40', 2, 0, 1),
+(19, 5, 'PANDIT', '0-1 ', 'Below 1 Lac', 'Canada', 'Transport', 'ghg.com', 'GHFGH F', 'fgfdgf', 'f dfgfhdf ', 'fgh gdhdfh ', 'Full Time', NULL, 'Msc', 'Hindi', 'fgh fgh ', 'Full Time', 3, 1, '2023-05-06 09:12:43', '2023-05-06 09:12:43', 2, 0, 1),
+(20, 6, 'gfdf ghdfgdfgdfgdfg ghfghdfhfg', '0-1 ', 'Below 1 Lac', 'Canada', 'IT', 'fg.com', 'fgfd hhfghd gghdgfbn ', 'fgh hfgbfgh fgbfh hgf', 'g fdg rtg gdfx ', 'fg fg ', 'Full Time with SWAP', NULL, 'B. Tech', 'Hindi', 'fgh fgh ', 'Other', 4, 1, '2023-05-06 09:13:58', '2023-05-06 09:13:58', 2, 0, 1),
+(21, 2, 'Driver', '0-1 ', '1Lac-3Lac', 'USA', 'Transport', 'ghg.com', 'ghfgh f dfgh ', ' fghfg hdfgh fth', 'tygtry hfghftgh ', 'fgh fgh ', 'Part Time', NULL, 'Msc', 'French', 'fgh fgh ', 'Other', 5, 1, '2023-05-06 09:14:59', '2023-05-06 09:14:59', 2, 0, 0),
+(22, 7, 'rajsoni', '1-3 ', 'Below 1 Lac', 'USA', 'Transport', 'ghg.com', 'fdvdvfdgvb', 'fvdfvdfvdf', 'vdfvdfdfdfdfvsdfv', 'dfvdsvsdv', 'Part Time with SWAP', NULL, 'B. Tech', 'Hindi', 'fgh fgh ', 'Full Time', 5, 1, '2023-05-06 09:38:27', '2023-05-06 09:38:27', 2, 0, 1),
+(24, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 07:10:04', '2023-05-11 07:10:04', 0, 0, 0),
+(25, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 08:52:59', '2023-05-11 08:52:59', 0, 0, 0),
+(26, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 09:12:07', '2023-05-11 09:12:07', 0, 0, 0),
+(27, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 09:13:25', '2023-05-11 09:13:25', 0, 0, 0),
+(28, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 09:25:28', '2023-05-11 09:25:28', 0, 0, 0),
+(29, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 09:25:50', '2023-05-11 09:25:50', 0, 0, 0),
+(30, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-05-11 09:27:25', '2023-05-11 09:27:25', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1503,51 +1482,55 @@ CREATE TABLE `job_category` (
 --
 
 INSERT INTO `job_category` (`job_category_id`, `category_name`, `parent_id`, `category_type`, `is_active`, `created_at`, `updated_at`, `is_deleted`) VALUES
-(1, 'Assistant manager', 0, 'Domestic', 1, '2023-04-05 11:58:05', '2023-04-05 11:58:20', 0),
-(2, 'FLutter developer', 0, 'Frontend developer', 1, '2023-04-05 11:58:33', '2023-04-05 11:58:33', 0),
-(3, 'DEVELOPER', 0, 'Devops developer', 1, '2023-04-05 11:58:52', '2023-04-13 04:45:53', 0),
-(4, 'Driver', 0, 'Computer Operator', 1, '2023-04-06 08:48:19', '2023-04-06 08:48:19', 1),
-(5, 'Driver', 0, 'Computer Operator', 1, '2023-04-06 08:48:20', '2023-04-06 08:48:20', 1),
-(6, 'Nurse', 0, 'Nurse', 1, '2023-04-06 10:57:46', '2023-04-13 04:46:36', 0),
-(7, 'fg', 0, 'Devops developer', 1, '2023-04-06 11:03:04', '2023-04-06 11:03:18', 1),
-(8, 'Hr', 0, 'Hr', 1, '2023-04-06 11:04:42', '2023-04-06 11:04:42', 1),
-(9, 'skljk', 0, 'Recepection', 1, '2023-04-07 11:43:03', '2023-04-07 11:43:03', 1),
-(10, 'UI Ux designer', 0, 'Frontend developer', 1, '2023-04-12 10:07:50', '2023-04-12 10:07:50', 1),
-(11, 'ajkj', 0, 'House', 1, '2023-04-12 10:08:28', '2023-04-12 10:08:28', 1),
-(12, 'Hr', 0, 'Hr', 1, '2023-04-12 10:27:05', '2023-04-13 04:47:34', 0),
-(13, 'Hospitility', 0, 'Doctor', 1, '2023-04-13 06:56:59', '2023-04-13 06:56:59', 0),
-(14, 'Driver', 0, 'House', 1, '2023-04-14 17:17:08', '2023-04-14 17:17:08', 1),
-(15, 'Delivery boy', 0, 'Domestic', 1, '2023-04-15 05:42:06', '2023-04-15 05:42:23', 1),
-(25, 'IT', 0, 'Devops developer', 1, '2023-04-15 11:28:55', '2023-04-15 12:53:41', 1),
-(27, 'Developer', 25, 'php developer', 1, '2023-04-15 11:30:02', '2023-04-15 11:30:02', 0),
-(29, 'Testing', 25, 'Teacher', 1, '2023-04-15 11:34:23', '2023-04-15 12:53:13', 0),
-(30, 'aaaa', 0, 'Typing', 1, '2023-04-17 04:36:54', '2023-04-17 04:37:36', 1),
-(31, 'aaaa', 0, 'Hr', 1, '2023-04-17 04:40:01', '2023-04-17 04:40:01', 1),
-(32, 'aaaa', 0, 'pharma', 1, '2023-04-17 04:43:38', '2023-04-17 04:46:20', 1),
-(33, 'FLutter developer', 0, NULL, 1, '2023-04-17 04:46:46', '2023-04-17 04:46:46', 1),
-(34, 'Hello hello', 0, NULL, 1, '2023-04-17 04:47:25', '2023-04-17 04:47:25', 1),
-(35, 'aaaa', 0, 'It', 1, '2023-04-17 04:51:45', '2023-04-17 04:58:21', 1),
-(36, 'aaaa', 35, 'Hello', 1, '2023-04-17 04:58:37', '2023-04-17 04:58:37', 1),
-(37, NULL, 0, 'It', 1, '2023-04-17 05:26:34', '2023-04-17 05:26:34', 1),
-(38, 'aaaa', 0, 'Computer Operator', 1, '2023-04-17 05:26:42', '2023-04-17 05:26:42', 1),
-(39, 'aaaa', 35, 'Hello', 1, '2023-04-17 05:31:38', '2023-04-17 05:31:38', 1),
-(40, 'automatic tester', 0, '3', 1, '2023-04-17 05:39:47', '2023-04-17 05:39:47', 1),
-(41, NULL, 0, 'Hotel', 1, '2023-04-17 05:40:44', '2023-04-17 05:40:44', 1),
-(42, NULL, 0, 'Computer ', 1, '2023-04-17 05:44:30', '2023-04-17 05:44:30', 1),
-(43, NULL, 0, 'legal', 1, '2023-04-17 05:51:25', '2023-04-17 05:51:25', 1),
-(44, NULL, 0, 'Hotel', 1, '2023-04-17 05:59:56', '2023-04-17 05:59:56', 0),
-(45, 'Sweeper', 0, '44', 1, '2023-04-17 06:00:12', '2023-04-17 06:00:12', 1),
-(46, 'Watchmen', 0, 'Hotel', 1, '2023-04-17 06:02:32', '2023-04-17 06:02:32', 0),
-(47, 'ku', 0, 'p', 1, '2023-04-17 06:03:20', '2023-04-20 09:56:18', 1),
-(48, NULL, 0, 'Computer ', 1, '2023-04-17 06:27:58', '2023-04-17 06:27:58', 0),
-(49, 'computer operator', 0, 'Computer ', 1, '2023-04-17 06:28:36', '2023-04-22 08:24:54', 0),
-(50, NULL, 0, 'Telecome', 1, '2023-04-17 06:30:36', '2023-04-17 06:30:36', 0),
-(51, NULL, 0, 'f', 1, '2023-04-20 09:54:15', '2023-04-20 09:54:15', 0),
-(52, NULL, 0, 'f', 1, '2023-04-20 09:55:31', '2023-04-20 09:55:31', 0),
-(53, 'aaaa', 0, 'Nurse', 1, '2023-04-22 08:27:11', '2023-04-22 08:27:11', 0),
-(54, 'FLutter developer', 0, 'It', 1, '2023-04-22 08:27:37', '2023-04-22 08:27:37', 1),
-(55, 'FLutter developer', 0, 'f', 1, '2023-04-22 08:27:45', '2023-04-22 08:27:45', 1),
-(56, 'vegetables seller', 0, 'Domestic', 1, '2023-04-24 06:27:10', '2023-04-24 06:27:10', 0);
+(1, NULL, 0, 'IT', 1, '2023-04-28 04:29:36', '2023-04-28 04:29:36', 0),
+(2, NULL, 0, 'Medical', 1, '2023-04-28 04:30:20', '2023-04-28 04:30:20', 0),
+(3, 'Front end Developer', 1, 'IT', 1, '2023-04-28 04:30:46', '2023-04-28 04:30:46', 0),
+(4, 'Back end developer', 1, 'IT', 1, '2023-04-28 04:31:26', '2023-04-28 04:31:26', 0),
+(5, 'Engineering Professor', 2, 'Medical', 1, '2023-04-28 04:32:02', '2023-05-08 10:24:56', 0),
+(6, NULL, 0, 'Education', 1, '2023-05-02 05:23:10', '2023-05-02 05:23:10', 0),
+(7, 'Teacher', 6, 'Education', 1, '2023-05-02 05:24:16', '2023-05-02 05:24:16', 1),
+(8, NULL, 2, 'Medical', 1, '2023-05-02 05:54:14', '2023-05-02 05:54:14', 1),
+(9, NULL, 6, 'Education', 1, '2023-05-02 05:54:29', '2023-05-02 05:54:29', 1),
+(10, NULL, 1, 'IT', 1, '2023-05-02 05:54:48', '2023-05-02 05:54:48', 1),
+(11, NULL, 2, 'Medical', 1, '2023-05-02 05:55:00', '2023-05-02 05:55:00', 1),
+(12, NULL, 2, 'Medical', 1, '2023-05-02 05:55:06', '2023-05-02 05:55:06', 1),
+(13, NULL, 6, 'Education', 1, '2023-05-02 06:01:41', '2023-05-02 06:01:41', 1),
+(14, 'Teacher', 2, 'Medical', 1, '2023-05-02 06:10:07', '2023-05-02 06:11:00', 1),
+(15, NULL, 0, 'Hello', 1, '2023-05-04 09:14:35', '2023-05-04 09:14:35', 0),
+(16, 'gjygj', 1, 'IT', 1, '2023-05-04 09:14:41', '2023-05-04 09:14:46', 1),
+(17, NULL, 0, 'Hey', 1, '2023-05-08 10:19:20', '2023-05-08 10:19:20', 0),
+(18, NULL, 0, '1Hellllllllo', 1, '2023-05-08 10:25:23', '2023-05-10 11:47:36', 0),
+(19, NULL, 0, 'ssss112345678', 1, '2023-05-08 10:26:52', '2023-05-10 11:43:59', 0),
+(20, NULL, 18, 'oooooooooooooooooooo', 1, '2023-05-08 10:34:39', '2023-05-08 10:34:39', 1),
+(21, NULL, 18, '252525', 1, '2023-05-08 10:34:51', '2023-05-08 10:34:51', 1),
+(22, NULL, 19, 'pop', 1, '2023-05-08 10:35:05', '2023-05-08 10:35:05', 1),
+(23, NULL, 15, 'llllklk', 1, '2023-05-08 10:36:26', '2023-05-08 10:36:26', 1),
+(25, NULL, 19, 'Anmol', 1, '2023-05-08 11:11:13', '2023-05-08 11:11:13', 1),
+(26, NULL, 0, 'Hotel', 1, '2023-05-09 06:22:46', '2023-05-09 06:22:46', 0),
+(27, 'hdafkjshk', 26, 'Hotel', 1, '2023-05-10 10:11:29', '2023-05-10 10:11:29', 1),
+(28, 'sdac', 1, 'IT', 1, '2023-05-10 10:12:21', '2023-05-10 10:12:21', 0),
+(29, 'dafs', 17, 'Hey', 1, '2023-05-10 10:12:29', '2023-05-10 10:12:29', 1),
+(30, 'dfashjhjfdljsah', 18, 'Hellllllllo', 1, '2023-05-10 10:31:49', '2023-05-10 10:31:49', 1),
+(31, 'hdafkjshk', 2, 'Medical', 1, '2023-05-10 10:43:45', '2023-05-10 10:43:45', 0),
+(32, 'hdafkjshk', 1, 'IT', 1, '2023-05-10 10:43:51', '2023-05-10 10:43:51', 0),
+(33, 'hdafkjshk', 15, 'Hello', 1, '2023-05-10 10:43:57', '2023-05-10 10:43:57', 0),
+(34, NULL, 0, 'IT', 1, '2023-05-10 11:28:03', '2023-05-10 11:28:03', 0),
+(35, NULL, 0, 'IT', 1, '2023-05-10 11:52:42', '2023-05-10 11:52:42', 0),
+(36, NULL, 0, 'ssss112345678', 1, '2023-05-10 11:52:48', '2023-05-10 11:52:48', 0),
+(37, NULL, 0, '1Hellllllllo', 1, '2023-05-10 11:52:52', '2023-05-10 11:52:52', 0),
+(38, NULL, 0, 'IT', 1, '2023-05-10 11:52:55', '2023-05-10 11:52:55', 0),
+(39, NULL, 0, 'ssss112345678', 1, '2023-05-10 11:52:59', '2023-05-10 11:52:59', 0),
+(40, NULL, 0, '1Hellllllllo', 1, '2023-05-10 11:53:03', '2023-05-10 11:53:03', 0),
+(41, NULL, 0, 'ssss112345678', 1, '2023-05-10 11:59:38', '2023-05-10 11:59:38', 0),
+(42, NULL, 0, '1Hellllllllo', 1, '2023-05-10 11:59:42', '2023-05-10 11:59:42', 0),
+(43, NULL, 0, 'IT', 1, '2023-05-10 11:59:46', '2023-05-10 11:59:46', 0),
+(44, NULL, 0, 'ssss112345678', 1, '2023-05-10 11:59:49', '2023-05-10 11:59:49', 0),
+(45, NULL, 0, '1Hellllllllo', 1, '2023-05-10 11:59:54', '2023-05-10 11:59:54', 0),
+(46, NULL, 0, '1Hellllllllo', 1, '2023-05-10 11:59:57', '2023-05-10 11:59:57', 0),
+(47, NULL, 0, 'ssss112345678', 1, '2023-05-10 12:00:03', '2023-05-10 12:00:03', 0),
+(48, NULL, 0, '1Hellllllllo', 1, '2023-05-10 12:00:09', '2023-05-10 12:00:09', 0),
+(49, NULL, 0, 'ssss112345678', 1, '2023-05-10 12:00:14', '2023-05-10 12:00:14', 0),
+(50, NULL, 0, 'ssss112345678', 1, '2023-05-10 12:00:18', '2023-05-10 12:00:18', 0);
 
 -- --------------------------------------------------------
 
@@ -1562,6 +1545,7 @@ CREATE TABLE `job_interviews` (
   `interview_date` date NOT NULL,
   `is_reschedule` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `status` varchar(21) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by_admin` int(51) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -1571,31 +1555,51 @@ CREATE TABLE `job_interviews` (
 -- Dumping data for table `job_interviews`
 --
 
-INSERT INTO `job_interviews` (`id`, `job_id`, `employee_id`, `interview_date`, `is_reschedule`, `is_active`, `created_at`, `created_by_admin`, `updated_at`) VALUES
-(1, 1, 2, '2023-04-30', 0, 1, '2023-04-19 09:08:20', 1, '2023-04-19 09:08:20'),
-(2, 1, 1, '2023-05-02', 0, 1, '2023-04-19 09:08:52', 1, '2023-04-19 09:08:52'),
-(3, 2, 2, '2023-04-28', 1, 0, '2023-04-19 09:09:10', 2, '2023-04-19 09:09:10'),
-(4, 4, 4, '2023-05-15', 1, 1, '2023-04-19 09:09:27', 2, '2023-04-19 09:09:27'),
-(5, 2, 2, '2023-04-30', 1, 0, '2023-04-19 12:40:23', 10, '2023-04-19 12:40:23'),
-(6, 4, 4, '2023-05-19', 1, 0, '2023-04-19 12:41:23', 10, '2023-04-19 12:41:23'),
-(7, 4, 4, '2023-05-20', 0, 1, '2023-04-19 12:41:34', 10, '2023-04-19 12:41:34'),
-(8, 2, 2, '2023-04-29', 1, 0, '2023-04-20 10:58:23', 10, '2023-04-20 10:58:23'),
-(9, 2, 2, '2023-04-25', 1, 0, '2023-04-20 10:58:35', 10, '2023-04-20 10:58:35'),
-(10, 2, 2, '2023-04-27', 1, 0, '2023-04-21 09:42:55', 10, '2023-04-21 09:42:55'),
-(11, 5, 7, '2023-04-23', 1, 0, '2023-04-22 06:49:43', 10, '2023-04-22 06:49:43'),
-(12, 5, 7, '2023-04-23', 1, 0, '2023-04-22 06:53:44', 10, '2023-04-22 06:53:44'),
-(13, 5, 7, '2023-04-29', 1, 0, '2023-04-22 08:30:56', 10, '2023-04-22 08:30:56'),
-(14, 5, 7, '2023-04-28', 1, 0, '2023-04-24 06:20:00', 10, '2023-04-24 06:20:00'),
-(15, 5, 7, '2023-04-25', 1, 0, '2023-04-24 06:23:25', 10, '2023-04-24 06:23:25'),
-(16, 5, 7, '2023-04-25', 1, 0, '2023-04-24 06:23:43', 10, '2023-04-24 06:23:43'),
-(17, 2, 2, '2023-04-28', 1, 0, '2023-04-24 06:34:23', 10, '2023-04-24 06:34:23'),
-(18, 5, 7, '2023-05-06', 0, 1, '2023-04-24 06:34:28', 10, '2023-04-24 06:34:28'),
-(19, 2, 2, '2023-04-29', 0, 1, '2023-04-24 09:19:20', 10, '2023-04-24 09:19:20'),
-(20, 16, 7, '2023-04-26', 0, 1, '2023-04-24 09:53:13', 10, '2023-04-24 09:53:13'),
-(21, 2, 5, '2023-04-27', 1, 0, '2023-04-24 10:29:39', 10, '2023-04-24 10:29:39'),
-(22, 2, 7, '2023-04-26', 0, 1, '2023-04-24 11:15:36', 10, '2023-04-24 11:15:36'),
-(23, 2, 5, '2023-04-27', 1, 0, '2023-04-24 11:22:09', 10, '2023-04-24 11:22:09'),
-(24, 2, 5, '2023-04-26', 0, 1, '2023-04-24 13:08:02', 10, '2023-04-24 13:08:02');
+INSERT INTO `job_interviews` (`id`, `job_id`, `employee_id`, `interview_date`, `is_reschedule`, `is_active`, `status`, `created_at`, `created_by_admin`, `updated_at`) VALUES
+(1, 3, 1, '2023-04-29', 1, 1, 'pending', '2023-04-28 11:06:19', 2, '2023-04-28 11:06:19'),
+(2, 3, 1, '2023-04-29', 1, 0, 'complete', '2023-04-28 11:06:19', 2, '2023-04-28 11:06:19'),
+(3, 3, 1, '2023-05-11', 1, 0, '', '2023-05-02 06:31:35', 2, '2023-05-02 06:31:35'),
+(4, 2, 1, '2023-05-12', 1, 0, '', '2023-05-02 10:15:55', 2, '2023-05-02 10:15:55'),
+(5, 5, 4, '2023-05-18', 1, 0, '', '2023-05-02 10:16:03', 2, '2023-05-02 10:16:03'),
+(6, 2, 4, '2023-05-04', 0, 1, '', '2023-05-02 10:32:51', 2, '2023-05-02 10:32:51'),
+(7, 2, 1, '2023-05-04', 1, 0, '', '2023-05-02 10:38:17', 2, '2023-05-02 10:38:17'),
+(8, 2, 1, '2023-05-17', 0, 1, '', '2023-05-02 10:39:54', 2, '2023-05-02 10:39:54'),
+(9, 7, 4, '2023-05-02', 1, 0, '', '2023-05-02 10:44:43', 2, '2023-05-02 10:44:43'),
+(10, 4, 1, '2023-05-03', 1, 0, '', '2023-05-02 10:46:11', 2, '2023-05-02 10:46:11'),
+(11, 7, 4, '2023-05-04', 1, 0, '', '2023-05-02 10:46:21', 2, '2023-05-02 10:46:21'),
+(12, 4, 4, '2023-06-02', 1, 0, '', '2023-05-02 10:47:00', 2, '2023-05-02 10:47:00'),
+(13, 3, 4, '2023-05-01', 0, 1, '', '2023-05-02 10:48:25', 2, '2023-05-02 10:48:25'),
+(14, 5, 4, '2023-05-02', 0, 1, '', '2023-05-02 10:48:32', 2, '2023-05-02 10:48:32'),
+(15, 4, 4, '2023-05-04', 1, 0, '', '2023-05-02 10:48:38', 2, '2023-05-02 10:48:38'),
+(16, 4, 4, '2023-05-05', 1, 0, '', '2023-05-02 10:48:42', 2, '2023-05-02 10:48:42'),
+(17, 7, 4, '2023-05-06', 1, 0, '', '2023-05-02 10:48:47', 2, '2023-05-02 10:48:47'),
+(18, 4, 1, '2023-05-07', 1, 0, '', '2023-05-02 10:48:57', 2, '2023-05-02 10:48:57'),
+(19, 4, 4, '2023-05-03', 1, 0, '', '2023-05-02 10:52:03', 2, '2023-05-02 10:52:03'),
+(20, 4, 4, '2023-05-04', 1, 0, '', '2023-05-02 10:52:09', 2, '2023-05-02 10:52:09'),
+(21, 4, 4, '2023-05-04', 0, 1, '', '2023-05-05 10:18:29', 9, '2023-05-05 10:18:29'),
+(22, 4, 1, '2023-05-07', 1, 0, '', '2023-05-05 10:18:31', 9, '2023-05-05 10:18:31'),
+(23, 7, 4, '2023-05-06', 0, 1, '', '2023-05-05 10:18:33', 9, '2023-05-05 10:18:33'),
+(24, 12, 12, '2023-05-08', 1, 0, '', '2023-05-06 10:03:44', 2, '2023-05-06 10:03:44'),
+(25, 12, 12, '2023-05-06', 1, 0, '', '2023-05-06 10:06:10', 2, '2023-05-06 10:06:10'),
+(26, 21, 12, '2023-05-10', 0, 1, '', '2023-05-08 11:05:46', 2, '2023-05-08 11:05:46'),
+(27, 4, 1, '2023-05-08', 1, 0, '', '2023-05-08 13:03:46', 2, '2023-05-08 13:03:46'),
+(28, 4, 1, '2023-05-08', 0, 1, '', '2023-05-08 13:07:21', 2, '2023-05-08 13:07:21'),
+(29, 12, 12, '2023-05-08', 0, 1, 'complete', '2023-05-08 13:08:50', 2, '2023-05-08 13:08:50'),
+(35, 5, 5, '2023-05-15', 0, 1, '', '2023-05-11 11:02:48', 5, '2023-05-11 11:02:48'),
+(34, 5, 5, '2023-05-15', 1, 0, '', '2023-05-11 10:54:41', 5, '2023-05-11 10:54:41'),
+(33, 5, 5, '2023-05-13', 1, 0, '', '2023-05-11 10:53:42', 5, '2023-05-11 10:53:42'),
+(36, 3, 1, '2023-05-15', 1, 0, '', '2023-05-11 11:08:08', 5, '2023-05-11 11:08:08'),
+(37, 3, 1, '2023-05-15', 1, 0, '', '2023-05-11 12:03:31', 5, '2023-05-11 12:03:31'),
+(38, 3, 1, '2023-05-15', 1, 0, '', '2023-05-11 12:17:37', 5, '2023-05-11 12:17:37'),
+(39, 3, 1, '2023-05-15', 1, 0, '', '2023-05-11 12:20:20', 5, '2023-05-11 12:20:20'),
+(40, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 05:16:00', 5, '2023-05-12 05:16:00'),
+(41, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 05:27:30', 5, '2023-05-12 05:27:30'),
+(42, 15, 18, '2023-05-13', 0, 1, 'pending', '2023-05-12 05:52:53', 13, '2023-05-12 05:52:53'),
+(43, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 06:25:18', 5, '2023-05-12 06:25:18'),
+(44, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 06:30:29', 5, '2023-05-12 06:30:29'),
+(45, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 06:32:06', 5, '2023-05-12 06:32:06'),
+(46, 3, 1, '2023-05-15', 1, 0, '', '2023-05-12 06:43:59', 5, '2023-05-12 06:43:59'),
+(47, 3, 1, '2023-05-15', 0, 1, '', '2023-05-12 06:44:30', 5, '2023-05-12 06:44:30');
 
 -- --------------------------------------------------------
 
@@ -1616,13 +1620,14 @@ CREATE TABLE `list` (
 --
 
 INSERT INTO `list` (`id`, `item_name`, `json`, `created_at`, `updated_at`) VALUES
-(1, 'Skill', '{\"4\": \"css\", \"5\": \"Html\", \"7\": \"Typing\"}', '2023-04-18 05:52:56', '2023-04-24 08:51:49'),
-(2, 'Category', '[]', '2023-04-18 09:02:44', '2023-04-22 04:55:43'),
+(1, 'Skill', '{\"4\": \"css\", \"5\": \"Html\", \"6\": \"java\", \"7\": \"selenium\", \"9\": \"df\", \"10\": \"Html\", \"11\": \"communication\"}', '2023-04-18 05:52:56', '2023-05-10 05:57:28'),
+(2, 'Category', '{\"3\": \"Front end Developer\", \"4\": \"Back end developer\", \"5\": \"Engineering Professor\"}', '2023-04-18 09:02:44', '2023-05-09 12:33:23'),
 (3, 'Location', '{\"1\": \"Indore\", \"2\": \"Ujjain\", \"4\": \"Dewas\", \"5\": \"Khandwa\", \"6\": \"Bhilai\"}', '2023-04-18 09:03:51', '2023-04-20 12:38:47'),
-(4, 'Industry', '{\"1\": \"Petroleum\", \"2\": \"IT\", \"3\": \"House Holds\"}', '2023-04-18 09:04:56', '2023-04-20 12:37:31'),
-(5, 'Education', '[]', '2023-04-18 09:05:35', '2023-04-22 04:55:52'),
-(6, 'Corporation ', '{\"1\": \"B2B\", \"2\": \"C2C\"}', '2023-04-18 09:06:14', '2023-04-20 12:38:37'),
-(7, 'Language', '{\"1\": \"Hindi\", \"2\": \"English\"}', '2023-04-18 09:06:36', '2023-04-20 12:38:22');
+(4, 'Industry', '{\"1\": \"GY\", \"2\": \"It\", \"3\": \"GE\", \"4\": \"GE\", \"5\": \"GE\", \"6\": \"GE\", \"7\": \"GE\"}', '2023-04-18 09:04:56', '2023-05-10 05:57:55'),
+(5, 'Education', '{\"1\": \"Post Graduate\", \"2\": \"Graduate\", \"6\": \"op\", \"7\": \"B.com\"}', '2023-04-18 09:05:35', '2023-05-10 05:45:13'),
+(6, 'Corporation', '{\"1\": \"B2B\", \"2\": \"C2C\", \"4\": \"C2B\", \"5\": \"@#$%^\", \"7\": \"@#$%^\", \"8\": \"@#$%^\", \"9\": \"@#$%^\", \"10\": \"@#$%^\"}', '2023-04-18 09:06:14', '2023-05-09 10:40:13'),
+(7, 'Language', '{\"1\": \"Hindi\", \"2\": \"English\", \"3\": \"@#$%^\", \"4\": \"iiiiiiiiiiiiuuuuuu\"}', '2023-04-18 09:06:36', '2023-05-09 09:46:32'),
+(8, 'Category_type', '{}', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -1646,26 +1651,20 @@ CREATE TABLE `lmia` (
 --
 
 INSERT INTO `lmia` (`id`, `job_id`, `employee_id`, `lmia_status`, `expected_time_of_completion`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 1, 2, 'positive', '2023-07-05', 1, '2023-04-18 10:09:16', '2023-04-18 10:18:58'),
-(2, 1, 1, 'Approved', '2023-04-20', 1, '2023-04-18 11:51:19', '2023-04-18 11:51:19'),
-(3, 2, 2, 'Pending', '2023-04-09', 1, '2023-04-18 11:52:48', '2023-04-18 11:52:48'),
-(4, 4, 4, 'negative', '2023-07-19', 1, '2023-04-19 09:04:53', '2023-04-19 09:04:53'),
-(5, 17, 2, 'Reject', '2023-04-07', 1, '2023-04-19 13:00:20', '2023-04-19 13:00:20'),
-(6, 2, 2, 'Approved', '2023-03-30', 1, '2023-04-20 05:10:39', '2023-04-20 05:10:39'),
-(7, 5, 5, 'Reject', '2023-04-21', 1, '2023-04-21 12:23:15', '2023-04-21 12:23:15'),
-(8, 5, 7, 'Pending', '2023-04-30', 1, '2023-04-21 12:23:23', '2023-04-21 12:23:23'),
-(9, 16, 7, 'Approved', '2023-04-27', 1, '2023-04-21 12:23:30', '2023-04-21 12:23:30'),
-(10, 13, 4, 'Other', '2023-04-27', 1, '2023-04-21 12:23:42', '2023-04-21 12:23:42'),
-(11, 11, 4, 'Draft', '2023-04-16', 1, '2023-04-21 12:23:56', '2023-04-21 12:23:56'),
-(12, 14, 2, 'Pending', '2023-04-29', 1, '2023-04-21 12:24:03', '2023-04-21 12:24:03'),
-(13, 11, 1, 'Draft', '2023-04-29', 1, '2023-04-21 12:24:13', '2023-04-21 12:24:13'),
-(14, 14, 1, 'Pending', '2023-04-28', 1, '2023-04-21 12:24:19', '2023-04-21 12:24:19'),
-(15, 5, 5, 'Pending', '2023-04-16', 1, '2023-04-22 06:59:30', '2023-04-22 06:59:30'),
-(16, 12, 7, 'Draft', '2023-04-14', 1, '2023-04-24 07:25:38', '2023-04-24 07:25:38'),
-(17, 16, 7, 'Approved', '2023-04-22', 1, '2023-04-24 09:53:29', '2023-04-24 09:53:29'),
-(18, 13, 7, 'Pending', '2023-04-22', 1, '2023-04-24 10:55:14', '2023-04-24 10:55:14'),
-(19, 2, 7, 'Approved', '2222-02-22', 1, '2023-04-24 11:05:08', '2023-04-24 11:05:08'),
-(20, 2, 5, 'Complete', '2023-04-09', 1, '2023-04-24 11:05:24', '2023-04-24 11:05:24');
+(1, 3, 1, 'Other', '2023-05-05', 1, '2023-04-28 11:09:08', '2023-05-02 12:01:42'),
+(2, 2, 4, 'Reject', '2023-05-13', 1, '2023-05-02 06:31:58', '2023-05-02 10:33:22'),
+(3, 3, 4, 'Reject', '2023-05-21', 1, '2023-05-02 06:32:06', '2023-05-02 06:32:06'),
+(4, 5, 4, 'Draft', '2023-05-03', 1, '2023-05-02 10:14:52', '2023-05-02 11:43:33'),
+(5, 4, 4, 'Approved', '2023-05-03', 1, '2023-05-02 10:36:11', '2023-05-02 10:36:11'),
+(6, 7, 4, 'Complete', '2023-05-03', 1, '2023-05-02 10:36:40', '2023-05-02 11:45:42'),
+(7, 6, 4, 'Pending', '2023-05-24', 1, '2023-05-02 11:47:02', '2023-05-02 11:47:02'),
+(8, 12, 12, 'Reject', '2023-05-11', 1, '2023-05-06 10:04:34', '2023-05-06 10:06:01'),
+(9, 21, 12, 'Complete', '2023-05-18', 1, '2023-05-08 10:32:02', '2023-05-08 11:05:54'),
+(10, 9, 13, 'Approved', '2023-05-09', 1, '2023-05-08 10:32:18', '2023-05-08 10:32:18'),
+(11, 9, 4, 'Reject', '2023-05-09', 1, '2023-05-08 11:13:51', '2023-05-08 11:14:14'),
+(12, 15, 17, 'Approved', '2023-05-10', 1, '2023-05-08 13:00:42', '2023-05-08 13:00:42'),
+(13, 15, 12, 'Pending', '2023-05-03', 1, '2023-05-08 13:00:52', '2023-05-08 13:01:20'),
+(14, 15, 18, 'Approved', '2023-05-09', 1, '2023-05-12 05:53:04', '2023-05-12 05:53:04');
 
 -- --------------------------------------------------------
 
@@ -1677,7 +1676,7 @@ CREATE TABLE `notification` (
   `id` int(101) NOT NULL,
   `from_id` int(101) NOT NULL,
   `type` varchar(21) NOT NULL,
-  `message` varchar(101) NOT NULL,
+  `message` varchar(301) NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -1688,26 +1687,183 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`id`, `from_id`, `type`, `message`, `is_read`, `created_at`, `updated_at`) VALUES
-(1, 1, 'super-admin', 'New user kane@gmail.com added', 0, '2023-04-12 06:51:46', '2023-04-12 06:51:46'),
-(2, 1, 'super-admin', 'New candidate jason@gmail.com added', 0, '2023-04-12 09:23:12', '2023-04-12 09:23:12'),
-(3, 1, 'Super-admin', 'New candidate roger@gmail.com added', 0, '2023-04-12 12:55:14', '2023-04-12 12:55:14'),
-(4, 1, 'Super-admin', 'New candidate roger@gmail.com added', 0, '2023-04-12 13:00:07', '2023-04-12 13:00:07'),
-(5, 1, 'Super-admin', 'New candidate pantagon@gmail.com added', 0, '2023-04-14 04:47:17', '2023-04-14 04:47:17'),
-(6, 1, 'Super-admin', ' A new user ranjitsingh@gmail.com has been added successfully ', 0, '2023-04-14 05:12:11', '2023-04-14 05:12:11'),
-(7, 1, 'Super-admin', 'A new company  has been added successfully', 0, '2023-04-15 06:01:01', '2023-04-15 06:01:01'),
-(8, 1, 'Super-admin', 'A new company rashi@gmail.com has been added successfully', 0, '2023-04-15 06:12:44', '2023-04-15 06:12:44'),
-(9, 1, 'Super-admin', 'A new job with title legal advisor has been added successfully by WIPRO', 0, '2023-04-15 09:48:18', '2023-04-15 09:48:18'),
-(10, 1, 'Super-admin', 'A new job with title-Delivery boy has been added successfully by ', 0, '2023-04-15 09:55:55', '2023-04-15 09:55:55'),
-(11, 1, 'Super-admin', 'A new company aashi01@gmail.com has been added successfully', 0, '2023-04-15 10:05:41', '2023-04-15 10:05:41'),
-(12, 1, 'Super-admin', 'A new company uv@gmail.com has been added successfully', 0, '2023-04-15 10:08:51', '2023-04-15 10:08:51'),
-(13, 1, 'Super-admin', 'A new company aashi.we2code@gmail.com has been added successfully', 0, '2023-04-15 10:51:51', '2023-04-15 10:51:51'),
-(14, 1, 'Super-admin', 'A new job with title-Sweaper has been added successfully by We2code', 0, '2023-04-17 06:55:32', '2023-04-17 06:55:32'),
-(15, 1, 'Super-admin', 'A new job with title-Sweaper has been added successfully by We2code', 0, '2023-04-17 06:55:39', '2023-04-17 06:55:39'),
-(16, 1, 'Super-admin', 'A new company aashi010@gmail.com has been added successfully', 0, '2023-04-18 09:51:37', '2023-04-18 09:51:37'),
-(17, 1, 'Super-admin', 'A new job with title-home has been added successfully by szzz', 0, '2023-04-20 04:49:54', '2023-04-20 04:49:54'),
-(18, 1, 'Super-admin', 'A new job with title-home has been added successfully by szzz', 0, '2023-04-20 04:49:57', '2023-04-20 04:49:57'),
-(19, 1, 'Super-admin', 'A new job with title-house has been added successfully by sikah center', 0, '2023-04-20 04:51:01', '2023-04-20 04:51:01'),
-(20, 1, 'Super-admin', 'A new job with title-UI UX developer has been added successfully by We2code', 0, '2023-04-21 06:49:33', '2023-04-21 06:49:33');
+(1, 1, 'Super-admin', 'A new job with title-developer has been added successfully by We2code', 0, '2023-04-27 11:38:22', '2023-04-27 11:38:22'),
+(2, 1, 'Super-admin', 'A new job with title-developer has been added successfully by We2code', 0, '2023-04-27 12:09:01', '2023-04-27 12:09:01'),
+(3, 1, 'Super-admin', 'A new company gourav.we2code@gmail.com has been added successfully', 0, '2023-04-28 05:13:42', '2023-04-28 05:13:42'),
+(4, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by Gourav Agency ', 0, '2023-04-28 07:05:03', '2023-04-28 07:05:03'),
+(5, 1, 'Super-admin', 'A new company utkarsh.we2code@gmail.com has been added successfully', 0, '2023-04-28 08:51:49', '2023-04-28 08:51:49'),
+(6, 1, 'Super-admin', 'A new company raj.we2code@gmail.com has been added successfully', 0, '2023-04-28 09:00:47', '2023-04-28 09:00:47'),
+(7, 1, 'Super-admin', 'A new candidate aashi.we2code@gmail.com has been added successfully', 0, '2023-04-29 06:09:15', '2023-04-29 06:09:15'),
+(8, 1, 'Super-admin', 'A new job with title-developer has been added successfully by Wipro', 0, '2023-05-01 07:19:45', '2023-05-01 07:19:45'),
+(9, 1, 'Super-admin', 'A new job with title-php developer has been added successfully by We2code', 0, '2023-05-01 08:36:05', '2023-05-01 08:36:05'),
+(10, 1, 'Super-admin', 'A new job with title-Sweaper  has been added successfully by Gourav Agency ', 0, '2023-05-01 08:40:06', '2023-05-01 08:40:06'),
+(11, 1, 'Super-admin', 'A new job with title-Watchmen has been added successfully by Wipro', 0, '2023-05-01 08:44:56', '2023-05-01 08:44:56'),
+(12, 1, 'Super-admin', 'A new candidate gourav.we2code@gmail.com has been added successfully', 0, '2023-05-03 06:54:02', '2023-05-03 06:54:02'),
+(13, 13, 'Super-admin', 'A new company shree.we2code@gmail.com has been added successfully', 0, '2023-05-03 09:10:30', '2023-05-03 09:10:30'),
+(14, 1, 'Super-admin', 'A new company raj.we2codee@gmail.com has been added successfully', 0, '2023-05-03 09:14:04', '2023-05-03 09:14:04'),
+(15, 1, 'Super-admin', 'A new candidate Babulal@gmail.com has been added successfully', 0, '2023-05-04 04:49:39', '2023-05-04 04:49:39'),
+(16, 1, 'Super-admin', 'A new candidate rarne@gmail.com has been added successfully', 0, '2023-05-04 05:05:39', '2023-05-04 05:05:39'),
+(17, 1, 'Super-admin', 'A new candidate rffffe@gmail.com has been added successfully', 0, '2023-05-04 05:07:12', '2023-05-04 05:07:12'),
+(18, 1, 'Super-admin', 'A new candidate Babulal@gmail.com has been added successfully', 0, '2023-05-04 05:39:46', '2023-05-04 05:39:46'),
+(19, 1, 'Super-admin', 'A new candidate Babulal@gmail.com has been added successfully', 0, '2023-05-04 05:47:58', '2023-05-04 05:47:58'),
+(20, 13, 'Super-admin', 'A new candidate Babulal@gmail.com has been added successfully', 0, '2023-05-04 06:04:08', '2023-05-04 06:04:08'),
+(21, 13, 'Super-admin', 'A new job with title-fgbhvfgh  has been added successfully by decfdgvb ', 0, '2023-05-04 09:07:44', '2023-05-04 09:07:44'),
+(22, 1, 'Super-admin', 'A new job with title-mjhm has been added successfully by decfdgvb ', 0, '2023-05-04 09:08:51', '2023-05-04 09:08:51'),
+(23, 1, 'Super-admin', 'A new job with title-fgbhvfgh  has been added successfully by decfdgvb ', 0, '2023-05-04 09:13:03', '2023-05-04 09:13:03'),
+(24, 1, 'Super-admin', 'A new candidate Managxxxxer@gmail.com has been added successfully', 0, '2023-05-04 09:25:54', '2023-05-04 09:25:54'),
+(25, 13, 'Super-admin', 'A new candidate Manager00@gmail.com has been added successfully', 0, '2023-05-04 09:26:42', '2023-05-04 09:26:42'),
+(26, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by Shreeji jwellers', 0, '2023-05-04 09:45:01', '2023-05-04 09:45:01'),
+(27, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by rtfgsvdrtyevb', 0, '2023-05-04 10:10:49', '2023-05-04 10:10:49'),
+(28, 1, 'Super-admin', 'A new job with title-asdfs  has been added successfully by Shreeji jwellers', 0, '2023-05-06 08:55:56', '2023-05-06 08:55:56'),
+(29, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by Delhi public school ', 0, '2023-05-06 09:03:20', '2023-05-06 09:03:20'),
+(30, 1, 'Super-admin', 'A new job with title-Shreestha soni has been added successfully by Shreeji jwellers', 0, '2023-05-06 09:05:15', '2023-05-06 09:05:15'),
+(31, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by Delhi public school ', 0, '2023-05-06 09:06:57', '2023-05-06 09:06:57'),
+(32, 1, 'Super-admin', 'A new job with title-jeweler  has been added successfully by Delhi public school ', 0, '2023-05-06 09:09:07', '2023-05-06 09:09:07'),
+(33, 1, 'Super-admin', 'A new job with title-Shristha soni has been added successfully by Gourav Agency ', 0, '2023-05-06 09:11:40', '2023-05-06 09:11:40'),
+(34, 1, 'Super-admin', 'A new job with title-PANDIT has been added successfully by Wipro', 0, '2023-05-06 09:12:43', '2023-05-06 09:12:43'),
+(35, 1, 'Super-admin', 'A new job with title-gfdf ghdfgdfgdfgdfg ghfghdfhfg has been added successfully by Delhi public schoo', 0, '2023-05-06 09:13:58', '2023-05-06 09:13:58'),
+(36, 1, 'Super-admin', 'A new job with title-Driver has been added successfully by Gourav Agency ', 0, '2023-05-06 09:14:59', '2023-05-06 09:14:59'),
+(37, 1, 'Super-admin', 'A new job with title-rajsoni has been added successfully by Shreeji jwellers', 0, '2023-05-06 09:38:27', '2023-05-06 09:38:27'),
+(38, 1, 'Super-admin', 'A new company gourav.we2code@gmail.com has been added successfully', 0, '2023-05-09 06:37:01', '2023-05-09 06:37:01'),
+(39, 1, 'Super-admin', 'A new candidate utkarsh.we2code@gmail.com has been added successfully', 0, '2023-05-10 10:45:14', '2023-05-10 10:45:14'),
+(40, 1, 'Super-admin', 'A new candidate aashi.we2code@gmail.com has been added successfully', 0, '2023-05-10 10:54:16', '2023-05-10 10:54:16'),
+(41, 1, 'Super-admin', 'hey,  welcome onboard.', 0, '2023-05-10 11:00:15', '2023-05-10 11:00:15'),
+(42, 1, 'Super-admin', 'hey, utkarsh.we2code@gmail.com welcome onboard.', 0, '2023-05-10 11:02:55', '2023-05-10 11:02:55'),
+(43, 29, 'employee', 'hey, utkarsh.we2code@gmail.com welcome onboard.', 0, '2023-05-10 11:12:53', '2023-05-10 11:12:53'),
+(44, 30, 'employee', 'hey, utkarsh.we2code@gmail.com welcome onboard.', 0, '2023-05-10 11:15:53', '2023-05-10 11:15:53'),
+(45, 26, 'employer', 'A new company aashi.we2code@gmail.com has been added successfully', 0, '2023-05-10 11:20:37', '2023-05-10 11:20:37'),
+(46, 27, 'employer', 'Hey aashi.we2code@gmail.com welcome onboard explore our pool of talent.', 0, '2023-05-10 11:31:14', '2023-05-10 11:31:14'),
+(47, 28, 'employer', 'Hey aashi.we2code@gmail.com welcome onboard explore our pool of talent.', 0, '2023-05-10 11:42:58', '2023-05-10 11:42:58'),
+(48, 29, 'employer', 'Hey aashi.we2code@gmail.com welcome onboard explore our pool of talent.', 0, '2023-05-10 12:06:07', '2023-05-10 12:06:07'),
+(49, 11, 'employee', 'A user applied on job mjhm you have posted.', 0, '2023-05-10 12:44:02', '2023-05-10 12:44:02'),
+(50, 31, 'employee', 'hey, sagar.we2code@gmail.com welcome onboard.', 0, '2023-05-11 06:46:23', '2023-05-11 06:46:23'),
+(51, 1, 'Super-admin', 'A new job with title- has been added successfully by ', 0, '2023-05-11 08:25:56', '2023-05-11 08:25:56'),
+(52, 1, 'Super-admin', 'A new job with title- has been added successfully by ', 0, '2023-05-11 08:25:57', '2023-05-11 08:25:57'),
+(53, 2, 'company', 'A new job with title-manager has been added successfully by Gourav Agency ', 0, '2023-05-11 09:13:25', '2023-05-11 09:13:25'),
+(54, 2, 'company', 'A new job with title-manager has been added successfully by Gourav Agency ', 0, '2023-05-11 09:25:50', '2023-05-11 09:25:50'),
+(55, 2, 'company', 'A new job with title-manager has been added successfully by Gourav Agency ', 0, '2023-05-11 09:25:50', '2023-05-11 09:25:50'),
+(56, 2, 'company', 'A new job with title-manager has been added successfully by Gourav Agency ', 0, '2023-05-11 09:27:25', '2023-05-11 09:27:25'),
+(57, 1, 'Super-Admin', 'A new job with title-manager has been added successfully by Gourav Agency ', 0, '2023-05-11 09:27:25', '2023-05-11 09:27:25'),
+(58, 11, 'employee', 'A new user applied on job with title - mjhm. you have posted.', 0, '2023-05-11 09:37:23', '2023-05-11 09:37:23'),
+(59, 1, 'Super-Admin', 'A new user applied on job with title - mjhm posted bydecfdgvb ', 0, '2023-05-11 09:37:23', '2023-05-11 09:37:23'),
+(60, 11, 'employee', 'A new user applied on job with title - mjhm. you have posted.', 0, '2023-05-11 09:38:09', '2023-05-11 09:38:09'),
+(61, 1, 'Super-Admin', 'A new user applied on job with title - mjhm posted bydecfdgvb ', 0, '2023-05-11 09:38:09', '2023-05-11 09:38:09'),
+(62, 3, 'employee', 'A new user applied on job with title - mjhm. you have posted.', 0, '2023-05-11 10:10:28', '2023-05-11 10:10:28'),
+(63, 1, 'Super-Admin', 'A new user applied on job with title - mjhm posted by Microsoft', 0, '2023-05-11 10:10:28', '2023-05-11 10:10:28'),
+(64, 1, 'employee', 'hello, Rajyou have interview scheduled on 2023-05-15 for job with title - Driver you have applied sch', 0, '2023-05-11 12:17:37', '2023-05-11 12:17:37'),
+(65, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 by Gourav Agency  for candidate name Raj', 0, '2023-05-11 12:17:37', '2023-05-11 12:17:37'),
+(66, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15 for job with title - Driver you have applied sc', 0, '2023-05-11 12:20:20', '2023-05-11 12:20:20'),
+(67, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-11 12:20:20', '2023-05-11 12:20:20'),
+(68, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 05:16:00', '2023-05-12 05:16:00'),
+(69, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 05:16:00', '2023-05-12 05:16:00'),
+(70, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 05:27:30', '2023-05-12 05:27:30'),
+(71, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 05:27:30', '2023-05-12 05:27:30'),
+(72, 18, 'employee', 'hello, Gourav choudary you have interview scheduled on 2023-05-13                  for job with title - Shreestha soni you have applied on, scheduled with Shreeji jwellers', 0, '2023-05-12 05:52:53', '2023-05-12 05:52:53'),
+(73, 1, 'Super-Admin', 'new interview scheduled on 2023-05-13 of candidate name Gourav choudary with Shreeji jwellers', 0, '2023-05-12 05:52:53', '2023-05-12 05:52:53'),
+(74, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 06:25:18', '2023-05-12 06:25:18'),
+(75, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 06:25:18', '2023-05-12 06:25:18'),
+(76, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 06:30:29', '2023-05-12 06:30:29'),
+(77, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 06:30:29', '2023-05-12 06:30:29'),
+(78, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 06:32:06', '2023-05-12 06:32:06'),
+(79, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 06:32:06', '2023-05-12 06:32:06'),
+(80, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 0, '2023-05-12 06:43:59', '2023-05-12 06:43:59'),
+(81, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 06:43:59', '2023-05-12 06:43:59'),
+(82, 1, 'employee', 'hello, Raj you have interview scheduled on 2023-05-15                  for job with title - Driver you have applied on, scheduled with Gourav Agency ', 1, '2023-05-12 06:44:30', '2023-05-12 06:44:30'),
+(83, 1, 'Super-Admin', 'new interview scheduled on 2023-05-15 of candidate name Raj with Gourav Agency ', 0, '2023-05-12 06:44:30', '2023-05-12 06:44:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `otp`
+--
+
+CREATE TABLE `otp` (
+  `id` int(101) NOT NULL,
+  `email` varchar(101) NOT NULL,
+  `otp` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `otp`
+--
+
+INSERT INTO `otp` (`id`, `email`, `otp`, `created_at`) VALUES
+(1, 'utkarsh.we2code@gmail.com', 192384, '2023-05-10 05:46:13'),
+(2, 'utkarsh.we2code@gmail.com', 572662, '2023-05-10 05:50:25'),
+(3, 'utkarsh.we2code@gmail.com', 326348, '2023-05-10 06:03:59'),
+(4, 'utkarsh.we2code@gmail.com', 791292, '2023-05-10 06:08:14'),
+(5, 'utkarsh.we2code@gmail.com', 958540, '2023-05-10 06:09:27'),
+(6, 'utkarsh.we2code@gmail.com', 474741, '2023-05-10 06:16:10'),
+(7, 'utkarsh.we2code@gmail.com', 308911, '2023-05-10 06:16:14'),
+(8, 'utkarsh.we2code@gmail.com', 181976, '2023-05-10 06:37:08'),
+(9, 'utkarsh.we2code@gmail.com', 102665, '2023-05-10 06:39:57'),
+(10, 'utkarsh.we2code@gmail.com', 474812, '2023-05-10 06:40:44'),
+(11, 'utkarsh.we2code@gmail.com', 137763, '2023-05-10 06:42:14'),
+(12, 'utkarsh.we2code@gmail.com', 342013, '2023-05-10 06:44:18'),
+(13, 'utkarsh.we2code@gmail.com', 280938, '2023-05-10 06:46:14'),
+(14, 'utkarsh.we2code@gmail.com', 171140, '2023-05-10 07:07:03'),
+(15, 'utkarsh.we2code@gmail.com', 459614, '2023-05-10 07:08:41'),
+(16, 'aashi.we2code@gmail.com', 927662, '2023-05-10 10:02:50'),
+(17, 'aashi.we2code@gmail.com', 360983, '2023-05-10 10:16:29'),
+(18, 'aashi.we2code@gmail.com', 346665, '2023-05-10 10:18:50'),
+(19, 'aashi.we2code@gmail.com', 798177, '2023-05-10 10:20:37'),
+(20, 'aashi.we2code@gmail.com', 913220, '2023-05-10 10:21:04'),
+(21, 'aashi.we2code@gmail.com', 605429, '2023-05-10 10:23:16'),
+(22, 'aashi.we2code@gmail.com', 339794, '2023-05-10 10:25:06'),
+(23, 'utkarsh.we2code@gmail.com', 195807, '2023-05-10 10:25:24'),
+(24, 'aashi.we2code@gmail.com', 381482, '2023-05-10 10:26:23'),
+(25, 'utkarsh.we2code@gmail.com', 234556, '2023-05-10 10:27:32'),
+(26, 'aashi.we2code@gmail.com', 867918, '2023-05-10 10:28:02'),
+(27, 'aashi.we2code@gmail.com', 866874, '2023-05-10 10:28:57'),
+(28, 'utkarsh.we2code@gmail.com', 426695, '2023-05-10 10:29:36'),
+(29, 'aashi.we2code@gmail.com', 101786, '2023-05-10 10:30:00'),
+(30, 'aashi.we2code@gmail.com', 257209, '2023-05-10 10:30:32'),
+(31, 'utkarsh.we2code@gmail.com', 259544, '2023-05-10 10:30:49'),
+(32, 'aashi.we2code@gmail.com', 228287, '2023-05-10 10:31:56'),
+(33, 'aashi.we2code@gmail.com', 112830, '2023-05-10 10:33:17'),
+(34, 'aashi.we2code@gmail.com', 253378, '2023-05-10 10:34:43'),
+(35, 'aashi.we2code@gmail.com', 419947, '2023-05-10 10:35:42'),
+(36, 'utkarsh.we2code@gmail.com', 255638, '2023-05-10 10:36:50'),
+(37, 'aashi.we2code@gmail.com', 102371, '2023-05-10 10:37:46'),
+(38, 'aashi.we2code@gmail.com', 400046, '2023-05-10 10:53:55'),
+(39, 'aashi.we2code@gmail.com', 478445, '2023-05-10 11:03:48'),
+(40, 'aashi.we2code@gmail.com', 657167, '2023-05-10 11:04:29'),
+(41, 'aashi.we2code@gmail.com', 625085, '2023-05-10 11:08:52'),
+(42, 'aashi.we2code@gmail.com', 155399, '2023-05-10 11:09:10'),
+(43, 'aashi.we2code@gmail.com', 140807, '2023-05-10 11:12:16'),
+(44, 'aashi.we2code@gmail.com', 855107, '2023-05-10 11:13:35'),
+(45, 'aashi.we2code@gmail.com', 491343, '2023-05-10 11:14:41'),
+(46, 'aashi.we2code@gmail.com', 439840, '2023-05-10 11:15:05'),
+(47, 'aashi.we2code@gmail.com', 772371, '2023-05-10 11:17:11'),
+(48, 'aashi.we2code@gmail.com', 441155, '2023-05-10 11:18:35'),
+(49, 'aashi.we2code@gmail.com', 276471, '2023-05-10 11:22:07'),
+(50, 'aashi.we2code@gmail.com', 288345, '2023-05-10 11:24:09'),
+(51, 'aashi.we2code@gmail.com', 402390, '2023-05-10 11:26:00'),
+(52, 'aashi.we2code@gmail.com', 662915, '2023-05-10 11:30:49'),
+(53, 'aashi.we2code@gmail.com', 728255, '2023-05-10 11:36:00'),
+(54, 'aashi.we2code@gmail.com', 316676, '2023-05-10 11:39:37'),
+(55, 'aashi.we2code@gmail.com', 383532, '2023-05-10 11:40:53'),
+(56, 'aashi.we2code@gmail.com', 615148, '2023-05-10 11:41:53'),
+(57, 'aashi.we2code@gmail.com', 919809, '2023-05-10 12:04:26'),
+(58, 'aashi.we2code@gmail.com', 254003, '2023-05-10 12:05:20'),
+(59, 'aashi.we2code@gmail.com', 561306, '2023-05-10 12:08:03'),
+(60, 'aashi.we2code@gmail.com', 523873, '2023-05-10 12:10:13'),
+(61, 'aasdfdfhi.we2code@gmail.com', 501130, '2023-05-10 12:15:02'),
+(62, 'aashi.wddse2code@gmail.com', 545247, '2023-05-10 12:17:04'),
+(63, 'aashi.wedsfdsf2code@gmail.com', 562733, '2023-05-10 12:17:56'),
+(64, 'aashiszx.we2code@gmail.com', 952203, '2023-05-10 12:19:03'),
+(65, 'aashi.we2mncode@gmail.com', 618814, '2023-05-10 12:33:19'),
+(66, 'aas2code@gmail.com', 877021, '2023-05-10 12:36:22'),
+(67, 'aashi.we2code@gmail.com', 815499, '2023-05-10 12:36:56'),
+(68, 'aashi.we2cxxode@gmail.com', 695390, '2023-05-10 12:38:49'),
+(69, 'aaswe2code@gmail.com', 211447, '2023-05-10 12:41:27'),
+(70, 'aa2code@gmail.com', 263012, '2023-05-10 12:42:19'),
+(71, 'aascode@gmail.com', 918905, '2023-05-10 12:43:43'),
+(72, 'ode@gmail.com', 718768, '2023-05-10 12:44:13'),
+(73, 'aa2code@gmail.com', 697013, '2023-05-10 12:44:52'),
+(74, 'sagar.we2code@gmail.com', 921834, '2023-05-11 06:46:04'),
+(75, 'Rajsagar@we2codegmail.com', 787766, '2023-05-11 06:59:00');
 
 -- --------------------------------------------------------
 
@@ -1772,7 +1928,7 @@ CREATE TABLE `view_applied_employee` (
 `apply_id` int(101)
 ,`job_id` int(101)
 ,`employee_id` int(101)
-,`is_viewed` int(101)
+,`is_viewed` smallint(11)
 ,`created_at` timestamp
 ,`updated_at` timestamp
 ,`job_title` varchar(251)
@@ -1804,6 +1960,78 @@ CREATE TABLE `view_applied_employee` (
 ,`id` int(51)
 ,`lmia_status` varchar(51)
 ,`expected_time_of_completion` date
+,`interview_date` date
+,`is_active` tinyint(1)
+,`status` varchar(21)
+,`interview_created_by_admin` int(51)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `view_employee_profile_percentage`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_employee_profile_percentage` (
+`employee_id` int(101)
+,`personal` decimal(20,2)
+,`education` int(2)
+,`Career` int(2)
+,`skill` int(2)
+,`created_at` timestamp
+,`created_by_admin` int(51)
+,`is_deleted` tinyint(1)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `view_employer`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_employer` (
+`company_id` int(101)
+,`company_name` varchar(251)
+,`industry` text
+,`corporation` varchar(251)
+,`alias` text
+,`company_start_date` date
+,`company_size` varchar(251)
+,`website_url` varchar(251)
+,`vacancy_for_post` varchar(251)
+,`about` mediumtext
+,`contact_person_name` char(251)
+,`email` varchar(55)
+,`password` varchar(255)
+,`contact_no` bigint(20)
+,`contact_no_other` bigint(20)
+,`address` text
+,`pin_code` int(101)
+,`city` text
+,`state` text
+,`country` text
+,`designation` char(101)
+,`logo` varchar(100)
+,`is_active` tinyint(1)
+,`created_at` timestamp
+,`updated_at` timestamp
+,`created_by_admin` int(51)
+,`is_deleted` tinyint(1)
+,`franchise` varchar(101)
+,`token` varchar(301)
+,`profile_complete` decimal(23,2)
+,`vacancies` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `view_employer_profile_completion`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_employer_profile_completion` (
+`company_id` int(101)
+,`profile_complete` decimal(23,2)
 );
 
 -- --------------------------------------------------------
@@ -1864,6 +2092,7 @@ CREATE TABLE `view_job_posted` (
 ,`is_deleted` tinyint(1)
 ,`category_type` text
 ,`company_name` varchar(251)
+,`email` varchar(55)
 ,`contact_no_other` bigint(20)
 ,`industry` text
 ,`about` mediumtext
@@ -1871,6 +2100,7 @@ CREATE TABLE `view_job_posted` (
 ,`address` text
 ,`company_size` varchar(251)
 ,`corporation` varchar(251)
+,`company_deleted` tinyint(1)
 ,`total_applicants` bigint(21)
 );
 
@@ -1881,7 +2111,7 @@ CREATE TABLE `view_job_posted` (
 --
 DROP TABLE IF EXISTS `employee_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `employee_view`  AS SELECT `e`.`employee_id` AS `employee_id`, `e`.`name` AS `name`, `e`.`email` AS `email`, `e`.`password` AS `password`, `e`.`contact_no` AS `contact_no`, `e`.`description` AS `description`, `e`.`date_of_birth` AS `date_of_birth`, `e`.`gender` AS `gender`, `e`.`marital_status` AS `marital_status`, `e`.`nationality` AS `nationality`, `e`.`current_location` AS `current_location`, `e`.`currently_located_country` AS `currently_located_country`, `e`.`language` AS `language`, `e`.`religion` AS `religion`, `e`.`interested_in` AS `interested_in`, `e`.`experience` AS `experience`, `e`.`work_permit_canada` AS `work_permit_canada`, `e`.`work_permit_other_country` AS `work_permit_other_country`, `e`.`posted` AS `posted`, `e`.`posted_company_id` AS `posted_company_id`, `e`.`date_of_posting` AS `date_of_posting`, `e`.`designation``` AS `designation```, `e`.`resume` AS `resume`, `e`.`profile_photo` AS `profile_photo`, `e`.`created_at` AS `created_at`, `e`.`created_by_admin` AS `created_by_admin`, `e`.`updated_at` AS `updated_at`, `e`.`is_deleted` AS `is_deleted`, `e`.`token` AS `token`, `education`.`education` AS `education`, `education`.`specialization` AS `specialization`, (select group_concat(`employee_skill`.`skill` separator ',') from `employee_skill` where (`employee_skill`.`employee_id` = `e`.`employee_id`)) AS `skill` FROM (`employee` `e` left join (select `employee_education`.`employee_id` AS `employee_id`,group_concat(`employee_education`.`course` separator ',') AS `education`,group_concat(`employee_education`.`specialization` separator ',') AS `specialization` from `employee_education` group by `employee_education`.`employee_id`) `education` on((`education`.`employee_id` = `e`.`employee_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `employee_view`  AS SELECT `e`.`employee_id` AS `employee_id`, `e`.`name` AS `name`, `e`.`email` AS `email`, `e`.`password` AS `password`, `e`.`contact_no` AS `contact_no`, `e`.`description` AS `description`, `e`.`date_of_birth` AS `date_of_birth`, `e`.`gender` AS `gender`, `e`.`marital_status` AS `marital_status`, `e`.`nationality` AS `nationality`, `e`.`current_location` AS `current_location`, `e`.`currently_located_country` AS `currently_located_country`, `e`.`language` AS `language`, `e`.`religion` AS `religion`, `e`.`interested_in` AS `interested_in`, `e`.`experience` AS `experience`, `e`.`work_permit_canada` AS `work_permit_canada`, `e`.`work_permit_other_country` AS `work_permit_other_country`, `e`.`is_posted` AS `is_posted`, `e`.`posted_company_id` AS `posted_company_id`, `e`.`date_of_posting` AS `date_of_posting`, `e`.`designation``` AS `designation```, `e`.`resume` AS `resume`, `e`.`profile_photo` AS `profile_photo`, `e`.`created_at` AS `created_at`, `e`.`created_by_admin` AS `created_by_admin`, `e`.`updated_at` AS `updated_at`, `e`.`is_deleted` AS `is_deleted`, `e`.`token` AS `token`, (((`epp`.`personal` + `epp`.`education`) + `epp`.`Career`) + `epp`.`skill`) AS `profile_complete`, `education`.`education` AS `education`, `education`.`specialization` AS `specialization`, (select group_concat(`employee_skill`.`skill` separator ',') from `employee_skill` where (`employee_skill`.`employee_id` = `e`.`employee_id`)) AS `skill` FROM ((`employee` `e` left join (select `employee_education`.`employee_id` AS `employee_id`,group_concat(`employee_education`.`course` separator ',') AS `education`,group_concat(`employee_education`.`specialization` separator ',') AS `specialization` from `employee_education` group by `employee_education`.`employee_id`) `education` on((`education`.`employee_id` = `e`.`employee_id`))) left join `view_employee_profile_percentage` `epp` on((`epp`.`employee_id` = `e`.`employee_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1890,7 +2120,34 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `view_applied_employee`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_applied_employee`  AS SELECT `aoj`.`apply_id` AS `apply_id`, `aoj`.`job_id` AS `job_id`, `aoj`.`employee_id` AS `employee_id`, `aoj`.`is_viewed` AS `is_viewed`, `aoj`.`created_at` AS `created_at`, `aoj`.`updated_at` AS `updated_at`, `vjp`.`job_title` AS `job_title`, `vjp`.`company_id` AS `company_id`, `vjp`.`company_name` AS `company_name`, `ev`.`name` AS `name`, `ev`.`email` AS `email`, `ev`.`contact_no` AS `contact_no`, `ev`.`description` AS `description`, `ev`.`date_of_birth` AS `date_of_birth`, `ev`.`gender` AS `gender`, `ev`.`marital_status` AS `marital_status`, `ev`.`nationality` AS `nationality`, `ev`.`current_location` AS `current_location`, `ev`.`currently_located_country` AS `currently_located_country`, `ev`.`language` AS `language`, `ev`.`religion` AS `religion`, `ev`.`interested_in` AS `interested_in`, `ev`.`experience` AS `experience`, `ev`.`work_permit_canada` AS `work_permit_canada`, `ev`.`work_permit_other_country` AS `work_permit_other_country`, `ev`.`resume` AS `resume`, `ev`.`profile_photo` AS `profile_photo`, `ev`.`created_by_admin` AS `created_by_admin`, `ev`.`is_deleted` AS `is_deleted`, `ev`.`education` AS `education`, `ev`.`specialization` AS `specialization`, `ev`.`skill` AS `skill`, `lmia`.`id` AS `id`, `lmia`.`lmia_status` AS `lmia_status`, `lmia`.`expected_time_of_completion` AS `expected_time_of_completion` FROM (((`apply_on_job` `aoj` join `employee_view` `ev` on((`aoj`.`employee_id` = `ev`.`employee_id`))) join `view_job_posted` `vjp` on((`vjp`.`job_id` = `aoj`.`job_id`))) left join `lmia` on(((`lmia`.`employee_id` = `aoj`.`employee_id`) and (`lmia`.`job_id` = `aoj`.`job_id`)))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_applied_employee`  AS SELECT `aoj`.`apply_id` AS `apply_id`, `aoj`.`job_id` AS `job_id`, `aoj`.`employee_id` AS `employee_id`, `aoj`.`is_viewed` AS `is_viewed`, `aoj`.`created_at` AS `created_at`, `aoj`.`updated_at` AS `updated_at`, `vjp`.`job_title` AS `job_title`, `vjp`.`company_id` AS `company_id`, `vjp`.`company_name` AS `company_name`, `ev`.`name` AS `name`, `ev`.`email` AS `email`, `ev`.`contact_no` AS `contact_no`, `ev`.`description` AS `description`, `ev`.`date_of_birth` AS `date_of_birth`, `ev`.`gender` AS `gender`, `ev`.`marital_status` AS `marital_status`, `ev`.`nationality` AS `nationality`, `ev`.`current_location` AS `current_location`, `ev`.`currently_located_country` AS `currently_located_country`, `ev`.`language` AS `language`, `ev`.`religion` AS `religion`, `ev`.`interested_in` AS `interested_in`, `ev`.`experience` AS `experience`, `ev`.`work_permit_canada` AS `work_permit_canada`, `ev`.`work_permit_other_country` AS `work_permit_other_country`, `ev`.`resume` AS `resume`, `ev`.`profile_photo` AS `profile_photo`, `ev`.`created_by_admin` AS `created_by_admin`, `ev`.`is_deleted` AS `is_deleted`, `ev`.`education` AS `education`, `ev`.`specialization` AS `specialization`, `ev`.`skill` AS `skill`, `lmia`.`id` AS `id`, `lmia`.`lmia_status` AS `lmia_status`, `lmia`.`expected_time_of_completion` AS `expected_time_of_completion`, `ji`.`interview_date` AS `interview_date`, `ji`.`is_active` AS `is_active`, `ji`.`status` AS `status`, `ji`.`created_by_admin` AS `interview_created_by_admin` FROM ((((`apply_on_job` `aoj` join `employee_view` `ev` on((`aoj`.`employee_id` = `ev`.`employee_id`))) join `view_job_posted` `vjp` on((`vjp`.`job_id` = `aoj`.`job_id`))) left join `lmia` on(((`lmia`.`employee_id` = `aoj`.`employee_id`) and (`lmia`.`job_id` = `aoj`.`job_id`)))) left join `job_interviews` `ji` on(((`ji`.`employee_id` = `aoj`.`employee_id`) and (`ji`.`job_id` = `aoj`.`job_id`) and (`ji`.`is_reschedule` <> 1)))) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_employee_profile_percentage`
+--
+DROP TABLE IF EXISTS `view_employee_profile_percentage`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_employee_profile_percentage`  AS SELECT DISTINCT `e`.`employee_id` AS `employee_id`, if((`e`.`experience` = 'fresher'),round((((((((((((((((((if((`e`.`name` <> ''),2.5,0) + if((`e`.`email` <> ''),2.5,0)) + if((`e`.`contact_no` <> ''),2.5,0)) + if((`e`.`date_of_birth` <> ''),2.5,0)) + if((`e`.`gender` <> ''),2.5,0)) + if((`e`.`marital_status` <> ''),2.5,0)) + if((`e`.`nationality` <> ''),2.5,0)) + if((`e`.`current_location` <> ''),2.5,0)) + if((`e`.`currently_located_country` <> ''),2.5,0)) + if((`e`.`language` <> ''),2.5,0)) + if((`e`.`religion` <> ''),2.5,0)) + if((`e`.`interested_in` <> ''),2.5,0)) + if((`e`.`experience` <> ''),2.5,0)) + if((`e`.`work_permit_canada` <> ''),2.5,0)) + if((`e`.`work_permit_other_country` <> ''),2.5,0)) + if((`e`.`description` <> ''),2.5,0)) + if((`e`.`profile_photo` <> ''),10,0)) + if((`e`.`resume` <> ''),20,0)),2),round((((((((((((((((((if((`e`.`name` <> ''),1.25,0) + if((`e`.`email` <> ''),1.25,0)) + if((`e`.`contact_no` <> ''),1.25,0)) + if((`e`.`date_of_birth` <> ''),1.25,0)) + if((`e`.`gender` <> ''),1.25,0)) + if((`e`.`marital_status` <> ''),1.25,0)) + if((`e`.`nationality` <> ''),1.25,0)) + if((`e`.`current_location` <> ''),1.25,0)) + if((`e`.`currently_located_country` <> ''),1.25,0)) + if((`e`.`language` <> ''),1.25,0)) + if((`e`.`religion` <> ''),1.25,0)) + if((`e`.`interested_in` <> ''),1.25,0)) + if((`e`.`experience` <> ''),1.25,0)) + if((`e`.`work_permit_canada` <> ''),1.25,0)) + if((`e`.`work_permit_other_country` <> ''),1.25,0)) + if((`e`.`description` <> ''),1.25,0)) + if((`e`.`profile_photo` <> ''),10,0)) + if((`e`.`resume` <> ''),20,0)),2)) AS `personal`, round((case when ((select `employee_education`.`employee_id` from `employee_education` where (`employee_education`.`employee_id` = `e`.`employee_id`) limit 1) > 0) then 20 else 0 end),2) AS `education`, round((case when ((select `employee_career`.`employee_id` from `employee_career` where (`employee_career`.`employee_id` = `e`.`employee_id`) limit 1) > 0) then 20 else 0 end),2) AS `Career`, round((case when ((select `employee_skill`.`employee_id` from `employee_skill` where (`employee_skill`.`employee_id` = `e`.`employee_id`) limit 1) > 0) then 10 else 0 end),2) AS `skill`, `e`.`created_at` AS `created_at`, `e`.`created_by_admin` AS `created_by_admin`, `e`.`is_deleted` AS `is_deleted` FROM `employee` AS `e` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_employer`
+--
+DROP TABLE IF EXISTS `view_employer`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_employer`  AS SELECT `e`.`company_id` AS `company_id`, `e`.`company_name` AS `company_name`, `e`.`industry` AS `industry`, `e`.`corporation` AS `corporation`, `e`.`alias` AS `alias`, `e`.`company_start_date` AS `company_start_date`, `e`.`company_size` AS `company_size`, `e`.`website_url` AS `website_url`, `e`.`vacancy_for_post` AS `vacancy_for_post`, `e`.`about` AS `about`, `e`.`contact_person_name` AS `contact_person_name`, `e`.`email` AS `email`, `e`.`password` AS `password`, `e`.`contact_no` AS `contact_no`, `e`.`contact_no_other` AS `contact_no_other`, `e`.`address` AS `address`, `e`.`pin_code` AS `pin_code`, `e`.`city` AS `city`, `e`.`state` AS `state`, `e`.`country` AS `country`, `e`.`designation` AS `designation`, `e`.`logo` AS `logo`, `e`.`is_active` AS `is_active`, `e`.`created_at` AS `created_at`, `e`.`updated_at` AS `updated_at`, `e`.`created_by_admin` AS `created_by_admin`, `e`.`is_deleted` AS `is_deleted`, `e`.`franchise` AS `franchise`, `e`.`token` AS `token`, `pc`.`profile_complete` AS `profile_complete`, (select count(`jobs`.`job_id`) from `jobs` where ((`jobs`.`company_id` = `e`.`company_id`) and (`jobs`.`is_deleted` <> 1))) AS `vacancies` FROM (`employer` `e` left join `view_employer_profile_completion` `pc` on((`pc`.`company_id` = `e`.`company_id`))) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_employer_profile_completion`
+--
+DROP TABLE IF EXISTS `view_employer_profile_completion`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_employer_profile_completion`  AS SELECT DISTINCT `e`.`company_id` AS `company_id`, round(((((((((((((((((((((if((`e`.`company_name` <> ''),2.14,0) + if((`e`.`industry` <> ''),2.14,0)) + if((`e`.`corporation` <> ''),2.14,0)) + if((`e`.`company_start_date` <> ''),2.14,0)) + if((`e`.`company_size` <> ''),2.14,0)) + if((`e`.`website_url` <> ''),2.14,0)) + if((`e`.`vacancy_for_post` <> ''),2.14,0)) + if((`e`.`about` <> ''),2.14,0)) + if((`e`.`contact_no_other` <> ''),2.14,0)) + if((`e`.`address` <> ''),2.14,0)) + if((`e`.`pin_code` <> ''),2.14,0)) + if((`e`.`city` <> ''),2.14,0)) + if((`e`.`state` <> ''),2.14,0)) + if((`e`.`country` <> ''),2.14,0)) + if((`e`.`contact_person_name` <> ''),5,0)) + if((`e`.`email` <> ''),5,0)) + if((`e`.`contact_no` <> ''),5,0)) + if((`e`.`designation` <> ''),5,0)) + if((`e`.`logo` <> ''),10,0)) + if((`ck`.`pan_no` <> ''),20,0)) + if((`ck`.`document` <> ''),20,0)),2) AS `profile_complete` FROM (`employer` `e` left join `company_kyc` `ck` on((`e`.`company_id` = `ck`.`company_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1908,7 +2165,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `view_job_posted`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_job_posted`  AS SELECT `j`.`job_id` AS `job_id`, `j`.`company_id` AS `company_id`, `j`.`job_title` AS `job_title`, `j`.`experience_required` AS `experience_required`, `j`.`salary` AS `salary`, `j`.`location` AS `location`, `j`.`industry_type` AS `industry_type`, `j`.`apply_link` AS `apply_link`, `j`.`job_description` AS `job_description`, `j`.`your_duties` AS `your_duties`, `j`.`requirement` AS `requirement`, `j`.`department` AS `department`, `j`.`job_type` AS `job_type`, `j`.`role_category` AS `role_category`, `j`.`education` AS `education`, `j`.`language` AS `language`, `j`.`keyskill` AS `keyskill`, `j`.`employement` AS `employement`, `j`.`job_category_id` AS `job_category_id`, `j`.`is_active` AS `is_active`, `j`.`created_at` AS `created_at`, `j`.`updated_at` AS `updated_at`, `j`.`created_by_admin` AS `created_by_admin`, `j`.`is_featured` AS `is_featured`, `j`.`is_deleted` AS `is_deleted`, `jc`.`category_type` AS `category_type`, `e`.`company_name` AS `company_name`, `e`.`contact_no_other` AS `contact_no_other`, `e`.`industry` AS `industry`, `e`.`about` AS `about`, `e`.`logo` AS `logo`, `e`.`address` AS `address`, `e`.`company_size` AS `company_size`, `e`.`corporation` AS `corporation`, count(`a`.`employee_id`) AS `total_applicants` FROM (((`jobs` `j` left join `apply_on_job` `a` on((`j`.`job_id` = `a`.`job_id`))) join `job_category` `jc` on((`j`.`job_category_id` = `jc`.`job_category_id`))) join `employer` `e` on((`j`.`company_id` = `e`.`company_id`))) WHERE (`j`.`is_deleted` <> 1) GROUP BY `j`.`job_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`apnaorga`@`localhost` SQL SECURITY DEFINER VIEW `view_job_posted`  AS SELECT `j`.`job_id` AS `job_id`, `j`.`company_id` AS `company_id`, `j`.`job_title` AS `job_title`, `j`.`experience_required` AS `experience_required`, `j`.`salary` AS `salary`, `j`.`location` AS `location`, `j`.`industry_type` AS `industry_type`, `j`.`apply_link` AS `apply_link`, `j`.`job_description` AS `job_description`, `j`.`your_duties` AS `your_duties`, `j`.`requirement` AS `requirement`, `j`.`department` AS `department`, `j`.`job_type` AS `job_type`, `j`.`role_category` AS `role_category`, `j`.`education` AS `education`, `j`.`language` AS `language`, `j`.`keyskill` AS `keyskill`, `j`.`employement` AS `employement`, `j`.`job_category_id` AS `job_category_id`, `j`.`is_active` AS `is_active`, `j`.`created_at` AS `created_at`, `j`.`updated_at` AS `updated_at`, `j`.`created_by_admin` AS `created_by_admin`, `j`.`is_featured` AS `is_featured`, `j`.`is_deleted` AS `is_deleted`, `jc`.`category_type` AS `category_type`, `e`.`company_name` AS `company_name`, `e`.`email` AS `email`, `e`.`contact_no_other` AS `contact_no_other`, `e`.`industry` AS `industry`, `e`.`about` AS `about`, `e`.`logo` AS `logo`, `e`.`address` AS `address`, `e`.`company_size` AS `company_size`, `e`.`corporation` AS `corporation`, `e`.`is_deleted` AS `company_deleted`, count((case when ((`a`.`is_viewed` <> 1) and (`ee`.`is_deleted` = 0)) then `a`.`employee_id` else NULL end)) AS `total_applicants` FROM ((((`jobs` `j` left join `apply_on_job` `a` on((`j`.`job_id` = `a`.`job_id`))) join `job_category` `jc` on((`j`.`job_category_id` = `jc`.`job_category_id`))) join `employer` `e` on((`j`.`company_id` = `e`.`company_id`))) left join `employee` `ee` on((`ee`.`employee_id` = `a`.`employee_id`))) GROUP BY `j`.`job_id` ;
 
 --
 -- Indexes for dumped tables
@@ -1937,6 +2194,19 @@ ALTER TABLE `company_kyc`
 --
 ALTER TABLE `countries`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `email`
+--
+ALTER TABLE `email`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `email_template`
+--
+ALTER TABLE `email_template`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email_type` (`email_type`);
 
 --
 -- Indexes for table `employee`
@@ -2011,6 +2281,12 @@ ALTER TABLE `notification`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `otp`
+--
+ALTER TABLE `otp`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -2018,19 +2294,19 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `admin_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `apply_on_job`
 --
 ALTER TABLE `apply_on_job`
-  MODIFY `apply_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `apply_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `company_kyc`
 --
 ALTER TABLE `company_kyc`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -2039,40 +2315,52 @@ ALTER TABLE `countries`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=251;
 
 --
+-- AUTO_INCREMENT for table `email`
+--
+ALTER TABLE `email`
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `email_template`
+--
+ALTER TABLE `email_template`
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `employee_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `employee_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `employee_career`
 --
 ALTER TABLE `employee_career`
-  MODIFY `career_id` int(251) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `career_id` int(251) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `employee_education`
 --
 ALTER TABLE `employee_education`
-  MODIFY `education_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `education_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `employee_skill`
 --
 ALTER TABLE `employee_skill`
-  MODIFY `skill_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `skill_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `company_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `company_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `follow_up`
 --
 ALTER TABLE `follow_up`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -2084,31 +2372,45 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `job_category`
 --
 ALTER TABLE `job_category`
-  MODIFY `job_category_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `job_category_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `job_interviews`
 --
 ALTER TABLE `job_interviews`
-  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `list`
 --
 ALTER TABLE `list`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `lmia`
 --
 ALTER TABLE `lmia`
-  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+
+--
+-- AUTO_INCREMENT for table `otp`
+--
+ALTER TABLE `otp`
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+
+DELIMITER $$
+--
+-- Events
+--
+CREATE DEFINER=`apnaorga`@`localhost` EVENT `delete_otp` ON SCHEDULE EVERY 1 SECOND STARTS '2023-05-10 14:08:21' ON COMPLETION PRESERVE ENABLE DO CALL destroyOtp()$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
