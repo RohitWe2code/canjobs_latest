@@ -26,6 +26,7 @@ class Employee_registration extends REST_Controller{
     $email = $this->security->xss_clean($this->input->post("email"));
     $password = $this->security->xss_clean($this->input->post("password"));
     $resume =$this->input->post("cv");
+    $otp =$this->input->post("otp");
 
 if($resume) {
     // Decode the base64 encoded PDF data
@@ -47,6 +48,7 @@ if($resume) {
     // form validation for inputs
     $this->form_validation->set_rules("email", "Email", "required|valid_email");
     $this->form_validation->set_rules("password", "password", "required");
+    $this->form_validation->set_rules("otp", "otp", "required");
 
     // checking form submittion have any error or not
     if($this->form_validation->run() === FALSE){
@@ -67,8 +69,17 @@ if($resume) {
         ), REST_Controller::HTTP_OK);
         return;
         }
-
-      if(!empty($email) && !empty($password)){
+     
+// print_r($validate_otp);die;
+      if(!empty($email) && !empty($password) && !empty($otp)){
+        $validate_otp = $this->common_model->validate_otp($email,$otp);
+        if(!$validate_otp){
+        $this->response(array(
+        "status" => 0,
+        "message" => " incorrect otp "
+        ), REST_Controller::HTTP_OK);
+        return;
+        }
         // all values are available
         $employee = array(
          
@@ -83,20 +94,23 @@ if($resume) {
             }
             }
             $response = $this->employee_model->insert_employee($employee);
+            // print_r($response);die;
             if($response){
-              // $candidate_email = $response->email;
-              $detail = array('admin_id'=>1,
-              'type'=>'Super-admin',
-              'email' => 'utkarsh.we2code@gmail.com',
-              'subject'=>'New user added',
-              'message'=>'A new candidate '.$response->email.' has been added successfully');  
-              $this->common_model->addNotification($detail);
-              $this->common_model->sendMail($detail);
+              // Sending email
+              $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+              $unique_id .= mt_rand(1000, 9999);
+              $email_template_id = 1;
+              $eamil_detail = array('to' => $response->email ?? NULL);
+              $this->common_model->email($eamil_detail, $email_template_id, $unique_id);
+                        // Code to send notification
+                        // $detail['from_id'] = $response->employee_id;
+                        // $detail['type'] = 'employee';
+                        // $detail['message'] = 'hey, '.$response->email.' welcome onboard';
+                        // $this->common_model->addNotification($detail);
               $this->response(array(
                 "status" => 1,
                 "message" => "Employee has been registered"
               ), REST_Controller::HTTP_OK);
-              return;
               }else{
               
                 $this->response(array(
@@ -126,12 +140,14 @@ if($resume) {
             $loginStatus = $this->employee_model->checkLogin($credentials);
             //  print_r($loginStatus);die;
             if ($loginStatus != false) {
-                $userId = array('employee_id' => $loginStatus->employee_id);
+                $userId = array('employee_id' => $loginStatus->employee_id,
+                                 'user_type' => 'employee');
                 $bearerToken = $this->authorization_token->generateToken($userId);
                  $this->response(array(
                     "status" => 1,
                     "message" => "Successfully Logged In",
                     'employee_id'=> $loginStatus->employee_id,
+                    'name'=> $loginStatus->name,
                     'token' => $bearerToken,
                     ) , REST_Controller::HTTP_OK);
                     return;
@@ -152,26 +168,30 @@ if($resume) {
     }
   public function forgetPassword_post(){
           $data = json_decode(file_get_contents("php://input"));
-           if (isset($data->email)){
-               if(empty($data->email)){
+           if (isset($data->forget_email)){
+               if(empty($data->forget_email)){
                      $this->response(array(
                     "status" => 0,
                     "message" => "Fields must not be empty !"
                     ) , REST_Controller::HTTP_OK);
                     return;
                }
-             $email = array('email' => $data->email);
+             $email = array('email' => $data->forget_email);
              $loginStatus = $this->employee_model->checkLogin($email);
              if ($loginStatus != false) {
                $detail = array('employee_id'=>$loginStatus->employee_id,
                                 'token'=> md5($loginStatus->email));
                if($this->employee_model->updatePersonal_details($detail)){
-                             $detail['email']=$loginStatus->email;
-                             $detail['subject']='Reset password';
-                             $detail['message']='Hello, '.$loginStatus->name.' click on the link to reset your password http://apnaorganicstore.in/canjobs/resetPassword/'.$detail['token'];
-                      
-                      //  $employee['token'] = $token;
-                           $this->common_model->sendMail($detail);
+                 // Sending mail
+                            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+                            $unique_id .= mt_rand(1000, 9999);
+                            $email_template_id = 6;
+                            $email = array('to' => $loginStatus->email ?? NULL,
+                                          'token'=>$detail['token'],
+                                          'reset_link' => 'http://localhost:3000/resetpassword/user'
+                                         );
+                            $this->common_model->email($email, $email_template_id, $unique_id);
+
                             $this->response(array(
                             "status" => 1,
                             "message" => "Sent you a mail"
@@ -236,5 +256,5 @@ if($resume) {
         }
 
     }
-    
+  
 }

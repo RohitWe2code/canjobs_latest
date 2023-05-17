@@ -45,8 +45,12 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 
     $headers = $this->input->request_headers(); 
 		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    // print_r($this->decodedToken);die;
     $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
+    $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
+    $this->company_id = $this->decodedToken['data']->company_id ?? null;
     $this->user_type = $this->decodedToken['data']->user_type ?? null;
+    $this->admin_email = $this->decodedToken['data']->email ?? null;
        if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
 
             $err = array(
@@ -144,23 +148,35 @@ if(isset($data->company_id)){
          if(isset($data->logo)){
 
                 if(!empty($data->logo)){
+                  $image_data = $data->logo;
 
-                  $img = str_replace('data:image/png;base64,', '', $data->logo);
-
-		          $img = str_replace(' ', '+', $img);
-
-                  $binary_logo = base64_decode($img);
-
-                  $file_name_for_upload = time().'.png';
-
-		          $logo = base_url().'uploads/'.$file_name_for_upload;
-
-		          file_put_contents('./uploads/'.$file_name_for_upload, $binary_logo);
-
-                  $company_info["logo"] = $logo;
-
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                        $company_info["logo"] = $logo;
+                    } else {
+                        // Unsupported file type
+                        unset($company_info["logo"]);
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                     unset($company_info["logo"]);
+                }
                 }
                }
+              //  print_r($company_info["logo"]);die;
                if(isset($data->franchise)){
 
                 if(!empty($data->franchise)){
@@ -288,23 +304,37 @@ if(isset($data->company_id)){
 
                 if(!empty($data->logo)){
 
-                  $img = str_replace('data:image/png;base64,', '', $data->logo);
+            
+                  $image_data = $data->logo;
 
-		          $img = str_replace(' ', '+', $img);
-
-                  $binary_logo = base64_decode($img);
-
-                  $file_name_for_upload = time().'.png';
-
-		          $logo = base_url().'uploads/'.$file_name_for_upload;
-
-		          file_put_contents('./uploads/'.$file_name_for_upload, $binary_logo);
-
-                  $company_info["logo"] = $logo;
-
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                        $company_info["logo"] = $logo;
+                    } else {
+                        // Unsupported file type
+                        unset($company_info["logo"]);
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                    unset($company_info["logo"]);
                 }
-
-               }
+                }
+                
+              }
+              
                 if(isset($data->franchise)){
 
                 if(!empty($data->franchise)){
@@ -314,6 +344,10 @@ if(isset($data->company_id)){
                 }
 
                }
+                if(!empty($this->admin_id) && $this->user_type != "employee" && $this->user_type != "employer"){
+                  $company_info["created_by_admin"] = $this->admin_id;
+
+                }
 
         
 
@@ -643,7 +677,7 @@ if(isset($data->company_id)){
 
       // print_r($data); die;
 
-      
+      // ------------- Update job -----------------
         if(isset($data->job_id)){
 
           
@@ -785,7 +819,10 @@ if(isset($data->company_id)){
 
         }
 
-    } else{
+    }
+    
+      // ------------- Insert job -----------------
+    else{
  
       if(isset($data->company_id) && isset($data->job_title)  && isset($data->experience_required) && isset($data->salary) && isset($data->location)  && isset($data->industry_type) && isset($data->apply_link) && isset($data->job_description) && isset($data->your_duties) && isset($data->requirement) && isset($data->department) && isset($data->job_type) && isset($data->education) && isset($data->language) && isset($data->keyskill) && isset($data->employement) && isset($data->job_category_id))
 
@@ -854,15 +891,48 @@ if(isset($data->company_id)){
           "job_category_id" => $data->job_category_id,
 
         );
+          if(!empty($this->admin_id) && $this->user_type != "employee" && $this->user_type != "employer"){
+                  $job_detail["created_by_admin"] = $this->admin_id;
+
+                }
+             
         $response = $this->employer_model->addUpdate_job($job_detail);
+        // print_r($response);die;
         if($response){
-           $detail = array('admin_id'=>1,
-              'type'=>'Super-admin',
-              'email' => 'aashi.we2code@gmail.com',
-              'subject'=>'New job added',
-              'message'=>'A new job with title-'.$response->job_title.' has been added successfully by '.$response->company_name);  
-              $this->common_model->addNotification($detail);
-              $this->common_model->sendMail($detail);
+            $company_id = $response->company_id;
+            if($this->common_model->checkEmployerEmailPermission($company_id)){
+            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+            $unique_id .= mt_rand(1000, 9999);
+          // Sending mail and notification to company
+            $email_template_id = 3;
+            $company_email = array('to' => $response->email ?? NULL,
+                             'job_title'=>$response->job_title,
+                             'company_name'=>$response->company_name);
+                             $this->common_model->email($company_email, $email_template_id, $unique_id);
+            }
+                        $company_notification['from_id'] = $response->company_id;
+                        $company_notification['type'] = 'company';
+                        $company_notification['subject'] = 'added_new_job';
+                        $company_notification['action_id'] = $response->job_id;;
+                        $company_notification['message'] = 'A new job with title-'.$response->job_title.' has been added successfully';
+                        $this->common_model->addNotification($company_notification);
+          // Sending mail and notification to Admin
+          if(isset($this->admin_email)){
+            if(!empty($this->admin_email)){
+              if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              $admin_email = array('to' => $this->admin_email,
+                             'job_title'=>$response->job_title,
+                             'company_name'=>$response->company_name);
+                             $this->common_model->email($admin_email, $email_template_id, $unique_id);
+              }
+                        $admin_notification['from_id'] = $this->admin_id;
+                        $admin_notification['type'] = $this->user_type;
+                        $admin_notification['subject'] = 'added_new_job';
+                        $admin_notification['action_id'] = $response->job_id;;
+                        $admin_notification['message'] = 'A new job with title-'.$response->job_title.' has been added successfully';
+                        $this->common_model->addNotification($admin_notification);
+            }
+          }
 
             $this->response(array(
 
@@ -929,8 +999,11 @@ if(isset($data->company_id)){
           $msg = "Category updated successfully";
         }
       }
-        
-        if($this->employer_model->addUpdate_category($category_detail)){
+        $response = $this->employer_model->addUpdate_category($category_detail);
+        if($response){
+          if($response === "already exist"){
+            $msg = "already exist !";
+          }
 
             $this->response(array(
               "status" => 1,
@@ -947,13 +1020,15 @@ if(isset($data->company_id)){
    public function apply_job_post(){
 
      $data = json_decode(file_get_contents("php://input"));
-    if(isset($data->job_id) && isset($data->employee_id)){
-     $candidate_detail = array('job_id'=>$data->job_id,
+     
+     $candidate_detail = array();
+    if(isset($data->job_id) && isset($data->employee_id) && isset($data->status)){
+       if(!empty($data->job_id) || !empty($data->employee_id)){
+     $candidate_detail["job_id"] = $data->job_id;
 
-                                'employee_id'=>$data->employee_id,
-
-                              );
-    $msg = "Job applied successfully";
+     $candidate_detail["employee_id"] = $data->employee_id;
+                            }
+    $msg = "";
     if(isset($data->apply_id)){
           if(!empty($data->apply_id)){
             $candidate_detail["apply_id"] = $data->apply_id;
@@ -961,21 +1036,88 @@ if(isset($data->company_id)){
 
           }
           }
+    //-------------------------------------------------------------
+    // Status :
+    // view job = 1
+    // apply job = 0
+    // connect job = 2
+    // save job = 3
+    //-------------------------------------------------------------
+          if($data->status == 1){
+            $candidate_detail["is_viewed"] = $data->status ;
+            $msg = "Job viewed successfully";
+
+          }
+          if($data->status == 0){
+            $candidate_detail["is_viewed"] = $data->status ;
+            $msg = "Job applied successfully";
+
+          }
+          if($data->status == 2){
+            $candidate_detail["is_viewed"] = $data->status ;
+            $msg = "Job connected successfully";
+
+          }
+          if($data->status == 3){
+            $candidate_detail["is_viewed"] = $data->status ;
+            $msg = "Job saved successfully";
+
+          }
+          
+          // print_r($candidate_detail);die;
           $response = $this->employer_model->applyJob($candidate_detail);
           if($response === "2"){
-  
-            $this->response(array(
-
-              "status" => 0,
-
-              "message" => "already applied on this job"
-
-            ), REST_Controller::HTTP_OK);
-
-        }
-        else if($response){
-
-
+            $msg = "already applied on this job";
+          }
+          if($response === "3"){
+            $msg = "already saved this job";
+          }
+        // print_r($response);die;
+        if($response){
+          if(!empty($response->company_id)){
+             $company_id = $response->company_id;
+            if($this->common_model->checkEmployerEmailPermission($company_id)){
+                $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+                $unique_id .= mt_rand(1000, 9999);
+                // Sending mail and notification to Company
+                $email_template_id = 4;
+                $company_email = array('to' => $response->email ?? NULL,
+                                 'job_title'=>$response->job_title,
+                                 'company_name'=>$response->company_name);
+                $this->common_model->email($company_email, $email_template_id, $unique_id);
+            }
+              $company_notification['from_id'] = $response->company_id;
+              $company_notification['type'] = 'company';
+              $company_notification['subject'] = 'applied_on_job';
+              $company_notification['action_id'] = $response->job_id;
+              $company_notification['message'] = 'A new user applied on job with title - '.$response->job_title;
+              $this->common_model->addNotification($company_notification);
+            // Sending mail and notification to Admin
+            if(isset($this->admin_email)){
+            if(!empty($this->admin_email)){
+               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              $admin_email = array('to' => $this->admin_email,
+                                    'job_title'=>$response->job_title,
+                                    'company_name'=>$response->company_name);
+                                    $this->common_model->email($admin_email, $email_template_id, $unique_id);
+               }
+                        $admin_notification['from_id'] = $this->admin_id;
+                        $admin_notification['type'] = $this->user_type;
+                        $admin_notification['subject'] = 'applied_on_job';
+                        $admin_notification['action_id'] = $response->job_id;;
+                        $admin_notification['message'] = 'A new user applied on job with title - '.$response->job_title;
+                        $this->common_model->addNotification($admin_notification);
+            }
+          }
+          //  $admin = array('from_id'=> 1,
+          //     'type'=>'Super-Admin',
+          //     'to' =>'aashi.we2code@gmail.com',
+          //     'subject'=>'new application on job',
+          //     'message'=>'A new user applied on job with title - '.$response->job_title.' posted by '.$response->company_name,
+          //     'unique_id'=>$unique_id);  
+          //     $this->common_model->email($admin);
+          //     $this->common_model->addNotification($admin);
+          }
             $this->response(array(
 
               "status" => 1,
@@ -983,9 +1125,12 @@ if(isset($data->company_id)){
               "message" => $msg
 
             ), REST_Controller::HTTP_OK);
+            //  ob_flush();
+            //  flush();
+            // if(!empty($response->email)){
+            //   $this->common_model->sendMail($detail);
+            // }
           }else{
-
-
 
           $this->response(array(
 
@@ -1009,50 +1154,22 @@ if(isset($data->company_id)){
       }
 
    }
-
-  //  public function applied_candidateList_get(){ 
-
-  //       $job_id = $this->get('job_id');
-
-  //        if($data = $this->employer_model->getAppliedCandidateList($job_id)){
-
-
-
-  //           $this->response(array(
-
-  //             "status" => 1,
-
-  //             "message" => "successfully",
-
-  //             "data" => $data
-
-  //           ), REST_Controller::HTTP_OK);
-
-  //       }else{
-
-
-
-  //         $this->response(array(
-
-  //           "status" => 0,
-
-  //           "messsage" => "Failed to fetch data"
-
-  //         ), REST_Controller::HTTP_OK);
-
-  //       }
-
-  //  }
-
    public function getAllJobsView_post(){
     $data = json_decode(file_get_contents("php://input"));
     $details['job_id'] =$data->job_id ?? null;
+    $details['employee_id'] = 0;
+    if(!empty($this->employee_id) && $this->user_type == "employee"){
+      $details["employee_id"] = $this->employee_id;
+    }  
+    if(!empty($this->company_id) && $this->user_type == "company"){
+      $details["company_id"] = $this->company_id;
+    }  
     $page = $data->page ?? 1;
     $limit =$data->limit ?? 999; 
 
     if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
-      $details = array("admin_id" =>  $this->admin_id,
-                          "admin_type" =>  $this->user_type);
+      $details ["admin_id"] =  $this->admin_id;
+      $details["admin_type"] =  $this->user_type;
     }  
 
     // Get search parameter
@@ -1068,6 +1185,11 @@ if(isset($data->company_id)){
     "company_name" => $data->company_name ?? null,
     ];
     if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
       if($data->filter_by_time == "last_week"){
             $filter['start_date'] = date('Y-m-d', strtotime('last week'));
             $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
@@ -1092,11 +1214,11 @@ if(isset($data->company_id)){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? null ,
-      'sort_order' => $data->sort_order ?? null
+      'column_name' => $data->column_name ?? "created_at" ,
+      'sort_order' => $data->sort_order ?? "DESC"
     ];
-
-    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort,$details);
+// print_r($sort);die;
+    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort, $details);
 
     if ($result) {
               $this->response(array(
@@ -1178,37 +1300,30 @@ if(isset($data->company_id)){
         ), REST_Controller::HTTP_OK);
       }
   }
-
+//get job category
     public function allJobCategory_post(){
-
-      // $employee_id = $this->get('employee_id');
     $data = json_decode(file_get_contents("php://input"));
-    // print_r($data);die;
     $parent_id = 0;
     if(isset($data->parent_id) && $data->parent_id > 0){
       $parent_id = $data->parent_id;
     }
 
-    // Get pagination parameters
     $page = isset($data->page) ? $data->page : null;
     $limit = isset($data->limit) ? $data->limit : null; 
 
-    // Get search parameter
     $search = isset($data->search) ? $data->search : '';
 
-    // Get filter parameters
     $filter = isset($data->filter_category_type) ? $data->filter_category_type: '';
 
-    // sorting 
     $sort = [
       'column_name' => $data->column_name ?? null,
       'sort_order' => $data->sort_order ?? null
     ];
 
-    // Calculate offset for pagination
     $offset = ($page - 1) * $limit;
 
     $result = $this->employer_model->getAllJobCategory($filter, $search, $limit, $offset,$sort,$parent_id);
+    // print_r($result);die;
 
     if($result) {
               $this->response(array(
@@ -1238,8 +1353,6 @@ if(isset($data->company_id)){
 public function allEmployer_post(){
   
   $data = json_decode(file_get_contents("php://input"));
-  // $admin_id = $this->decodedToken['data']->admin_id ?? null;
-  // $user_type = $this->decodedToken['data']->user_type ?? null;
    $user_detail = array();
     // print_r($data);die;
     if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
@@ -1255,12 +1368,16 @@ public function allEmployer_post(){
     $search = isset($data->search) ? $data->search : '';
 
     // Get filter parameters
-
     $filter = [
     "industry" => $data->filter_industry ?? null,
     "corporation" => $data->filter_corporation ?? null
     ];
     if(isset($data->filter_by_time)){
+       if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
       if($data->filter_by_time == "this_week"){
             $filter['start_date'] = date('Y-m-d', strtotime('this week'));
             $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
@@ -1322,8 +1439,6 @@ public function allEmployer_post(){
     public function getEmployer_post(){
 
       $data = json_decode(file_get_contents("php://input"));
-
-
 
       // print_r($company_id);die;
 
@@ -1503,10 +1618,61 @@ public function addUpdateInterview_post(){
           "created_by_admin" => $data->created_by_admin
 
         );
+        if(isset($data->interview_status)){
+          if(!empty($data->interview_status)){
+             $interview_detail['status'] = $data->interview_status;
+          }
+        }
         $response = $this->employer_model->addUpdateInterview($interview_detail);
         // print_r($response);die;
 
-        if($response){
+        if($interview_detail){
+          $employee_id = $response->employee_id;
+          if($this->common_model->checkEmployeeEmailPermission($employee_id)){
+            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+            $unique_id .= mt_rand(1000, 9999);
+            // Sending mail and notification to Company
+            $email_template_id = 5;
+             $company = array('to' => $response->email ?? NULL,
+                             'candidate_name'=>$response->name,
+                             'interview_date'=>$response->interview_date,
+                             'job_title'=>$response->job_title,
+                             'company_name'=>$response->company_name);
+             $this->common_model->email($company, $email_template_id, $unique_id);
+          }
+                        $notification['from_id'] = $response->employee_id;
+                        $notification['type'] = 'employee';
+                        $notification['subject'] = 'interview_scheduled';
+                        $notification['action_id'] = $response->job_id;
+                        $notification['message'] = 'hello, '.$response->name.' you have interview scheduled on '.$response->interview_date.' for job with title - '.$response->job_title.' you have applied on, scheduled with '.$response->company_name;
+                        $this->common_model->addNotification($notification);
+        // Sending mail and notification to Super-Admin
+        if(isset($this->admin_email)){
+            if(!empty($this->admin_email)){
+               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              $admin_email = array('to' => $this->admin_email,
+                                    'candidate_name'=>$response->name,
+                                    'interview_date'=>$response->interview_date,
+                                    'job_title'=>$response->job_title,
+                                    'company_name'=>$response->company_name);
+                                    $this->common_model->email($admin_email, $email_template_id, $unique_id);
+               }
+                        $admin_notification['from_id'] = $this->admin_id;
+                        $admin_notification['type'] = $this->user_type;
+                        $admin_notification['subject'] = 'interview_scheduled';
+                        $admin_notification['action_id'] = $response->job_id;;
+                        $admin_notification['message'] = 'A new interview scheduled of candidate '.$response->name.' on date '.$response->interview_date.' for job title '.$response->job_title.' posted by company '.$response->company_name;
+                        $this->common_model->addNotification($admin_notification);
+            }
+          }
+          //  $admin = array('from_id'=> 1,
+          //                 'type'=>'Super-Admin',
+          //                 'to' =>'aashi.we2code@gmail.com',
+          //                 'subject'=>'new interview scheduled',
+          //                 'message'=>'new interview scheduled on '.$response->interview_date.' of candidate name '.$response->name.' with '.$response->company_name,
+          //                 'unique_id'=>$unique_id);  
+          //     $this->common_model->email($admin);
+          //     $this->common_model->addNotification($admin);
 
             $this->response(array(
 
@@ -1565,6 +1731,11 @@ public function getInterview_post(){
 
       // Get filter parameters
 if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
       if($data->filter_by_time == "last_week"){
             $filter['start_date'] = date('Y-m-d', strtotime('last week'));
             $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
@@ -1637,20 +1808,13 @@ public function addUpdateLmia_put(){
            $detail["expected_time_of_completion"]=$data->completion_time;
          }
        }     
-        
-        $msg = "Data added successfully";
-        if(isset($data->id)){
-          if(!empty($data->id)){
-          $detail["id"]=$data->id;
-          $msg = "Data updated successfully";
-        }
-      }
-        
-        if($this->employer_model->addUpdateLmia($detail)){
+        $response = $this->employer_model->addUpdateLmia($detail);
+        // print_r($response);die;
+        if($response){
 
             $this->response(array(
               "status" => 1,
-              "message" => $msg
+              "message" => $response
             ), REST_Controller::HTTP_OK);
         }else{
 
@@ -1660,34 +1824,67 @@ public function addUpdateLmia_put(){
           ), REST_Controller::HTTP_OK);
         }
       }else{
-        print_r("enter all fields");
+         $this->response(array(
+            "status" => 0,
+            "messsage" => "All fields required !"
+          ), REST_Controller::HTTP_OK);
       }
    }
+public function changePassword_put(){
+        
+        // print_r($this->uri->segment(2));die;
+        $data = json_decode(file_get_contents("php://input"));
+         if (isset($data->password) && isset($data->new_password) && isset($data->conf_password) && isset($this->company_id)){
+               if(empty($data->password) || empty($data->new_password) || empty($data->conf_password) || empty( $this->company_id)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+               if($data->new_password !== $data->conf_password){
+                 $this->response(array(
+                    "status" => 0,
+                    "message" => "new password and confirm password must be same !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+                $check_password = array('password' => md5($data->password));
+                $status = $this->employer_model->checkLogin($check_password);
+                if($status != false){
+                // print_r($status);die;
+                 $new_password = array('company_id'=>$status->company_id,
+                                        'password'=>md5($data->new_password));
+               if($this->employer_model->addUpdateCompanyDetails($new_password)){
+                  $this->response(array(
+                    "status" => 1,
+                    "message" => "Password updated successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }else{
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+            } else {
+               $this->response(array(
+                    "status" => 0,
+                    "message" => "Wrong password"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+           } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
 
-//   public function getEmployer_post(){
-//       $data = json_decode(file_get_contents("php://input"));
-
-//       // print_r($company_id);die;
-//       $company_detail['company_detail']= $this->employer_model->getEmployer($data->company_id);
-//       $company_detail['kyc_detail'] = $this->employer_model->getCompany_kyc($data->company_id);
-      
-//       if(!empty($company_detail['company_detail'])){
-
-//         $this->response(array(
-//           "status" => 1,
-//           "message" => "Employer found",
-//           "data" => $company_detail
-//         ), REST_Controller::HTTP_OK);
-//       }else{
-
-//         $this->response(array(
-//           "status" => 0,
-//           "message" => "No employer found",
-//           "data" => $company_detail
-//         ), REST_Controller::HTTP_NOT_FOUND);
-//       }
-//   }
-
+    }
+    
 }
 
  

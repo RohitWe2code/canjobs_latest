@@ -73,6 +73,7 @@ public function checkLogin($credentials)
 
 
         $this->db->where($credentials);
+        $this->db->where('is_deleted != 1');
 
 
 
@@ -311,17 +312,22 @@ return $result = $this->db->update('admin');
 
 }
 public function addUpdateFilterList($list){
+$id = $list['id'] ?? null;
 
-
-  if (!empty($list['id'])) {
+  if (!empty($id)) {
     // Update operation
-            $this->db->where('id', $list['id']);
+            $this->db->where('id', $id);
             $query = $this->db->get('list');        
 
             if ($query->num_rows() > 0) {
                 $row = $query->row();
                 $json_list = json_decode($row->json, true);
                 $list_item = $list['json'];
+                $searchValue = strtolower($list_item);
+                $lowercaseArray = array_map('strtolower', $json_list); //convert to lower case to resolve case sensitivity
+                if (in_array($searchValue, $lowercaseArray)) { //Search for json_item if already exist
+                    return "already exist";
+                } else {
                 array_push($json_list, $list_item);
                 $json_updated = json_encode($json_list);
                 $this->db->where('id', $row->id);
@@ -329,9 +335,25 @@ public function addUpdateFilterList($list){
                 $this->db->set('updated_at', 'NOW()', FALSE);
                 $res = $this->db->update('list');     
                 // print_r($this->db->last_query());die;
+                if($id == 8) // Updating category list
+                {
+                $category_type = $this->db->query("SELECT DISTINCT(category_type) FROM `job_category` WHERE is_deleted != 1")->result_array();
+                 $category_list = array();
+                 $key = 1;
+                foreach($category_type as $key=>$data){
+                    $category_list[$key] = $data['category_type'];
+                    $key ++;
+                  }
+                  $category_list_json = json_encode($category_list);
+                  $this->db->where('id',$id);
+                  $this->db->set('json', $category_list_json);
+                  $this->db->set('updated_at', 'NOW()', FALSE);
+                  $this->db->update('list');
+                }
                  return $res;
 
-            }           
+            }  
+          }         
 
                       
     } 
@@ -344,10 +366,21 @@ if(!empty($list_id)){
                 $this->db->where('id',$list_id);
 }
 
-              return $res = $this->db->get('list')->result_array();
+               $res = $this->db->get('list')->result_array();
+// print_r($res);die;
+$result = array();
+foreach($res as $record) {
+    $key = $record['item_name'];
+    $value = json_decode($record['json'],true);
+    $itmarr = array();
+    foreach($value as $itmkey=>$itmval)
+    {
+      $itmarr[] = array("id"=>$itmkey,"value"=>$itmval);
+    }
 
-
-
+    $result[$key] = $itmarr;
+}
+return $result;
                 // print_r($this->db->last_query());
 
 
@@ -374,39 +407,94 @@ $json_item_id = $id['json_item_id'];
 
 }
 }
-public function getSummaryCounts(){
+// public function getSummaryCounts(){
                       
-            $res = array();
+//             $res = array();
 
-            $query = "SELECT COUNT(job_id) as posted_jobs FROM `view_job_posted` WHERE is_active = 1 AND is_deleted != 1";
-            $res['posted_jobs'] = $this->db->query($query)->row_array()['posted_jobs'];
+//             $query = "SELECT COUNT(job_id) as posted_jobs FROM `view_job_posted` WHERE is_active = 1 AND is_deleted != 1";
+//             $res['posted_jobs'] = $this->db->query($query)->row_array()['posted_jobs'];
 
-            $query = "SELECT COUNT(apply_id) AS total_applicants FROM `view_applied_employee` WHERE is_viewed != 1 AND is_deleted != 1";
-            $total_applicants = $this->db->query($query)->row_array()['total_applicants'];
+//             $query = "SELECT COUNT(employee_id) AS total_applicants FROM employee WHERE is_deleted != 1";
+//             $res['total_applicants'] = $this->db->query($query)->row_array()['total_applicants'];
+           
+//             $query = "SELECT COUNT(DISTINCT(employee_id)) AS applied_applicant FROM view_applied_employee WHERE is_deleted != 1";
+//             $res['applied_applicant'] = $this->db->query($query)->row_array()['applied_applicant'];
 
-            $query = "SELECT COUNT(apply_id) AS jobs_viewed FROM `view_applied_employee` WHERE is_deleted != 1";
-            $jobs_viewed = $this->db->query($query)->row_array()['jobs_viewed'];
+//             $query = "SELECT COUNT(employee_id) AS placed FROM `employee` where is_posted = 1";
+//             $res['placed'] = $this->db->query($query)->row_array()['placed'];
 
-            $applied_rate = ($jobs_viewed != 0) ? ($total_applicants / $jobs_viewed * 100) : 0;
-            $res['total_applicants'] = $total_applicants;
-            $res['jobs_viewed'] = $jobs_viewed;
-            $res['applied_rate'] = $applied_rate;
+//             $query = "SELECT COUNT(company_id) AS total_company FROM employer WHERE is_deleted != 1";
+//             $res['total_company'] = $this->db->query($query)->row_array()['total_company'];
+           
+//             $query = "SELECT COUNT(company_id) AS active_company FROM employer WHERE is_deleted != 1 AND is_active != 0";
+//             $res['active_company'] = $this->db->query($query)->row_array()['active_company'];
+            
+//             $query = "SELECT COUNT(id) AS total_interviews FROM job_interviews WHERE is_reschedule != 1";
+//             $res['total_interviews'] = $this->db->query($query)->row_array()['total_interviews'];
+           
+//             $query = "SELECT COUNT(id) AS interview_complete FROM job_interviews WHERE status = 'complete'";
+//             $res['interview_complete'] = $this->db->query($query)->row_array()['interview_complete'];
+            
+//             $query = "SELECT COUNT(DISTINCT CONCAT(job_id, '_', employee_id)) AS total_follow_up 
+//                       FROM follow_up";
+//             $res['total_follow_up'] = $this->db->query($query)->row_array()['total_follow_up'];
+          
+//           $query = "SELECT COUNT(id) AS  FROM follow_up WHERE next_followup_date = '0000-00-00'";
+//             $res['total_follow_up'] = $this->db->query($query)->row_array()['total_follow_up'];
 
-            return $res;
+//             $query = "SELECT COUNT(id) AS total_lmia FROM lmia WHERE is_active !=0";
+//             $res['total_lmia'] = $this->db->query($query)->row_array()['total_lmia'];
+            
+//             $query = "SELECT COUNT(id) lmia_reject FROM lmia WHERE lmia_status = 'Reject' AND is_active !=0";
+//             $res['lmia_reject'] = $this->db->query($query)->row_array()['lmia_reject'];
+           
+//             $query = "SELECT COUNT(id) lmia_pending FROM lmia WHERE lmia_status = 'Pending' AND is_active !=0";
+//             $res['lmia_pending'] = $this->db->query($query)->row_array()['lmia_pending'];
+            
+//             $query = "SELECT COUNT(id) lmia_approved FROM lmia WHERE lmia_status = 'Approved' AND is_active !=0";
+//             $res['lmia_approved'] = $this->db->query($query)->row_array()['lmia_approved'];
+
+//             $query = "SELECT COUNT(apply_id) AS total_response FROM `view_applied_employee` WHERE is_viewed != 1 AND is_deleted != 1";
+//             $total_response = $this->db->query($query)->row_array()['total_response'];
+
+//             $query = "SELECT COUNT(apply_id) AS jobs_viewed FROM `view_applied_employee` WHERE is_deleted != 1";
+//             $jobs_viewed = $this->db->query($query)->row_array()['jobs_viewed'];
+
+//             $applied_rate = ($jobs_viewed != 0) ? ($total_response / $jobs_viewed * 100) : 0;
+//             $res['total_response'] = $total_response;
+//             $res['jobs_viewed'] = $jobs_viewed;
+//             $res['applied_rate'] = $applied_rate;
+
+//             return $res;
 
 
-  }
-  public function getAllLastFollowup($id){
+//   }
+  public function getAllLastFollowup($id, $filter, $search, $limit, $offset, $sort){
 
-        $id['admin'] ?? null;
+        // print_r($sort);die;
+        $where = "";
+        if(!empty($filter['start_date']) || !empty($filter['end_date'])){
+                  $where .= " AND DATE(fu.created_at) BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
+              }
+        if(isset($id['admin_id'])){                
+               
+               $where .= " AND admin_id = ".$id['admin_id'];
+                           
+             }      
 
-              $query = "SELECT * FROM follow_up WHERE id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id,job_id) ";
+              $query = "SELECT vae.apply_id,vae.name,vae.job_title,vae.company_id,vae.company_name,fu.*
+                        FROM follow_up AS fu
+                        INNER JOIN view_applied_employee AS vae ON vae.employee_id = fu.employee_id AND vae.job_id = fu.job_id
+                        WHERE fu.id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id, job_id) AND vae.is_deleted != 1 AND vae.is_viewed != 1 ".$where." ORDER BY ".$sort['column_name'] ." ". $sort['sort_order'];
 
               $res = $this->db->query($query)->result_array();
 
-              $query = "SELECT COUNT(id) AS total_rows FROM follow_up WHERE id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id,job_id) ";
+              $query = "SELECT COUNT(fu.id) AS total_rows
+                        FROM follow_up AS fu
+                        INNER JOIN view_applied_employee AS vae ON vae.employee_id = fu.employee_id AND vae.job_id = fu.job_id
+                        WHERE fu.id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id, job_id) AND vae.is_deleted != 1 AND vae.is_viewed != 1".$where;
 
-              $total_rows = $this->db->query($query)->result_array();
+              $total_rows = $this->db->query($query)->row_array()['total_rows'];
 
               return array('total_rows' => $total_rows, 'data' => $res);
 
@@ -414,5 +502,25 @@ public function getSummaryCounts(){
 
   }
 
+public function resetPassword($reset_details){
 
+  // print_r($reset_details);die;
+
+
+                      $this->db->where('token', $reset_details['token']);
+
+
+
+                      $this->db->set('updated_at', 'NOW()', FALSE);
+
+
+
+                      $query = $this->db->update('admin', $reset_details);                    
+
+
+
+                      return $query;
+
+                      
+}
 }

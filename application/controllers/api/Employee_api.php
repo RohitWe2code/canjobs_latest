@@ -22,8 +22,10 @@ class Employee_api extends REST_Controller{
  
     $headers = getallheaders(); 
 		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-    $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    // $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
     $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
+    $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
+    $this->company_id = $this->decodedToken['data']->company_id ?? null;
     $this->user_type = $this->decodedToken['data']->user_type ?? null;
        if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
    
@@ -44,7 +46,7 @@ class Employee_api extends REST_Controller{
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
 
-      ////// Update operation ///////////
+      ////// Update employee personal detail ///////////
 if(isset($data->employee_id)){
   $employee_info = array();
    if(!empty($data->employee_id)){
@@ -173,16 +175,35 @@ if(isset($data->employee_id)){
              $employee_info["resume"] = $cv;
           }
         }
-         if(isset($data->image)){
-          if(!empty($data->image)){
-                  $img = str_replace('data:image/png;base64,', '', $data->image);
-		              $img = str_replace(' ', '+', $img);
-                  $binary_image = base64_decode($img);
-                  $file_name_for_upload = time().'.png';
-		              $image = base_url().'uploads/'.$file_name_for_upload;
-		              file_put_contents('./uploads/'.$file_name_for_upload, $binary_image);
-                  
-                  $employee_info["profile_photo"] = $image;
+         if(isset($data->profile_photo)){
+          if(!empty($data->profile_photo)){
+                     $image_data = $data->profile_photo;
+
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                       $employee_info["profile_photo"] = $logo;
+                    } else {
+                        // Unsupported file type
+                       unset($employee_info["profile_photo"]);
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($employee_info["profile_photo"]);
+                }
+
           }
         }
         // print_r($employee_info); die;
@@ -200,7 +221,7 @@ if(isset($data->employee_id)){
           ), REST_Controller::HTTP_OK);
         }
     }else{
-      ////////  Insert operation /////////////
+      ////////  Insert employee personal detail /////////////
       if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->description) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->currently_located_country) && isset($data->language) && isset($data->religion) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->work_permit_other_country))
       { 
          $error_flag = 0;
@@ -253,18 +274,40 @@ if(isset($data->employee_id)){
              $employee_info["resume"] = $cv;
           }
         }
-         if(isset($data->image)){
-          if(!empty($data->image)){
-                  $img = str_replace('data:image/png;base64,', '', $data->image);
-		              $img = str_replace(' ', '+', $img);
-                  $binary_image = base64_decode($img);
-                  $file_name_for_upload = time().'.png';
-		              $image = base_url().'uploads/'.$file_name_for_upload;
-		              file_put_contents('./uploads/'.$file_name_for_upload, $binary_image);
-                  
-                  $employee_info["profile_photo"] = $image;
+         if(isset($data->profile_photo)){
+          if(!empty($data->profile_photo)){
+                    $image_data = $data->profile_photo;
+
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                       $employee_info["profile_photo"] = $logo;
+                    } else {
+                        // Unsupported file type
+                        $employee_info["profile_photo"] = null;
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                   $employee_info["profile_photo"] = null;
+                }
           }
         }
+          if(!empty($this->admin_id) && $this->user_type != "employee" && $this->user_type != "employer"){
+                  $employee_info["created_by_admin"] = $this->admin_id;
+
+                }
         // print_r($employee_info); die;
         if($this->employee_model->updatePersonal_details($employee_info)){
            $this->response(array(
@@ -658,6 +701,11 @@ if(isset($data->employee_id)){
               'education'=>$data->filter_education ?? null
   ];
    if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
       if($data->filter_by_time == "this_week"){
             $filter['start_date'] = date('Y-m-d', strtotime('this week'));
             $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
@@ -822,7 +870,7 @@ if(isset($data->employee_id)){
     $data = json_decode(file_get_contents("php://input"));
    
     $parameters = array("select"=>"*");
-   if(isset($data->user_type) && $data->user_type == "company"){
+   if(isset($this->user_type) && $this->user_type == "company"){
        $parameters["select"] = "`apply_id`, `job_id`, `employee_id`, `name`,  `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `education`, `specialization`, `skill`, `id`, `lmia_status`, `expected_time_of_completion`"; 
     }
     if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
@@ -846,9 +894,14 @@ if(isset($data->employee_id)){
               'education'=>$data->filter_education ?? null
     );
    if(isset($data->filter_by_time)){
-      if($data->filter_by_time == "this_week"){
-            $filter['start_date'] = date('Y-m-d', strtotime('this week'));
-            $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
+     if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
+    if($data->filter_by_time == "this_week"){
+          $filter['start_date'] = date('Y-m-d', strtotime('this week'));
+          $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
 
       }
     if($data->filter_by_time == "current_month"){
@@ -896,6 +949,198 @@ if(isset($data->employee_id)){
         ), REST_Controller::HTTP_OK);
       }
   }
+  public function getProfileCompletePercent_get(){
+
+
+
+      $percent = $this->employee_model->getProfileCompletePercent();
+
+
+
+      if($percent){
+
+
+
+
+
+
+
+        $this->response(array(
+
+
+
+          "status" => 1,
+
+
+
+          "message" => "Successfully",
+
+
+
+          "data" => $percent
+
+
+
+        ), REST_Controller::HTTP_OK);
+
+
+
+      }else{
+
+
+
+
+
+
+
+        $this->response(array(
+
+
+
+          "status" => 0,
+
+
+
+          "message" => "No data found",
+
+
+
+        ), REST_Controller::HTTP_OK);
+      }
+  }
+   public function getJobsByEmployee_post(){
+    $data = json_decode(file_get_contents("php://input"));
+   $info["employee_id"] = $data->employee_id;
+    // if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
+    //   $info["admin_id"] =  $this->admin_id;
+    //   $info["admin_type"] = $this->user_type;
+    // }
+    // if(!empty($this->employee_id) && $this->user_type == "employee"){
+    //   $info["employee_id"] = $this->employee_id;
+    // }  
+     
+    // // Get pagination parameters
+    // $page = $data->page ?? 1;
+    // $limit = $data->limit ?? 10; 
+
+    // Get search parameter
+    // $search = $data->search ?? '';
+
+    // Get filter parameters
+    // $filter = array('experience'=>$data->filter_experience ?? null,
+    //            'skill'=>$data->filter_skill ?? null,
+    //           'education'=>$data->filter_education ?? null
+    // );
+  //  if(isset($data->filter_by_time)){
+  //    if($data->filter_by_time == "today"){
+  //           $filter['start_date'] = date('Y-m-d');
+  //           $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+  //     }
+  //   if($data->filter_by_time == "this_week"){
+  //         $filter['start_date'] = date('Y-m-d', strtotime('this week'));
+  //         $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
+
+  //     }
+  //   if($data->filter_by_time == "current_month"){
+  //         $filter['start_date'] = date('Y-m-01', strtotime('this month'));
+  //         $filter['end_date'] =date('Y-m-t', strtotime('this month'));
+          
+  //       }
+        
+  //   if($data->filter_by_time == "last_month"){
+  //         $filter['start_date'] = date('Y-m-01', strtotime('last month'));
+  //         $filter['end_date'] =date('Y-m-t', strtotime('last month'));
+          
+  //       }
+  //   if($data->filter_by_time == "last_week"){
+  //         $filter['start_date'] = date('Y-m-d', strtotime('last week'));
+  //         $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
+  //   }
+  //   }  
+
+    // sorting 
+    // $sort = [
+    //   'column_name' => $data->column_name ?? "created_at",
+    //   'sort_order' => $data->sort_order ?? "DESC"
+    // ];
+
+    // Calculate offset for pagination
+    // $offset = ($page - 1) * $limit;
+
+    // $result = $this->employee_model->getJobResponse($parameters,$filter, $search, $limit, $offset,$sort);
+    $result = $this->employee_model->getJobsByEmployee($info);
+
+    if($result) {
+              $this->response(array(
+                "status" => 1,
+                "message" => "successful",
+                "data" => $result
+              ), REST_Controller::HTTP_OK);
+
+      }else{
+
+        $this->response(array(
+          "status" => 0,
+          "message" => "No jobs found",
+         
+        ), REST_Controller::HTTP_OK);
+      }
+  }
+  public function changePassword_put(){
+        
+        // print_r($this->uri->segment(2));die;
+        $data = json_decode(file_get_contents("php://input"));
+         if (isset($data->password) && isset($data->new_password) && isset($data->conf_password) && isset( $this->employee_id)){
+               if(empty($data->password) || empty($data->new_password) || empty($data->conf_password) || empty( $this->employee_id)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+               if($data->new_password !== $data->conf_password){
+                 $this->response(array(
+                    "status" => 0,
+                    "message" => "new password and confirm password must be same !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+                $check_password = array('password' => md5($data->password));
+                $status = $this->employee_model->checkLogin($check_password);
+                if($status != false){
+                // print_r($status);die;
+                 $new_password = array('employee_id'=>$status->employee_id,
+                                        'password'=>md5($data->new_password));
+               if($this->employee_model->updatePersonal_details($new_password)){
+                  $this->response(array(
+                    "status" => 1,
+                    "message" => "Password updated successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }else{
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+            } else {
+               $this->response(array(
+                    "status" => 0,
+                    "message" => "Wrong password"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+           } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+
+    }
 }
 
 

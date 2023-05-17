@@ -238,7 +238,9 @@ $route['translate_uri_dashes'] = FALSE;
 
 
 
-///////// Admin //////////////
+//-------------------------------------------------------------------------------------
+// ADMIN
+//-------------------------------------------------------------------------------------
 
 
 
@@ -323,14 +325,19 @@ $route['admin/addUpdateLmia'] = 'api/employer_api/addUpdateLmia';
 $route['admin/getToken'] = 'api/admin_api/getToken';
 
 $route['admin/getSummaryCounts'] = 'api/admin_api/getSummaryCounts';
+
 $route['admin/getAllLastFollowup'] = 'api/admin_api/getAllLastFollowup';
+$route['admin/changePassword'] = 'api/admin_api/changePassword';
+$route['admin/forgetPassword'] = 'api/Admin_registration/forgetPassword';
+$route['admin/resetPassword'] = 'api/Admin_registration/resetPassword';
 
 
 
 
 
-
-///////// Employee //////////////
+//----------------------------------------------------------------------------------------
+// EMPLOYEE
+//----------------------------------------------------------------------------------------
 
 
 
@@ -404,13 +411,19 @@ $route['getCityList'] = 'api/employee_api/getCityList';
 
 $route['employee/forgetPassword'] = 'api/Employee_registration/forgetPassword';
 
-$route['employee/resetPassword'] = 'api/Employee_registration/resetPassword';
+$route['user/resetPassword'] = 'api/Employee_registration/resetPassword';
+
+$route['getProfileCompletePercent'] = 'api/employee_api/getProfileCompletePercent';
+$route['getJobsByEmployee'] = 'api/employee_api/getJobsByEmployee';
+$route['user/changePassword'] = 'api/employee_api/changePassword';
 
 
 
 
 
-////////// Employer ////////////
+//----------------------------------------------------------------------------------------
+// EMPLOYER
+//----------------------------------------------------------------------------------------
 
 
 
@@ -483,3 +496,17 @@ $route['company/resetPassword'] = 'api/Employer_registration/resetPassword';
 
 $route['company/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 
+
+$route['company/changePassword'] = 'api/employer_api/changePassword';
+
+//----------------------------------------------------------------------------------------
+// COMMON
+//----------------------------------------------------------------------------------------
+
+$route['common/getJobs'] = 'api/Common_controller/getalljobs';
+
+$route['common/generateOtp'] = 'api/Common_controller/generateOtp';
+$route['common/sendEmail'] = 'api/Common_controller/sendEmail';
+$route['common/getNotifications'] = 'api/Common_controller/getNotifications';
+$route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
+$route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';

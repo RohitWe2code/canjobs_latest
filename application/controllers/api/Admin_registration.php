@@ -36,6 +36,8 @@ class Admin_registration extends REST_Controller{
 
     $this->load->model(array("admin_model"));
 
+    $this->load->model(array("common_model"));
+
     $this->load->library(array("form_validation"));
 
     $this->load->library('Authorization_Token');
@@ -73,6 +75,7 @@ class Admin_registration extends REST_Controller{
             if ($loginStatus != false) {
 
                 $userId = array('admin_id' => $loginStatus->admin_id,
+                                'email' => $loginStatus->email,
                                 'user_type' => $loginStatus->admin_type);
 
                 $bearerToken = $this->authorization_token->generateToken($userId);
@@ -84,6 +87,8 @@ class Admin_registration extends REST_Controller{
                     'message' => 'Successfully Logged In',
 
                     'admin_id'=>$loginStatus->admin_id,
+
+                    'name'=>$loginStatus->name,
 
                     'user_type'=>$loginStatus->admin_type,
 
@@ -126,5 +131,93 @@ class Admin_registration extends REST_Controller{
         }
 
     }
+    public function forgetPassword_post(){
+          $data = json_decode(file_get_contents("php://input"));
+           if (isset($data->forget_email)){
+               if(empty($data->forget_email)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+             $email = array('email' => $data->forget_email);
+             $loginStatus = $this->admin_model->checkLogin($email);
+             if ($loginStatus != false) {
+                // print_r($loginStatus);die;
+               $detail = array('admin_id'=>$loginStatus->admin_id,
+                                'token'=> md5($loginStatus->email));
+               if($this->admin_model->addUpdateAdmin($detail)){
+                             $detail['email']=$loginStatus->email;
+                             $detail['subject']='Reset password';
+                             $detail['message']='Hello, '.$loginStatus->name.' click on the link to reset your password http://localhost:3000/resetpassword/admin:'.$detail['token'];
+                      
+                      //  $employee['token'] = $token;
+                           $this->common_model->sendMail($detail);
+                            $this->response(array(
+                            "status" => 1,
+                            "message" => "Sent you a mail"
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+                       }
+         
+            } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "No user found"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+            }
+           } else {
+             $this->response(array(
+                    "status" => 0,
+                    "message" => "Email id required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+  public function resetPassword_put(){
+        
+        // print_r($this->uri->segment(2));die;
+        $data = json_decode(file_get_contents("php://input"));
+         if (isset($data->password) && isset($data->conf_password) && isset($data->token)){
+               if(empty($data->password) || empty($data->conf_password) || empty($data->token)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+               if($data->password !== $data->conf_password){
+                 $this->response(array(
+                    "status" => 0,
+                    "message" => "password and confirm password must be same !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+                $reset_details = array('token' => $data->token,'password' => md5($data->password));
+              if($this->admin_model->resetPassword($reset_details)){
+                  $this->response(array(
+                    "status" => 1,
+                    "message" => "Password updated successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+            } else {
+               $this->response(array(
+                    "status" => 0,
+                    "message" => "failed to update password"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+           } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+
+    }
+ 
 
 }

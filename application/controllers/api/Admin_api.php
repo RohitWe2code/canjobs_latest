@@ -4,7 +4,7 @@ Header('Access-Control-Allow-Origin: *'); //for allow any domain, insecure
 
 Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
 
-Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -51,6 +51,8 @@ class Admin_api extends REST_Controller{
 
 
     $this->load->model(array("admin_model"));
+
+    $this->load->model(array("common_model"));
 
 
 
@@ -1111,10 +1113,13 @@ public function addUpdatefilterList_put(){
          
       }
   }
+$response = $this->admin_model->addUpdateFilterList($list);
+// print_r($response);die;
+  if($response){
 
-  if($this->admin_model->addUpdateFilterList($list)){
-
-
+      if($response === "already exist"){
+        $msg = "item already exist !";
+      }
 
     // retruns true
 
@@ -1168,16 +1173,32 @@ public function addUpdatefilterList_put(){
  public function getFilterList_post(){
       $data = json_decode(file_get_contents("php://input"));
       $list_id = $data->list_id ?? null;
-      // print_r($job_id);die;
-      $employee = $this->admin_model->getFilterList($list_id);
-      // print_r(json_encode($employee));die;
-      if($employee){
+      // $this->common_model->getJobCategory(); // updating categories from job_category table to list
+      $res = $this->admin_model->getFilterList($list_id);
+      // print_r($res);die;
+      
+      $stringData = json_encode($res);
+      
+      // Write the string to the file
+      $filename = "filterList/filterList.json";
+      $file = fopen($filename, "w");
+      fwrite($file, $stringData);
+      fclose($file);
+      
+      // Force download the file
+      header("Content-Type: application/octet-stream");
+      header("Content-Transfer-Encoding: Binary");
+      header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
+      // readfile($filename);
+      // exit;
+     
+      if($res){
+         $this->response(array(
+        "status" => 1,
+        "message" => "Successful",
+        "data" => $res
+      ), REST_Controller::HTTP_OK);
 
-        $this->response(array(
-          "status" => 1,
-          "message" => " Successful ",
-          "data" => $employee
-        ), REST_Controller::HTTP_OK);
       }else{
 
         $this->response(array(
@@ -1194,11 +1215,6 @@ public function addUpdatefilterList_put(){
               'json_item_id'=>$data->json_item_id);
 
   if($this->admin_model->deleteFilterList($id)){
-
-
-
-    // retruns true
-
 
 
     $this->response(array(
@@ -1218,11 +1234,6 @@ public function addUpdatefilterList_put(){
 
 
   }else{
-
-
-
-    // return false
-
 
 
     $this->response(array(
@@ -1246,11 +1257,11 @@ public function addUpdatefilterList_put(){
 }
  public function getToken_post(){
 
-      // $data = json_decode(file_get_contents("php://input"));
+    $data = json_decode(file_get_contents("php://input"));
      
 //  print_r($user_type);die;
 if(!empty($this->user_type) && $this->user_type == "super-admin" || $this->user_type == "admin"){
-  $id = array('admin_id' =>$this->admin_id);
+  $id = array('admin_id' =>$data->admin_id);
   // print_r('if');die;
   
   $loginStatus = $this->admin_model->checkLogin($id);
@@ -1300,95 +1311,71 @@ if(!empty($this->user_type) && $this->user_type == "super-admin" || $this->user_
     }
        
     }
-    public function getSummaryCounts_get(){
+  //   public function getSummaryCounts_get(){
 
 
 
-    // $data = json_decode(file_get_contents("php://input"));
+  //     $counts = $this->admin_model->getSummaryCounts();
 
 
 
-    // $id = array(
+  //     if($counts){
 
 
 
-    //   "job_id" => $this->get('job_id'),
 
 
 
-    //   "employee_id" => $this->get('employee_id'),
 
+  //       $this->response(array(
 
 
-    // );
 
+  //         "status" => 1,
 
 
-    // print_r($id);die;
 
+  //         "message" => "Successfully",
 
 
-      $counts = $this->admin_model->getSummaryCounts();
 
+  //         "data" => $counts
 
 
-      if($counts){
 
+  //       ), REST_Controller::HTTP_OK);
 
 
 
+  //     }else{
 
 
 
-        $this->response(array(
 
 
 
-          "status" => 1,
 
+  //       $this->response(array(
 
 
-          "message" => "Successfully",
 
+  //         "status" => 0,
 
 
-          "data" => $counts
 
+  //         "message" => "No data found",
 
 
-        ), REST_Controller::HTTP_OK);
 
+  //       ), REST_Controller::HTTP_OK);
 
 
-      }else{
 
+  //     }
 
 
 
-
-
-
-        $this->response(array(
-
-
-
-          "status" => 0,
-
-
-
-          "message" => "No data found",
-
-
-
-        ), REST_Controller::HTTP_OK);
-
-
-
-      }
-
-
-
-  }
+  // }
   public function getAllLastFollowup_post(){
 
 
@@ -1422,11 +1409,35 @@ if(!empty($this->user_type) && $this->user_type == "super-admin" || $this->user_
 
 
 
-    $filter = ['job_title'=>$data->filter_job_type ?? null,
-              'company_name'=>$data->filter_company_name ?? null,
-              'experience'=>$data->filter_experience ?? null,
-];
+    $filter = array();
+ if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
 
+      }
+      if($data->filter_by_time == "this_week"){
+            $filter['start_date'] = date('Y-m-d', strtotime('this week'));
+            $filter['end_date'] = date('Y-m-d', strtotime('this week +7days'));
+
+      }
+      if($data->filter_by_time == "last_week"){
+            $filter['start_date'] = date('Y-m-d', strtotime('last week'));
+            $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
+
+      }
+     
+      if($data->filter_by_time == "last_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('last month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('last month'));
+            
+          }
+      if($data->filter_by_time == "current_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('this month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('this month'));
+            
+          }
+    }
     
 
     // Calculate offset for pagination
@@ -1439,12 +1450,12 @@ if(!empty($this->user_type) && $this->user_type == "super-admin" || $this->user_
 
     $sort = [
 
-      'column_name' => $data->column_name ?? null ,
+      'column_name' => $data->column_name ?? "created_at" ,
 
-      'sort_order' => $data->sort_order ?? null
+      'sort_order' => $data->sort_order ?? "DESC"
 
     ];
-
+// print_r($sort);die;
 
 
     $result = $this->admin_model->getAllLastFollowup($id, $filter, $search, $limit, $offset, $sort);
@@ -1494,6 +1505,60 @@ if(!empty($this->user_type) && $this->user_type == "super-admin" || $this->user_
 
 
 }
+public function changePassword_put(){
+        
+        // print_r($this->uri->segment(2));die;
+        $data = json_decode(file_get_contents("php://input"));
+         if (isset($data->password) && isset($data->new_password) && isset($data->conf_password) && isset($this->admin_id)){
+               if(empty($data->password) || empty($data->new_password) || empty($data->conf_password) || empty($this->admin_id)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+               if($data->new_password !== $data->conf_password){
+                 $this->response(array(
+                    "status" => 0,
+                    "message" => "new password and confirm password must be same !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+                $check_password = array('password' => md5($data->password));
+                $status = $this->admin_model->checkLogin($check_password);
+                if($status != false){
+                // print_r($status);die;
+                 $new_password = array('admin_id'=>$status->admin_id,
+                                        'password'=>md5($data->new_password));
+               if($this->admin_model->addUpdateAdmin($new_password)){
+                  $this->response(array(
+                    "status" => 1,
+                    "message" => "Password updated successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }else{
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+            } else {
+               $this->response(array(
+                    "status" => 0,
+                    "message" => "Wrong password"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+           } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+
+    }
 
 
 }

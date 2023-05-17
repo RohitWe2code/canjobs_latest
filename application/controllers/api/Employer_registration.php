@@ -43,28 +43,14 @@ class Employer_registration extends REST_Controller{
   }
 
 
-
-  /*
-
-    INSERT: POST REQUEST TYPE
-
-    UPDATE: PUT REQUEST TYPE
-
-    DELETE: DELETE REQUEST TYPE
-
-    LIST: Get REQUEST TYPE
-
-  */
-
-
-
   public function signup_post(){  
 
     $email = $this->security->xss_clean($this->input->post("email"));
 
     $contact_no = $this->security->xss_clean($this->input->post("contact_no"));
 
-    $password = $this->security->xss_clean($this->input->post("password"));    
+    $password = $this->security->xss_clean($this->input->post("password"));  
+    $otp =$this->input->post("otp");  
 
     // form validation for inputs
 
@@ -73,6 +59,8 @@ class Employer_registration extends REST_Controller{
     $this->form_validation->set_rules("contact_no", "contact_no", "required");
 
     $this->form_validation->set_rules("password", "password", "required");
+
+    $this->form_validation->set_rules("otp", "otp", "required");
 
 
 
@@ -112,10 +100,18 @@ class Employer_registration extends REST_Controller{
 
         return;
 
+        }    
+
+      if(!empty($email) && !empty($contact_no) && !empty($password) && !empty($otp)){
+        
+        $validate_otp = $this->common_model->validate_otp($email,$otp);
+        if(!$validate_otp){
+        $this->response(array(
+        "status" => 0,
+        "message" => " incorrect otp "
+        ), REST_Controller::HTTP_OK);
+        return;
         }
-
-
-      if(!empty($email) && !empty($contact_no) && !empty($password)){
 
         // all values are available
 
@@ -136,14 +132,12 @@ class Employer_registration extends REST_Controller{
         $response = $this->employer_model->insert_employer($employer);
         // print_r($response);die;
         if($response){
-           $detail = array('admin_id'=>1,
-              'type'=>'Super-admin',
-              'email' => 'utkarsh.we2code@gmail.com',
-              'subject'=>'New user added',
-              'message'=>'A new company '.$response->email.' has been added successfully');  
-              $this->common_model->addNotification($detail);
-              $this->common_model->sendMail($detail);
-
+          // Sending email
+            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+            $unique_id .= mt_rand(1000, 9999);
+            $email_template_id = 1;
+            $email_detail = array('to' => $response->email ?? NULL);
+            $this->common_model->email($email_detail, $email_template_id, $unique_id);
 
           $this->response(array(
 
@@ -153,12 +147,7 @@ class Employer_registration extends REST_Controller{
 
           ), REST_Controller::HTTP_OK);
 
-          return;
-
         }else{
-
-
-
           $this->response(array(
 
             "status" => 0,
@@ -210,11 +199,12 @@ class Employer_registration extends REST_Controller{
 
             $loginStatus = $this->employer_model->checkLogin($credentials);
 
-             print_r($loginStatus);die;
+            //  print_r($loginStatus);die;
 
             if ($loginStatus != false) {
 
-                $userId = array('company_id' => $loginStatus->company_id);
+                $userId = array('company_id' => $loginStatus->company_id,
+                                'user_type' => 'company');
 
                 $bearerToken = $this->authorization_token->generateToken($userId);
 
@@ -225,6 +215,8 @@ class Employer_registration extends REST_Controller{
                 "message" => "Successfully Logged In",
 
                 "company_id"=>$loginStatus->company_id,
+                
+                "company_name"=>$loginStatus->company_name,
 
                 "token" => $bearerToken,
 
@@ -273,10 +265,21 @@ class Employer_registration extends REST_Controller{
                $detail = array('company_id'=>$loginStatus->company_id,
                                 'token'=> md5($loginStatus->email));
                if($this->employer_model->addUpdateCompanyDetails($detail)){
-                            $detail['email']=$loginStatus->email;
-                            $detail['subject']='Reset password';
-                            $detail['message']='Hello, '.$loginStatus->contact_person_name.' click on the link to reset your password http://apnaorganicstore.in/canjobs/resetPassword/'.$detail['token'];
-                            $this->common_model->sendMail($detail);
+                            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+                            $unique_id .= mt_rand(1000, 9999);
+                            // $detail['email']=$loginStatus->email;
+                            // $detail['subject']='Reset password';
+                            // $detail['message']='Hello, '.$loginStatus->contact_person_name.' click on the link to reset your password http://localhost:3000/resetpassword/company:'.$detail['token'];
+                            // $detail['unique_id']=$unique_id;
+                            // $this->common_model->email($detail);
+                            //------------
+                            $email_template_id = 6;
+                            $email = array('to' => $loginStatus->email ?? NULL,
+                                          'token'=>$detail['token'],
+                                          'reset_link' => 'http://localhost:3000/resetpassword/user'
+                                         );
+                            $this->common_model->email($email, $email_template_id, $unique_id);
+
                             $this->response(array(
                             "status" => 1,
                             "message" => "Sent you a mail"

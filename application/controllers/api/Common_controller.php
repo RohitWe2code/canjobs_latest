@@ -136,14 +136,14 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
            $detail = array('email' => $email,
                             'otp' => $otp);
           if ($this->common_model->insert_otp($detail)) {
+            // Sending mail
               $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
-              $unique_id .= mt_rand(1000, 9999);
-              $detail = array(
-              'email' => $email,
-              'subject'=>'One Time Password',
-              'message'=>'Your OTP is '.$otp.' for creating account, please dont share it with anyone',
-              'unique_id'=>$unique_id);
-              $this->common_model->email($detail);
+              $unique_id .= mt_rand(1000, 9999); // unique id for grouping in table
+              $email_template_id = 7;
+              $email = array('to' => $email ?? NULL,
+                             'otp'=>$otp
+                            );
+              $this->common_model->email($email, $email_template_id, $unique_id);
               $this->response(array(
                 "status" => 1,
                 "message" => "successful",
@@ -162,7 +162,6 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
   // Retrieve mail from email table and send it to sendMail model function 
   public function sendEmail_post(){
         $last_record = $this->common_model->getLastRecord_email();
-        // print_r($last_record);die;
         if (isset($last_record['group_id'])) {
             $group_id = $last_record['group_id'];
         } else {
@@ -177,11 +176,44 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           return;
         }
         $response = $this->common_model->getEmailByGroup($group_id);
-        // print_r($response);die;
+        print_r($response);die;
         foreach($response as $data){
-          $email = json_decode($data['email_json'],true);
-          $status = $this->common_model->sendMail($email);
-          // print_r($email);
+          $email_template_id = $data['email_template_id'];
+          $email_template = $this->common_model->getEmailTemplate($email_template_id);
+          $detail = json_decode($data['email_json'],true);
+          $to = $detail['to'];
+          $subject = $email_template['subject'];
+          // check for email type
+          if($email_template_id = 3) // post_job 
+          {
+            $body = str_replace('{postjob_job_title}', $detail['job_title'], $email_template['message']);
+            $body = str_replace('{postjob_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id = 4) // apply_on_job 
+          {
+            $body = str_replace('{postjob_job_title}', $detail['job_title'], $email_template['message']);
+            $body = str_replace('{postjob_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id = 5) // interview_schedule 
+          {
+            $body = str_replace('{interview_schedule_name}', $detail['candidate_name'], $email_template['message']);
+            $body = str_replace('{interview_schedule_interview_date}', $detail['interview_date'], $body);
+            $body = str_replace('{interview_schedule_job_title}', $detail['job_title'], $body);
+            $body = str_replace('{interview_schedule_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id = 6) // forget_password 
+          {
+            // {token} {reset_link}
+            $body = str_replace('{token}', $detail['token'], $email_template['message']);
+            $body = str_replace('{reset_link}', $detail['reset_link'], $body);
+          }
+          if($email_template_id = 7) // otp_signup 
+          {
+            $body = str_replace('{otp}', $detail['otp'], $email_template['message']);
+          }
+          $subject = $email_template['subject'];
+          $body = str_replace('{job_message_body}', $detail['candidate_name'], $email_template['message']);
+          $status = $this->common_model->sendMail($to, $subject, $body);
         }
         // print_r($status);die;
         if($status){
@@ -263,9 +295,10 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     }
     public function addUpdateEmailTemplate_put(){
          $data = json_decode(file_get_contents("php://input"));
-         if(isset($data->email_type) && isset($data->subject) && isset($data->message))
+         if(isset($data->subject) && isset($data->message))
          {
-         if(empty($data->email_type) || empty($data->subject) || empty($data->message))
+          $error_flag = 0;
+         if(empty($data->subject) || empty($data->message))
          {
            $error_flag = 1;
          }
@@ -282,8 +315,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
          return;
 
         }
-         $template = array('email_type'=>$data->email_type,
-                            'subject'=>$data->subject,
+         $template = array( 'subject'=>$data->subject,
                             'message'=>$data->message);
           $msg = "data inserted successfully";
           if(isset($data->id)){
@@ -292,9 +324,9 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
              $msg = "data updated successfully";
           }
           }
-          if(isset($data->id_active)){
-          if(!empty($data->id_active)){
-            $template["id_active"] = $data->id_active;
+          if(isset($data->is_active)){
+          if(!empty($data->is_active)){
+            $template["is_active"] = $data->is_active;
 
           }
           }
@@ -334,5 +366,68 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 
       }
     }
+public function getEmailTemplate_post(){
 
+    // $headers = $this->input->request_headers(); 
+		// $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    // // print_r($this->decodedToken);die;
+    // // $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
+    // // $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
+    // // $this->company_id = $this->decodedToken['data']->company_id ?? null;
+    // $user_type = $this->decodedToken['data']->user_type ?? null;
+    // $id = $this->decodedToken['data']->admin_id ?? null;
+    // $id = $this->decodedToken['data']->employee_id ?? $id;
+    // $id = $this->decodedToken['data']->company_id ?? $id;
+
+      //  if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
+
+      //       $err = array(
+
+      //           'status'=>false,
+
+      //           'message'=>'Unauthorised Token',
+
+      //           'data'=>[]
+
+      //       );
+      //       echo json_encode($err);
+
+      //       exit;
+      //     }
+
+       $data = json_decode(file_get_contents("php://input"));
+       $id = array();
+       if(isset($data->id)){
+        if(!empty($data->id)){
+        $id['id'] = $data->id;
+        }
+       }
+      $template = $this->common_model->getEmailTemplate($id);
+      //  print_r($template);die;
+      if($template){
+
+
+
+        $this->response(array(
+
+          "status" => 1,
+          "message" => "Data found",
+          "Data" => $template
+
+        ), REST_Controller::HTTP_OK);
+
+      }else{
+
+
+
+        $this->response(array(
+
+          "status" => 0,
+
+          "message" => "No data found",
+
+        ), REST_Controller::HTTP_OK);
+
+      }
+    }
 }

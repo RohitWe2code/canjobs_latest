@@ -18,6 +18,8 @@ public function get_employer_by_email($email){
 
             $this->db->where('email', $email);
 
+            $this->db->where('is_deleted != 1');
+
             $query = $this->db->get('employer');
 
             
@@ -32,9 +34,6 @@ public function get_employer_by_email($email){
 
 public function insert_employer($employer = array()){
 
-            // print_r($employee); die; 
-
-          //  return $this->db->insert('employer', $employer);
             $this->db->insert('employer', $employer);
             $inserted_id = $this->db->insert_id();
             return $inserted_data = $this->db->get_where('employer', array('company_id' => $inserted_id))->row();
@@ -47,6 +46,8 @@ public function checkLogin($credentials)
 {
 
         $this->db->where($credentials);
+        $this->db->where('is_deleted != 1');
+
 
         $query = $this->db->get('employer');
         // print_r($this->db->last_query());
@@ -68,12 +69,6 @@ public function checkLogin($credentials)
 
 }
 public function addUpdateCompanyDetails($company_info){
-
-  // print_r($company_info);die;
-
-    // $company_id = $company_info['company_id'];
-
-   
 
       if (isset( $company_info['company_id'])) {
 
@@ -165,10 +160,7 @@ public function addUpdate_company_kycDetails($kyc_detail){
 }
 
 public function addUpdate_job($job_detail){
-
-  // print_r($job_detail);die;
 if(isset($job_detail['job_id'])){
-  // print_r("update");die;
     $job_id = $job_detail['job_id'];              
 
                           $this->db->select('*');
@@ -195,53 +187,23 @@ if(isset($job_detail['job_id'])){
 
                           }
                          } else {  
-// print_r("insert");die;
                                   $res = $this->db->insert('jobs', $job_detail);
                                   $inserted_id = $this->db->insert_id();
-            //                       $query = "SELECT e.company_name,j.job_title 
-            //                                 FROM jobs as j 
-            //                                 INNER JOIN employer as e 
-            //                                 ON j.company_id = e.company_id
-            //                                 WHERE j.job_id = $inserted_id";
-            // return $inserted_data = $this->db->get_where('employer', array('company_id' => $inserted_id))->row();
-
-                                  // print_r($this->db->last_query());
-
-                                  // return $res;
-
-                                  // $res = $this->db->insert('jobs', $job_detail);
-// $inserted_id = $this->db->insert_id();
-$query = "SELECT e.company_name, j.job_title 
-          FROM jobs as j 
-          INNER JOIN employer as e 
-          ON j.company_id = e.company_id
-          WHERE j.job_id = $inserted_id";
-$inserted_data = $this->db->query($query)->row();
-
-// or you can use $this->db->get_where() method instead of $this->db->query()
-// $inserted_data = $this->db->select('e.company_name, j.job_title')
-//                        ->from('jobs as j')
-//                        ->join('employer as e', 'j.company_id = e.company_id')
-//                        ->where('j.job_id', $inserted_id)
-//                        ->get()
-//                        ->row();
-
-// print_r($this->db->last_query());
-
-return $inserted_data;
-
-
-                          }  
+                                //   $query = "SELECT e.company_name, j.job_title 
+                                //             FROM jobs as j 
+                                //             INNER JOIN employer as e 
+                                //             ON j.company_id = e.company_id
+                                //             WHERE j.job_id = $inserted_id";
+                                // return  $inserted_data = $this->db->query($query)->row();
+                                 $this->db->where('job_id', $inserted_id);
+                                return $query = $this->db->get('view_job_posted')->row();
+                         }  
 
         
 
 }
 
 public function addUpdate_category($category_detail){
-
-  // print_r($category_detail);die;
-
-    // $company_id = $category_detail`['company_id'];
 
    $job_category_id = $category_detail['job_category_id'] ?? null;
 
@@ -254,13 +216,26 @@ public function addUpdate_category($category_detail){
                                   return $res = $this->db->update('job_category', $category_detail);
 
 
-                          } else {  
+                          } else {
+                            // Check if category_name OR category_type already exist  
+                            $where = "1=1";
+                            if(isset($category_detail['category_type'])){
+                              $where .= " AND category_type = '".$category_detail['category_type']."' ";
+                            }
+                            if(isset($category_detail['category_name']) && isset($category_detail['category_type'])){
+                              $where .= " AND category_name = '".$category_detail['category_name']."' AND category_type = '".$category_detail['category_type']."' ";
+                            }
+                            // print_r($where);die;
+                            $this->db->where($where);
+                            $this->db->where('is_deleted != 1');
+                            $query = $this->db->get('job_category');
+                             if ($query->num_rows() > 0) {
+                                  return $msg = "already exist";
+                              } else {
+                                // If not exist than insert data
+                                return $res = $this->db->insert('job_category', $category_detail);
+                              } 
 
-                                 return $res = $this->db->insert('job_category', $category_detail);
-
-                                  //print_r($this->db->last_query());
-
-                                  // return $res;
 
                           }  
 
@@ -269,7 +244,9 @@ public function addUpdate_category($category_detail){
 }
 
 public function applyJob($candidate_detail){
- if (!empty($candidate_detail['apply_id'])) {
+ $is_viewed = $candidate_detail["is_viewed"] ?? '';
+//  print_r($is_viewed);die;
+  if (!empty($candidate_detail['apply_id'])) {
 
                                   $this->db->where('apply_id', $candidate_detail['apply_id']);
 
@@ -288,45 +265,36 @@ public function applyJob($candidate_detail){
 
                           $query = $this->db->get('apply_on_job');
                           $row = $query->row();
-                          if(isset($row->is_viewed) && $row->is_viewed == 0){
-                            // $res = '2';
-                                  return "2";
-                          }
                           if (!empty($row)){  
                             // print_r(11);die;
-
+                              if($row->is_viewed == 0 || $row->is_viewed == 2){
+                                  return "2";
+                              }
+                              if($row->is_viewed == 3 &&  $is_viewed == 3){
+                                  return "3";
+                              }
                                   $this->db->where('apply_id', $row->apply_id);
 
-                                  $this->db->set('is_viewed', 0);
+                                  $this->db->set('is_viewed', $is_viewed);
 
                                   $this->db->set('updated_at', 'NOW()', FALSE);
 
                                   $res = $this->db->update('apply_on_job');
 
                                   // print_r($this->db->last_query());
-
-                                  return $res;
+                                  return $inserted_data = $this->db->get_where('view_job_posted', array('job_id' => $row->job_id))->row();
+                                  // return $res;
 
                           }else{
                               // print_r(22);die;
-                                 return $res = $this->db->insert('apply_on_job', $candidate_detail);
+                                  $res = $this->db->insert('apply_on_job', $candidate_detail);
+                                  return $inserted_data = $this->db->get_where('view_job_posted', array('job_id' => $row->job_id))->row();
                           }
 
                           }  
 
 }
 
-// public function getAppliedCandidateList($job_id){
-
-//                 $this->db->where('job_id', $job_id);
-
-//                 $res = $this->db->get('apply_on_job');
-
-//                 //  print_r($this->db->last_query());
-
-//                return $res->result_array();
-
-  // }
 public function viewJobs($filter, $search, $limit, $offset,$sort,$details){
  
     $where = "1=1";
@@ -359,121 +327,40 @@ public function viewJobs($filter, $search, $limit, $offset,$sort,$details){
        }
     if (!empty($search)) {
         $search = $this->db->escape_like_str($search);
-        // $where .= " AND (job_title LIKE '%$search%')";
-         $where .= " AND (job_title LIKE '%$search%' OR company_name LIKE '%$search%')";
-    }
-    if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
-    $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+        $where .= " AND (job_title LIKE '%$search%' OR company_name LIKE '%$search%')";
     }
     if(!empty($details['job_id'])){
-         $where .= " AND job_id=".$details['job_id']." ";
+        $where .= " AND job_id=".$details['job_id']." ";
     }
     if(!empty($details['admin_id'])){                  
-                  $where .= " AND created_by_admin = ".$details['admin_id'];
+        $where .= " AND created_by_admin = ".$details['admin_id'];
     }
+    if(!empty($details['company_id'])){                  
+        $where .= " AND company_id = ".$details['company_id'];
+    }
+    
+  //  $result = $this->db->query("SELECT vjp.*,(SELECT COUNT(*) FROM apply_on_job WHERE (vjp.job_id = apply_on_job.job_id) AND (apply_on_job.employee_id = ".$details['employee_id'].") AND apply_on_job.is_viewed  != 1) AS is_applied FROM view_job_posted AS vjp WHERE ".$where." AND vjp.is_deleted != 1 AND company_deleted != 1 ORDER BY ".$sort['column_name']." ".$sort['sort_order']." LIMIT ".$limit." OFFSET ".$offset)->result_array();
+//----------------------------------------------------------------------------------------------------------------
+$this->db->select('vjp.*, 
+    (SELECT COUNT(*) FROM apply_on_job WHERE (vjp.job_id = apply_on_job.job_id) AND (apply_on_job.employee_id = '.$details['employee_id'].') AND apply_on_job.is_viewed != 1) AS is_applied');
+$this->db->from('view_job_posted AS vjp');
+$this->db->where($where);
+$this->db->where('vjp.is_deleted !=', 1);
+$this->db->where('vjp.company_deleted !=', 1);
+$this->db->order_by($sort['column_name'], $sort['sort_order']);
+$this->db->limit($limit, $offset);
+$result = $this->db->get()->result_array();
 
+//----------------------------------------------------------------------------------------------------------------
 
-    $this->db->where($where);
-    $this->db->where('is_deleted != 1');
-    $query = $this->db->get('view_job_posted', $limit, $offset);
-    $result = $query->result_array();
+    // $this->db->where($where);
+    // $this->db->where('is_deleted != 1');
+    // $query = $this->db->get('view_job_posted', $limit, $offset);
+    // $result = $query->result_array();
     // print_r($this->db->last_query());
-    $total_rows = $this->db->where($where)->where('is_deleted != 1')->from('view_job_posted')->count_all_results();
+    $total_rows = $this->db->where($where)->where('is_deleted != 1')->where('company_deleted != 1')->from('view_job_posted')->count_all_results();
     return array('total_rows' => $total_rows, 'data' => $result);
 }
-      // print_r($filter); die;
-      // $filterString = implode("','", $filter);
-      // $employee_skill_result=array();
-      // $where = "1=1";
-      // if(!empty($filter['category_type']))
-      // {
-      //   $where .= " AND category_type IN ('$filter["category_type"]') ";
-      // }
-      // if(!empty($filter['job_type']))
-      // {
-      //   $where .= " AND job_type IN ('$filterString') ";
-      // }
-      // if(!empty($filter['keyskill']))
-      // {
-      //   $where .= " AND keyskill IN ('$filterString') ";
-      // }
-      // if(!empty($filter['location']))
-      // {
-      //   $where .= " AND location IN ('$filterString') ";
-      // }
-      // if($where){
-      // print_r(1);die;
-      //  $this->db->where($where);
-      //   // $this->db->like('location', $filter);
-      //   return  $this->db->get('view_job_posted')->result_array();
-      // }else{
-      //    print_r(0);die;
-      //      $this->db->select('*');
-      //       $this->db->from('view_job_posted');
-      //       return $this->db->get()->result_array();
-      // }
-      // if (!empty($filter['category_type']) || !empty($filter['job_type']) || !empty($filter['keyskill']) || !empty($filter['location'])) 
-      // {
-
-
-
-      //   $where= '';
-      //   foreach($filter as $key=>$val)
-      //   {
-      //     if($val=="")
-      //     {
-      //       unset($filter[$key]);
-      //     }
-        // }    
-        // $filterString = implode("','", $filter);
-        // $where .= " OR category_type IN ('$filterString')";
-        // $where .= " OR job_type IN ('$filterString')";
-        // $where .= " OR keyskill IN('$filterString')";
-        // $where .= " OR location IN ('$filterString')";
-        // $where = ltrim($where,' OR ');
-        
-       
-        // $this->db->where($where);
-        // // $this->db->like('location', $filter);
-        // return  $this->db->get('view_job_posted')->result_array();
-        //  print_r($this->db->last_query());
-      // }else if (isset($_GET['employee_id'])) {
-      //   // print_r($_GET['employee_id']);die;
-      //     $employee_id = $_GET['employee_id'];
-      //     $this->db->select('skill');
-      //     $this->db->where('employee_id', $employee_id);
-      //     $employee_skill_result = $this->db->get('employee_skill')->result_array();
-
-      //     // print_r($employee_skill_result);die;
-      //     if(count($employee_skill_result)>0){
-      //     $jobs = array();
-      //     foreach ($employee_skill_result as $employee_skill) {
-      //         $employee_skill_array = explode(',', $employee_skill['skill']);
-      //     }
-      //     $this->db->select('*');
-      //     $this->db->from('view_job_posted');
-      //     $result = $this->db->get()->result_array();
-      //     usort($result, function($a, $b) use ($employee_skill_array) {
-      //         $a_count = count(array_intersect($employee_skill_array, explode(',', $a['keyskill'])));
-      //         $b_count = count(array_intersect($employee_skill_array, explode(',', $b['keyskill'])));
-      //         return $b_count - $a_count;
-      //         // print_r($res); die;
-      //     });
-      //     }
-  //  } else{
-            // $this->db->select('*');
-            // $this->db->from('view_job_posted');
-            // return $this->db->get()->result_array();
-    // }  
-// print_r($result);die;
-
-// if($result>0)
-// {
-//   return $result;
-// }else{
-//   return array();
-// }
-// }
 
 public function getJob($job_id = null){
 
@@ -492,8 +379,15 @@ public function getJob($job_id = null){
 
 public function getAllJobCategory($filter, $search, $limit, $offset,$sort,$parent_id){
 
-    $where = "parent_id = $parent_id";
+    $where = "1=1";
 
+    if($parent_id > 0){
+      // $this->db->where('parent_id > 0');
+      $where .= " AND parent_id > 0 ";
+    }
+    // else{
+    //    $this->db->where('parent_id = 0');
+    // }
     if (!empty($filter)) {
         $category_type = $filter;
         $where .= " AND category_type = '$category_type' ";
@@ -543,30 +437,25 @@ public function getAllEmployer($user_type, $filter, $search, $limit, $offset, $s
                   $where .= " AND created_by_admin =".$user_type['admin_id']." ";
               }
 
-              // $this->db->where($where);
-              // $this->db->where('is_deleted !=', 1);
-              // $result = $this->db->get('employer',$limit, $offset)->result_array();
-              // //  return $res->result_array();
-              // $total_rows = $this->db->where($where)->where('is_deleted != 1')->from('employer')->count_all_results();
-              // return array('total_rows' => $total_rows, 'data' => $result);
-
                  
-        $sql = "SELECT c.*, (
-        SELECT COUNT(job_id)
-        FROM jobs
-        WHERE company_id = c.company_id
-        ) AS vacancies
-        FROM employer c
-        WHERE c.is_deleted != 1";
+//         $sql = "SELECT c.*, (
+//         SELECT COUNT(job_id)
+//         FROM jobs
+//         WHERE company_id = c.company_id
+//         ) AS vacancies
+//         FROM employer c
+//         WHERE c.is_deleted != 1";
 
+// $this->db->where($where);
+// $this->db->where('is_deleted !=', 1);
+// $this->db->select('c.*, vacancies');
+// $result = $this->db->get("($sql) as c", $limit, $offset)->result_array();
 $this->db->where($where);
 $this->db->where('is_deleted !=', 1);
-$this->db->select('c.*, vacancies');
-// $this->db->from('(' . $sql . ') as c');
-// $result = $this->db->get(null, $limit, $offset)->result_array();
-$result = $this->db->get("($sql) as c", $limit, $offset)->result_array();
+// $this->db->select('c.*, vacancies');
+$result = $this->db->get("view_employer", $limit, $offset)->result_array();
 // print_r($this->db->last_query());
-$total_rows = $this->db->where($where)->where('is_deleted != 1')->from('employer')->count_all_results();
+$total_rows = $this->db->where($where)->where('is_deleted != 1')->from('view_employer')->count_all_results();
 return array('total_rows' => $total_rows, 'data' => $result);
 
                
@@ -646,9 +535,10 @@ public function resetPassword($reset_details){
                       
 }
 public function addUpdateInterview($interview_detail){
-  
-            $this->db->where('job_id', $interview_detail['job_id']);
-            $this->db->where('employee_id', $interview_detail['employee_id']);
+  $job_id = $interview_detail['job_id'];
+  $employee_id = $interview_detail['employee_id'];
+            $this->db->where('job_id', $job_id);
+            $this->db->where('employee_id', $employee_id);
             $this->db->order_by('id', 'desc');
             $query = $this->db->get('job_interviews', 1);        
 
@@ -659,22 +549,19 @@ public function addUpdateInterview($interview_detail){
                 $this->db->where('id', $row->id);
                 $this->db->update('job_interviews');     
                 // print_r($this->db->last_query());die;
-
+              
             }
 
-      return $this->db->insert('job_interviews', $interview_detail);
+      $res = $this->db->insert('job_interviews', $interview_detail);
+      if($res){
+        return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' =>$employee_id))->row();
+        
+      }
+      // print_r($res);die;
 
 }
 public function getInterview($details,$filter, $search, $limit, $offset, $sort) {       
     $where = "1=1";
-    // if (!empty($filter['industry'])) {
-      //     $industry = $this->db->escape($filter['industry']);
-      //     $where .= " AND vjp.industry = $industry";
-      // }
-      // if (!empty($filter['corporation'])) {
-        //     $corporation = $this->db->escape($filter['corporation']);
-        //     $where .= " AND vjp.corporation = $corporation";
-        // }
         if (!empty($search)) {
           $search = $this->db->escape_like_str($search);
           $where .= " AND (vjp.company_name LIKE '%$search%' OR ev.name LIKE '%$search%')";
@@ -698,17 +585,6 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
          if(!empty($filter['start_date']) || !empty($filter['end_date'])){
              $where .= " AND ji.interview_date` BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
         }
-        // SQL query ---->
-        //------------------------------------------------------------------------------------------------------
-        // SELECT `ji`.*, `ev`.`name`, `ev`.`skill`, `vjp`.`job_title`, `vjp`.`company_id`, `vjp`.`company_name`
-        // FROM `job_interviews` as `ji`
-        // INNER JOIN `view_job_posted` as `vjp` ON `ji`.`job_id` = `vjp`.`job_id`
-        // INNER JOIN `employee_view` as `ev` ON `ji`.`employee_id` = `ev`.`employee_id`
-        // WHERE 1 = 1 AND `ji`.`created_by_admin` = 12
-        // AND `ji`.`is_reschedule` != 1
-        // AND `ji`.`is_active` != 0
-        // LIMIT 10
-        //-----------------------------------------------------------------------------------------------------
 
     $this->db->select('ji.*, ev.name, ev.skill, vjp.job_title, vjp.company_id, vjp.company_name');
     $this->db->from('job_interviews as ji');
@@ -717,8 +593,6 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
     $this->db->where($where)->where('ji.is_reschedule !=', 1)->where('ji.is_active !=', 0);
     $query = $this->db->get('',$limit, $offset);
     $total_rows = $query->num_rows();
-    // print_r($this->db->last_query());
-    // $total_rows = $this->db->where('is_active != 0')->where('is_reschedule !=', 1)->from('job_interviews')->count_all_results();
     $res = $query->result_array();
     return array('total_rows' => $total_rows, 'data' => $res);
 }
@@ -726,24 +600,28 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
 
   public function addUpdateLmia($detail){
 
-   $id = $detail['id'] ?? null;
+  //  $id = $detail['id'] ?? null;
+            
+            $this->db->where('job_id', $detail['job_id']);
+            $this->db->where('employee_id', $detail['employee_id']);
+            $query = $this->db->get('lmia');        
 
-      if (!empty($id)) {
+            if ($query->num_rows() > 0) {
+                $row = $query->row();  
 
-                                  $this->db->where('id', $id);
+                $this->db->where('id', $row->id);
+        
+                $this->db->set('updated_at', 'NOW()', FALSE);
+        
+                $res = $this->db->update('lmia', $detail);
+                return "Data updated successfully";
+             } else {  
 
-                                  $this->db->set('updated_at', 'NOW()', FALSE);
-
-                                  return $res = $this->db->update('lmia', $detail);
-
-
-                          } else {  
-
-                                 return $res = $this->db->insert('lmia', $detail);
+                                  $res = $this->db->insert('lmia', $detail);
 
                                   //print_r($this->db->last_query());
 
-                                  // return $res;
+                                  return "Data added successfully";
 
                           }  
 

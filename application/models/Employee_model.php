@@ -60,55 +60,11 @@ public function get_employee_by_email($email){
 
 
 
-
-
-            //  $email = $employee['email'];
-
-
-
-
-
-
-
-    // print_r($email); die;
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
             $this->db->where('email', $email);
 
+            $this->db->where('is_deleted != 1');
 
-
-
-
-
-
-            $query = $this->db->get('employee');
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
+            $query = $this->db->get('employee');      
 
             if ($query->num_rows() > 0) {
 
@@ -117,27 +73,9 @@ public function get_employee_by_email($email){
                 return $query;
 
 
-
-
-
-
-
             }
 
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
 public function insert_employee($employee = array()){
 
 
@@ -163,7 +101,7 @@ public function checkLogin($credentials)
             $this->db->where($credentials);
 
 
-
+            $this->db->where('is_deleted != 1');
 
 
 
@@ -1090,8 +1028,6 @@ public function getAllEmployeeEducation(){
 
 
 
-    // return $result_array = $query->result_array();
-
     return  array('skill' => $res);
 
 
@@ -1623,17 +1559,15 @@ public function getJobResponse($parameters,$filter, $search, $limit, $offset,$so
 
               }
 
-              if(isset($parameters['job_id'])){
-                
+              if(isset($parameters['job_id'])){                
                 
                 $where .= " AND job_id = ".$parameters['job_id']." ";
-                // $this->db->where("job_id",$parameters['job_id']);                
+                              
               }
-              if(isset($parameters['admin_id'])){
-                
+              if(isset($parameters['admin_id'])){                
                 
                 $where .= " AND created_by_admin = ".$parameters['admin_id'];
-                // $this->db->where("job_id",$parameters['job_id']);                
+                            
               }
               
               $this->db->select($parameters['select']);
@@ -1666,8 +1600,39 @@ public function getJobResponse($parameters,$filter, $search, $limit, $offset,$so
 
 
   }
+public function getProfileCompletePercent(){
 
 
+                $res = $this->db->query("SELECT *, personal+education+Career+skill AS total 
+                                        FROM view_employee_profile_percentage")->result_array();
+
+
+                return $res;
+
+
+  }
+  public function getJobsByEmployee($info){  
+//-------------------------------------------------------------------
+// sql query 
+// ------------------------------------------------------------------
+// "SELECT vjp.*
+// FROM view_job_posted vjp
+// WHERE EXISTS (
+//   SELECT 1
+//   FROM apply_on_job aoj
+//   WHERE aoj.employee_id = 4
+//   AND aoj.job_id = vjp.job_id AND aoj.is_viewed != 1
+// )
+// AND is_deleted != 1 AND company_deleted != 1"
+//------------------------------------------------------------------
+    $this->db->select('vjp.*');
+    $this->db->from('view_job_posted vjp');
+    $this->db->where('EXISTS (SELECT 1 FROM apply_on_job aoj WHERE aoj.employee_id = '.$info['employee_id'].' AND aoj.job_id = vjp.job_id AND aoj.is_viewed != 1)');
+    $this->db->where('vjp.is_deleted !=', 1);
+    $this->db->where('vjp.company_deleted !=', 1);
+   return $result = $this->db->get()->result_array();
+
+} 
 }
 
 
