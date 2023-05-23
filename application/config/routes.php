@@ -508,5 +508,6 @@ $route['common/getJobs'] = 'api/Common_controller/getalljobs';
 $route['common/generateOtp'] = 'api/Common_controller/generateOtp';
 $route['common/sendEmail'] = 'api/Common_controller/sendEmail';
 $route['common/getNotifications'] = 'api/Common_controller/getNotifications';
+$route['common/isReadNotification'] = 'api/Common_controller/isReadNotification';
 $route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
 $route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';

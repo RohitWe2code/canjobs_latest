@@ -36,10 +36,14 @@ public function sendMail($to, $subject, $body){
     }
 public function addNotification($notification){
     // print_r($data);die;
-    // $notify = array('from_id'=>$data['from_id'],
-    //                 'type'=>$data['type'],
-    //                 'message'=> $data['message']);
     $this->db->insert('notification', $notification);
+}
+public function isReadNotification($id){
+                $this->db->where('id', $id);
+                $this->db->set('is_read', 1);
+                $this->db->set('updated_at', 'NOW()', FALSE);
+               return $this->db->update('notification');
+    
 }
 // Getting categories from job_category table and updating in filter list  
 public function getJobCategory(){
@@ -152,7 +156,7 @@ public function getEmailTemplate($id){
 
 }
 public function checkEmployeeEmailPermission($employee_id){
-  $query = "SELECT * FROM `employee_setting` WHERE employee_id = ".$employee_id." AND is_deleted != 1 AND email_permission = 1";
+  $query = "SELECT * FROM `employee_setting` WHERE employee_id = ".$employee_id." AND email_permission = 1";
   $res = $this->db->query($query);
    if ($res->num_rows() > 0) {
         return true;
@@ -161,7 +165,7 @@ public function checkEmployeeEmailPermission($employee_id){
     }
 }
 public function checkEmployerEmailPermission($company_id){
-  $query = "SELECT * FROM `employer_setting` WHERE company_id = ".$company_id." AND is_deleted != 1 AND email_permission = 1";
+  $query = "SELECT * FROM `employer_setting` WHERE company_id = ".$company_id."  AND email_permission = 1";
   $res = $this->db->query($query);
    if ($res->num_rows() > 0) {
         return true;
@@ -179,5 +183,5 @@ public function checkAdminEmailPermission($admin_id){
     }
 }
 }
-?>
+
 

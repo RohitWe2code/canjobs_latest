@@ -1566,7 +1566,7 @@ public function getJobResponse($parameters,$filter, $search, $limit, $offset,$so
               }
               if(isset($parameters['admin_id'])){                
                 
-                $where .= " AND created_by_admin = ".$parameters['admin_id'];
+                $where .= " AND job_created_by_admin = ".$parameters['admin_id'];
                             
               }
               

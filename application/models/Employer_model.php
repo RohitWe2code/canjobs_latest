@@ -189,6 +189,7 @@ if(isset($job_detail['job_id'])){
                          } else {  
                                   $res = $this->db->insert('jobs', $job_detail);
                                   $inserted_id = $this->db->insert_id();
+                                  // print_r($this->db->last_query());
                                 //   $query = "SELECT e.company_name, j.job_title 
                                 //             FROM jobs as j 
                                 //             INNER JOIN employer as e 
@@ -265,6 +266,7 @@ public function applyJob($candidate_detail){
 
                           $query = $this->db->get('apply_on_job');
                           $row = $query->row();
+                          // print_r($row);die;
                           if (!empty($row)){  
                             // print_r(11);die;
                               if($row->is_viewed == 0 || $row->is_viewed == 2){
@@ -282,13 +284,14 @@ public function applyJob($candidate_detail){
                                   $res = $this->db->update('apply_on_job');
 
                                   // print_r($this->db->last_query());
+                                  //  print_r($row->job_id);die;
                                   return $inserted_data = $this->db->get_where('view_job_posted', array('job_id' => $row->job_id))->row();
                                   // return $res;
 
                           }else{
                               // print_r(22);die;
                                   $res = $this->db->insert('apply_on_job', $candidate_detail);
-                                  return $inserted_data = $this->db->get_where('view_job_posted', array('job_id' => $row->job_id))->row();
+                                  return $inserted_data = $this->db->get_where('view_job_posted', array('job_id' =>  $candidate_detail['job_id']))->row();
                           }
 
                           }  
@@ -382,29 +385,34 @@ public function getAllJobCategory($filter, $search, $limit, $offset,$sort,$paren
     $where = "1=1";
 
     if($parent_id > 0){
-      // $this->db->where('parent_id > 0');
-      $where .= " AND parent_id > 0 ";
+      $where .= " AND job_category.parent_id > 0 ";
     }
-    // else{
-    //    $this->db->where('parent_id = 0');
-    // }
+    else{
+       $this->db->where('job_category.parent_id = 0');
+    }
     if (!empty($filter)) {
         $category_type = $filter;
-        $where .= " AND category_type = '$category_type' ";
+        $where .= " AND job_category.category_type = '$category_type' ";
     }
     if (!empty($search)) {
         $search = $this->db->escape_like_str($search);
-        $where .= " AND (category_name LIKE '%$search%')";
+        $where .= " AND (job_category.category_name LIKE '%$search%')";
     }
     if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
-    $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+    $this->db->order_by('job_category.'.$sort['column_name'] . ' ' . $sort['sort_order']);
     }
-
+    if($parent_id > 0){
+      //==========================================================================================================
+      // $query = " SELECT job_category.*, p.category_type as parent_type FROM job_category LEFT JOIN job_category as p ON job_category.parent_id = p.job_category_id where job_category.parent_id > 0 ";
+      //==========================================================================================================
+        $this->db->select('job_category.*, p.category_type as parent_type');
+        $this->db->join('job_category as p', 'job_category.parent_id = p.job_category_id', 'left');
+    }
     $this->db->where($where);
-    $this->db->where('is_deleted != 1');
+    $this->db->where('job_category.is_deleted != 1');
     $query = $this->db->get('job_category', $limit, $offset);
     $result = $query->result_array();
-    // print_r($this->db->last_query());
+    // print_r($this->db->last_query());    
     $total_rows = $this->db->where($where)->where('is_deleted != 1')->from('job_category')->count_all_results();
     return array('total_rows' => $total_rows, 'data' => $result);
   }
@@ -554,7 +562,10 @@ public function addUpdateInterview($interview_detail){
 
       $res = $this->db->insert('job_interviews', $interview_detail);
       if($res){
-        return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' =>$employee_id))->row();
+        // print_r($job_id);
+        // print_r($employee_id);
+        return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' => $employee_id))->row();
+        // print_r($this->db->last_query());
         
       }
       // print_r($res);die;
@@ -627,6 +638,47 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
 
          
 
+}
+public function add_update_jobcategory_fiterlist($parent_id){
+   /*
+    |------------------------------------------------------------------------------
+    | Getting Category Type from job_category table and updating in json List
+    |------------------------------------------------------------------------------
+    */
+    if($parent_id == 0){
+    $category_type = $this->db->query("SELECT job_category_id ,category_type FROM `job_category` WHERE is_deleted != 1 AND parent_id = 0")->result_array();
+     $category_list = array();
+    foreach($category_type as $data){
+        $category_list[$data['job_category_id']] = $data['category_type'];
+      }
+      $category_list_json = json_encode($category_list);
+      // print_r($category_list_json);die;
+      $this->db->where('id', 8);
+      $this->db->set('json', $category_list_json);
+      $this->db->set('updated_at', 'NOW()', FALSE);
+      $this->db->update('list');
+    }
+    /*
+    |------------------------------------------------------------------------------
+    | Getting Category Name from job_category table and updating in json List
+    |------------------------------------------------------------------------------
+    */
+    if($parent_id > 0){
+    $category_name = $this->db->query("SELECT DISTINCT  job_category_id,category_name
+                                       FROM job_category
+                                       WHERE is_deleted != 1 AND category_name IS NOT NULL")->result_array();
+    // print_r($category_name);die;
+    $category_list = array();
+    foreach($category_name as $data){
+        $category_list[$data['job_category_id']] = $data['category_name'];
+      }
+      $category_list_json = json_encode($category_list);
+      // print_r($category_list_json);die;
+      $this->db->where('id', 2);
+      $this->db->set('json', $category_list_json);
+      $this->db->set('updated_at', 'NOW()', FALSE);
+      $this->db->update('list');
+    }
 }
 
 }

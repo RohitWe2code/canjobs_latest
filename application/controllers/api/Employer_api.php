@@ -32,6 +32,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     $this->load->model(array("employer_model"));
 
     $this->load->model(array("common_model"));
+    $this->load->model(array("admin_model"));
 
     $this->load->library("form_validation");
 
@@ -72,28 +73,14 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
   public function company_detail_put(){
 
     $data = json_decode(file_get_contents("php://input"));
+/*
+|--------------------------------------------------------------------------
+| Update Comapany Details 
+|--------------------------------------------------------------------------
+*/
 if(isset($data->company_id)){
-  ///// update operation ////////
-
-      if(isset($data->company_name)  && isset($data->industry) && isset($data->corporation) && isset($data->company_start_date)  && isset($data->company_size) && isset($data->vacancy_for_post) && isset($data->about))
-
-      { 
-
-         $error_flag = 0;
-
-      
-
-        if(empty($data->company_id) || empty($data->company_name) || empty($data->industry) || empty($data->corporation) || empty($data->company_start_date) || empty($data->company_size) || empty($data->vacancy_for_post) || empty($data->about))
-
-        {
-
-            $error_flag = 1;
-
-        }
-
-         if($error_flag){
-
-            $this->response(array(
+if(empty($data->company_id)){
+   $this->response(array(
 
             "status" => 0,
 
@@ -102,29 +89,121 @@ if(isset($data->company_id)){
           ) , REST_Controller::HTTP_NOT_FOUND);
 
          return;
+}
+ $company_info["company_id"] = $data->company_id;
+      // if(isset($data->company_name)  && isset($data->industry) && isset($data->corporation) && isset($data->company_start_date)  && isset($data->company_size) && isset($data->vacancy_for_post) && isset($data->about))
 
-        }
+      // { 
 
-        $company_info = array(
+      //    $error_flag = 0;
 
-          "company_id" => $data->company_id,
+      
 
-          "company_name" => $data->company_name,
+      //   if(empty($data->company_id) || empty($data->company_name) || empty($data->industry) || empty($data->corporation) || empty($data->company_start_date) || empty($data->company_size) || empty($data->vacancy_for_post) || empty($data->about))
 
-          "industry" => $data->industry,
+      //   {
 
-          "corporation" => $data->corporation,
+      //       $error_flag = 1;
 
-          "company_start_date" => $data->company_start_date, //yy-mm-dd
+      //   }
 
-          "company_size" => $data->company_size,
+      //    if($error_flag){
 
-          "vacancy_for_post" => $data->vacancy_for_post,
+      //       $this->response(array(
 
-          "about" => $data->about
+      //       "status" => 0,
 
-        );
+      //       "message" => "All fields are required!"
 
+      //     ) , REST_Controller::HTTP_NOT_FOUND);
+
+      //    return;
+
+      //   }
+
+      //   $company_info = array(
+
+      //     "company_id" => $data->company_id,
+
+      //     "company_name" => $data->company_name,
+
+      //     "industry" => $data->industry,
+
+      //     "corporation" => $data->corporation,
+
+      //     "company_start_date" => $data->company_start_date, //yy-mm-dd
+
+      //     "company_size" => $data->company_size,
+
+      //     "vacancy_for_post" => $data->vacancy_for_post,
+
+      //     "about" => $data->about
+
+      //   );
+
+         if(isset($data->company_name)){
+
+                if(!empty($data->company_name)){
+
+                  $company_info["company_name"] = $data->company_name;
+
+                }
+
+               }
+         if(isset($data->industry)){
+
+                if(!empty($data->industry)){
+
+                  $company_info["industry"] = $data->industry;
+
+                }
+
+               }
+         if(isset($data->corporation)){
+
+                if(!empty($data->corporation)){
+
+                  $company_info["corporation"] = $data->corporation;
+
+                }
+
+               }
+         if(isset($data->company_start_date)){
+
+                if(!empty($data->company_start_date)){
+
+                  $company_info["company_start_date"] = $data->company_start_date;
+
+                }
+
+               }
+         if(isset($data->company_size)){
+
+                if(!empty($data->company_size)){
+
+                  $company_info["company_size"] = $data->company_size;
+
+                }
+
+               }
+         if(isset($data->vacancy_for_post)){
+
+                if(!empty($data->vacancy_for_post)){
+
+                  $company_info["vacancy_for_post"] = $data->vacancy_for_post;
+
+                }
+
+               }
+         if(isset($data->about)){
+
+                if(!empty($data->about)){
+
+                  $company_info["about"] = $data->about;
+
+                }
+
+               }
          if(isset($data->alias)){
 
                 if(!empty($data->alias)){
@@ -217,22 +296,26 @@ if(isset($data->company_id)){
 
       
 
-      }else{
+      // }else{
 
 
 
-        $this->response(array(
+      //   $this->response(array(
 
-          "status" => 0,
+      //     "status" => 0,
 
-          "message" => "All fields are needed"
+      //     "message" => "All fields are needed"
 
-        ), REST_Controller::HTTP_NOT_FOUND);
+      //   ), REST_Controller::HTTP_NOT_FOUND);
 
-      }
+      // }
     }else{
-      ///// Insert operation ////////
-      if(isset($data->company_name)  && isset($data->industry) && isset($data->corporation) && isset($data->company_start_date)  && isset($data->company_size) && isset($data->vacancy_for_post) && isset($data->about))
+    /*
+    |--------------------------------------------------------------------------
+    | Insert Comapany Details 
+    |--------------------------------------------------------------------------
+    */
+      if(isset($data->company_name)  && isset($data->industry) && isset($data->corporation) && isset($data->company_start_date)  && isset($data->company_size) && isset($data->vacancy_for_post))
 
       { 
 
@@ -240,7 +323,7 @@ if(isset($data->company_id)){
 
       
 
-        if(empty($data->company_name) || empty($data->industry) || empty($data->corporation) || empty($data->company_start_date) || empty($data->company_size) || empty($data->vacancy_for_post) || empty($data->about))
+        if(empty($data->company_name) || empty($data->industry) || empty($data->corporation) || empty($data->company_start_date) || empty($data->company_size) || empty($data->vacancy_for_post))
 
         {
 
@@ -295,6 +378,15 @@ if(isset($data->company_id)){
                 if(!empty($data->website_url)){
 
                   $company_info["website_url"] = $data->website_url;
+
+                }
+
+               }
+         if(isset($data->about)){
+
+                if(!empty($data->about)){
+
+                  $company_info["about"] = $data->about;
 
                 }
 
@@ -402,7 +494,7 @@ if(isset($data->company_id)){
 
       // print_r($data); die;
 
-      if(isset($data->company_id) && isset($data->contact_person_name) && isset($data->email) && isset($data->contact_no) && isset($data->address) && isset($data->pin_code)  && isset($data->city) && isset($data->state) && isset($data->country))
+      if(isset($data->company_id) && isset($data->contact_person_name) && isset($data->email) && isset($data->contact_no) && isset($data->designation))
 
       { 
 
@@ -410,7 +502,7 @@ if(isset($data->company_id)){
 
       
 
-        if(empty($data->company_id) || empty($data->contact_person_name) || empty($data->email) || empty($data->contact_no) || empty($data->address) || empty($data->pin_code) || empty($data->city) || empty($data->state) || empty($data->country))
+        if(empty($data->company_id) || empty($data->contact_person_name) || empty($data->email) || empty($data->contact_no) || empty($data->designation))
 
         {
 
@@ -442,25 +534,31 @@ if(isset($data->company_id)){
 
           "contact_no" => $data->contact_no,
 
-          "address" => $data->address,
-
-          "pin_code" => $data->pin_code, //yy-mm-dd
-
-          "city" => $data->city,
-
-          "state" => $data->state,
-
-          "country" => $data->country
-
+          "designation" => $data->designation
         );
-        if(isset($data->contact_no_other)){
-          if(!empty($data->contact_no_other)){
-           $contact_info['contact_no_other'] = $data->contact_no_other;
+        if(isset($data->address)){
+          if(!empty($data->address)){
+           $contact_info['address'] = $data->address;
           }
         }
-        if(isset($data->designation)){
-          if(!empty($data->designation)){
-           $contact_info['designation'] = $data->designation;
+        if(isset($data->pin_code)){
+          if(!empty($data->pin_code)){
+           $contact_info['pin_code'] = $data->pin_code;
+          }
+        }
+        if(isset($data->city)){
+          if(!empty($data->city)){
+           $contact_info['city'] = $data->city;
+          }
+        }
+        if(isset($data->state)){
+          if(!empty($data->state)){
+           $contact_info['state'] = $data->state;
+          }
+        }
+        if(isset($data->country)){
+          if(!empty($data->country)){
+           $contact_info['country'] = $data->country;
           }
         }
 
@@ -514,7 +612,7 @@ if(isset($data->company_id)){
 
     //   print_r($data); die;
 
-      if(isset($data->company_id) && isset($data->pan_no)  && isset($data->name) && isset($data->pan_date) && isset($data->address)  && isset($data->pincode) && isset($data->city) && isset($data->state) && isset($data->country))
+      if(isset($data->company_id) && isset($data->pan_no)  && isset($data->name) && isset($data->pan_date) && isset($data->address) && isset($data->pincode) && isset($data->city) && isset($data->state) && isset($data->country) && isset($data->document))
 
       { 
 
@@ -595,8 +693,6 @@ if(isset($data->company_id)){
                 }
 
                }
-               if(isset($data->document)){
-
                 if(!empty($data->document)){
                              
                   $kyc_document = str_replace('data:application/pdf;base64,', '', $data->document);
@@ -615,7 +711,6 @@ if(isset($data->company_id)){
 
                 }
 
-               }
 // print_r($kyc_detail);die;
              $res=$this->employer_model->addUpdate_company_kycDetails($kyc_detail);
 
@@ -676,13 +771,13 @@ if(isset($data->company_id)){
       $data = json_decode(file_get_contents("php://input"));
 
       // print_r($data); die;
-
-      // ------------- Update job -----------------
-        if(isset($data->job_id)){
-
-          
-        $job_detail = array();
-         
+    /*
+    |--------------------------------------------------------------------------
+    | Update Job Details 
+    |--------------------------------------------------------------------------
+    */
+    $job_detail = array();
+        if(isset($data->job_id)){  
           if(!empty($data->job_id)){
 
             $job_detail["job_id"] = $data->job_id;
@@ -790,6 +885,12 @@ if(isset($data->company_id)){
 
           }
           }
+          if(isset($data->role_category)){ // using No. of vacancies
+          if(!empty($data->role_category)){
+            $job_detail["role_category"] = $data->role_category;
+
+          }
+          }
                  
                 // print_r($job_detail);die;
 
@@ -820,11 +921,14 @@ if(isset($data->company_id)){
         }
 
     }
-    
-      // ------------- Insert job -----------------
     else{
+    /*
+    |--------------------------------------------------------------------------
+    | Insert Job Details 
+    |--------------------------------------------------------------------------
+    */
  
-      if(isset($data->company_id) && isset($data->job_title)  && isset($data->experience_required) && isset($data->salary) && isset($data->location)  && isset($data->industry_type) && isset($data->apply_link) && isset($data->job_description) && isset($data->your_duties) && isset($data->requirement) && isset($data->department) && isset($data->job_type) && isset($data->education) && isset($data->language) && isset($data->keyskill) && isset($data->employement) && isset($data->job_category_id))
+      if(isset($data->company_id) && isset($data->job_title)  && isset($data->experience_required) && isset($data->location) && isset($data->apply_link) && isset($data->job_type) && isset($data->job_category_id))
 
       { 
 
@@ -832,7 +936,7 @@ if(isset($data->company_id)){
 
       
 
-        if(empty($data->company_id) || empty($data->job_title) || empty($data->experience_required) || empty($data->salary) || empty($data->location) || empty($data->industry_type) || empty($data->apply_link) || empty($data->job_description) || empty($data->your_duties) || empty($data->requirement) || empty($data->department) || empty($data->job_type) || empty($data->education) || empty($data->language) || empty($data->keyskill) || empty($data->employement) || empty($data->job_category_id))
+        if(empty($data->company_id) || empty($data->job_title) || empty($data->experience_required) || empty($data->location) || empty($data->apply_link)|| empty($data->job_type) || empty($data->job_category_id))
 
         {
 
@@ -862,35 +966,81 @@ if(isset($data->company_id)){
 
           "experience_required" => $data->experience_required,
 
-          "salary" => $data->salary,
-
           "location" => $data->location, 
-
-          "industry_type" => $data->industry_type,
 
           "apply_link" => $data->apply_link,
 
-          "job_description" => $data->job_description,
-
-          "your_duties" => $data->your_duties,
-
-          "requirement" => $data->requirement,
-
-          "department" => $data->department,
-
           "job_type" => $data->job_type,
-
-          "education" => $data->education,
-
-          "language" => $data->language,
-
-          "keyskill" => $data->keyskill,
-
-          "employement" => $data->employement,
 
           "job_category_id" => $data->job_category_id,
 
         );
+         if(isset($data->salary)){
+          if(!empty($data->salary)){
+            $job_detail["salary"] = $data->salary;
+
+          }
+          }
+          if(isset($data->industry_type)){
+            if(!empty($data->industry_type)){
+              $job_detail["industry_type"] = $data->industry_type;
+              
+            }
+          }
+          if(isset($data->job_description)){
+           if(!empty($data->job_description)){
+             $job_detail["job_description"] = $data->job_description;
+ 
+           }
+           }
+         if(isset($data->your_duties)){
+          if(!empty($data->your_duties)){
+            $job_detail["your_duties"] = $data->your_duties;
+
+          }
+          }
+         if(isset($data->requirement)){
+          if(!empty($data->requirement)){
+            $job_detail["requirement"] = $data->requirement;
+
+          }
+          }
+         if(isset($data->department)){
+          if(!empty($data->department)){
+            $job_detail["department"] = $data->department;
+
+          }
+          }
+         if(isset($data->education)){
+          if(!empty($data->education)){
+            $job_detail["education"] = $data->education;
+
+          }
+          }
+         if(isset($data->language)){
+          if(!empty($data->language)){
+            $job_detail["language"] = $data->language;
+
+          }
+          }
+         if(isset($data->keyskill)){
+          if(!empty($data->keyskill)){
+            $job_detail["keyskill"] = $data->keyskill;
+
+          }
+          }
+         if(isset($data->employement)){
+          if(!empty($data->employement)){
+            $job_detail["employement"] = $data->employement;
+
+          }
+          }
+          if(isset($data->role_category)){  // For number of vacancies
+          if(!empty($data->role_category)){
+            $job_detail["role_category"] = $data->role_category;
+
+          }
+          }
           if(!empty($this->admin_id) && $this->user_type != "employee" && $this->user_type != "employer"){
                   $job_detail["created_by_admin"] = $this->admin_id;
 
@@ -900,11 +1050,11 @@ if(isset($data->company_id)){
         // print_r($response);die;
         if($response){
             $company_id = $response->company_id;
-            if($this->common_model->checkEmployerEmailPermission($company_id)){
+            $email_template_id = 3;
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
+            if($this->common_model->checkEmployerEmailPermission($company_id)){
           // Sending mail and notification to company
-            $email_template_id = 3;
             $company_email = array('to' => $response->email ?? NULL,
                              'job_title'=>$response->job_title,
                              'company_name'=>$response->company_name);
@@ -976,6 +1126,7 @@ if(isset($data->company_id)){
     
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data); die;
+      $parent_id = 0;
       $category_detail = array();
        if(isset($data->category_name)){
           if(!empty($data->category_name)){
@@ -989,7 +1140,8 @@ if(isset($data->company_id)){
       }
         if(isset($data->parent_id) && $data->parent_id > 0){
          
-          $category_detail["parent_id"]=$data->parent_id;
+          $parent_id = $data->parent_id;
+          $category_detail["parent_id"]=$parent_id;
        
       }
         $msg = "Category added successfully";
@@ -1002,8 +1154,15 @@ if(isset($data->company_id)){
         $response = $this->employer_model->addUpdate_category($category_detail);
         if($response){
           if($response === "already exist"){
-            $msg = "already exist !";
+            // $msg = "already exist !";
+             $this->response(array(
+              "status" => 1,
+              "message" => "already exist !"
+            ), REST_Controller::HTTP_OK);
+            return;
           }
+          $response = $this->employer_model->add_update_jobcategory_fiterlist($parent_id);
+          $this->admin_model->getFilterList();
 
             $this->response(array(
               "status" => 1,
@@ -1075,12 +1234,12 @@ if(isset($data->company_id)){
         // print_r($response);die;
         if($response){
           if(!empty($response->company_id)){
-             $company_id = $response->company_id;
+            $company_id = $response->company_id;
+            $email_template_id = 4;
+            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+            $unique_id .= mt_rand(1000, 9999);
             if($this->common_model->checkEmployerEmailPermission($company_id)){
-                $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
-                $unique_id .= mt_rand(1000, 9999);
                 // Sending mail and notification to Company
-                $email_template_id = 4;
                 $company_email = array('to' => $response->email ?? NULL,
                                  'job_title'=>$response->job_title,
                                  'company_name'=>$response->company_name);
@@ -1109,14 +1268,6 @@ if(isset($data->company_id)){
                         $this->common_model->addNotification($admin_notification);
             }
           }
-          //  $admin = array('from_id'=> 1,
-          //     'type'=>'Super-Admin',
-          //     'to' =>'aashi.we2code@gmail.com',
-          //     'subject'=>'new application on job',
-          //     'message'=>'A new user applied on job with title - '.$response->job_title.' posted by '.$response->company_name,
-          //     'unique_id'=>$unique_id);  
-          //     $this->common_model->email($admin);
-          //     $this->common_model->addNotification($admin);
           }
             $this->response(array(
 
@@ -1125,11 +1276,6 @@ if(isset($data->company_id)){
               "message" => $msg
 
             ), REST_Controller::HTTP_OK);
-            //  ob_flush();
-            //  flush();
-            // if(!empty($response->email)){
-            //   $this->common_model->sendMail($detail);
-            // }
           }else{
 
           $this->response(array(
@@ -1628,11 +1774,11 @@ public function addUpdateInterview_post(){
 
         if($interview_detail){
           $employee_id = $response->employee_id;
+          $email_template_id = 5;
+          $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+          $unique_id .= mt_rand(1000, 9999);
           if($this->common_model->checkEmployeeEmailPermission($employee_id)){
-            $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
-            $unique_id .= mt_rand(1000, 9999);
             // Sending mail and notification to Company
-            $email_template_id = 5;
              $company = array('to' => $response->email ?? NULL,
                              'candidate_name'=>$response->name,
                              'interview_date'=>$response->interview_date,

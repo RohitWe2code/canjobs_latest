@@ -222,11 +222,11 @@ if(isset($data->employee_id)){
         }
     }else{
       ////////  Insert employee personal detail /////////////
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->description) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->currently_located_country) && isset($data->language) && isset($data->religion) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->work_permit_other_country))
+      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada))
       { 
          $error_flag = 0;
       
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->description) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->currently_located_country) || empty($data->language) || empty($data->religion) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->work_permit_other_country))
+        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada))
         {
             $error_flag = 1;
         }
@@ -242,7 +242,6 @@ if(isset($data->employee_id)){
           "name" => $data->name,
           "email" => $data->email,
           "contact_no" => $data->contact_no,
-          "description" => $data->description,
           "date_of_birth" => $data->date_of_birth, //yy-mm-dd
           "gender" => $data->gender,
           "marital_status" => $data->marital_status,
@@ -250,12 +249,25 @@ if(isset($data->employee_id)){
           "current_location" => $data->current_location,
           "currently_located_country" => $data->currently_located_country,
           "language" => $data->language,
-          "religion" => $data->religion,
           "interested_in" => $data->interested_in,
           "experience" => $data->experience,
-          "work_permit_canada" => $data->work_permit_canada,
-          "work_permit_other_country" => $data->work_permit_other_country,
+          "work_permit_canada" => $data->work_permit_canada
         );
+        if(isset($data->description)){
+          if(!empty($data->description)){
+                    $employee_info['description'] = $data->description;
+          }
+        }
+        if(isset($data->religion)){
+          if(!empty($data->religion)){
+                    $employee_info['religion'] = $data->religion;
+          }
+        }
+        if(isset($data->work_permit_other_country)){
+          if(!empty($data->work_permit_other_country)){
+                    $employee_info['work_permit_other_country'] = $data->work_permit_other_country;
+          }
+        }
         if(isset($data->resume)){
           if(!empty($data->resume)){
            
@@ -378,11 +390,11 @@ if(isset($data->employee_id)){
   public function employeeEducation_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      if(isset($data->employee_id) && isset($data->qualification)  && isset($data->university_institute) && isset($data->course) && isset($data->specialization)  && isset($data->institute_location) && isset($data->passing_year))
+      if(isset($data->employee_id) && isset($data->qualification)  && isset($data->university_institute) && isset($data->course) && isset($data->passing_year))
       { 
              $error_flag = 0;
 
-            if(empty($data->employee_id) || empty($data->qualification) || empty($data->university_institute) || empty   ($data->course) || empty($data->specialization) || empty($data->institute_location) || empty   ($data->passing_year) ){
+            if(empty($data->employee_id) || empty($data->qualification) || empty($data->university_institute) || empty   ($data->course) || empty   ($data->passing_year) ){
                 $error_flag = 1;
             }
                if($error_flag){
@@ -398,11 +410,19 @@ if(isset($data->employee_id)){
                  "qualification" => $data->qualification,
                  "university_institute" => $data->university_institute,
                  "course" => $data->course,
-                 "specialization" => $data->specialization, 
-                 "institute_location" => $data->institute_location,
                  "passing_year" => $data->passing_year,
                );
-               $msg = "Employee data inserted successfully";
+               if(isset($data->specialization)){
+                 if(!empty($data->specialization)){
+                   $education_info["specialization"] = $data->specialization;
+                  }
+                }
+                if(isset($data->institute_location)){
+                  if(!empty($data->institute_location)){
+                    $education_info["institute_location"] = $data->institute_location;
+                  }
+                }
+                $msg = "Employee data inserted successfully";
                if(isset($data->education_id)){
                 if(!empty($data->education_id)){
                   $education_info["education_id"] = $data->education_id;
@@ -435,11 +455,11 @@ if(isset($data->employee_id)){
   public function employeeCareer_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->company_location) && isset($data->industry)  && isset($data->functional_area) && isset($data->work_level)  && isset($data->start_date)  && isset($data->end_date))
+      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->start_date)  && isset($data->end_date))
       { 
              $error_flag = 0;
 
-            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty ($data->company_location) || empty($data->industry) || empty($data->functional_area) || empty     ($data->work_level) || empty($data->start_date) || empty($data->end_date)){
+            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty($data->start_date) || empty($data->end_date)){
                 $error_flag = 1;
             }
                if($error_flag){
@@ -454,23 +474,39 @@ if(isset($data->employee_id)){
                  "employee_id" => $data->employee_id,
                  "company" => $data->company,
                  "designation" => $data->designation,
-                 "company_location" => $data->company_location,
-                 "industry" => $data->industry, 
-                 "functional_area" => $data->functional_area,
-                 "work_level" => $data->work_level,
                  "start_date" => $data->start_date,
                  "end_date" => $data->end_date,
                );
+               if(isset($data->company_location)){
+                 if(!empty($data->company_location)){
+                   $career_info["company_location"] = $data->company_location;
+              }
+             }
+               if(isset($data->industry)){
+                 if(!empty($data->industry)){
+                   $career_info["industry"] = $data->industry;
+              }
+             }
+               if(isset($data->functional_area)){
+                 if(!empty($data->functional_area)){
+                   $career_info["functional_area"] = $data->functional_area;
+              }
+             }
+               if(isset($data->work_level)){
+                 if(!empty($data->work_level)){
+                   $career_info["work_level"] = $data->work_level;
+              }
+             }
+               if(isset($data->currently_work_here)){
+                 if(!empty($data->currently_work_here)){
+                   $career_info["currently_work_here"] = $data->currently_work_here;
+              }
+             }
                $msg = "Employee data inserted successfully";
                  if(isset($data->career_id)){
                    if(!empty($data->career_id)){
                      $career_info["career_id"] = $data->career_id;
                        $msg = "Employee data updated successfully";
-                }
-               }
-                 if(isset($data->currently_work_here)){
-                   if(!empty($data->currently_work_here)){
-                     $career_info["currently_work_here"] = $data->currently_work_here;
                 }
                }
                   // print_r($career_info); die;

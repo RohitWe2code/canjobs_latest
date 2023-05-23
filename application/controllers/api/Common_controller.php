@@ -176,7 +176,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           return;
         }
         $response = $this->common_model->getEmailByGroup($group_id);
-        print_r($response);die;
+        // print_r($response);die;
         foreach($response as $data){
           $email_template_id = $data['email_template_id'];
           $email_template = $this->common_model->getEmailTemplate($email_template_id);
@@ -288,6 +288,65 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           "status" => 0,
 
           "message" => "No data found",
+
+        ), REST_Controller::HTTP_OK);
+
+      }
+    }
+     public function isReadNotification_put(){
+         $data = json_decode(file_get_contents("php://input"));
+         if(isset($data->id))
+         {
+          $error_flag = 0;
+         if(empty($data->id))
+         {
+           $error_flag = 1;
+         }
+          if($error_flag){
+
+            $this->response(array(
+
+            "status" => 0,
+
+            "message" => "Fields must not be empty!"
+
+          ) , REST_Controller::HTTP_OK);
+
+         return;
+
+        }
+         $id = $data->id;
+          if($this->common_model->isReadNotification($id))
+          {
+          $this->response(array(
+
+              "status" => 1,
+
+              "message" =>  "Successful"
+
+            ), REST_Controller::HTTP_OK);
+
+      
+        }
+        else{
+          $this->response(array(
+
+            "status" => 0,
+
+            "messsage" => "Failed"
+
+          ), REST_Controller::HTTP_OK);
+
+        }
+
+
+         }else{
+
+        $this->response(array(
+
+          "status" => 0,
+
+          "message" => "All fields are required !"
 
         ), REST_Controller::HTTP_OK);
 
