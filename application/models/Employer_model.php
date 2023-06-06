@@ -579,7 +579,11 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
         }
         if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
           $this->db->order_by($sort['column_name'], $sort['sort_order']);
+        }else{
+          // SELECT * FROM `job_interviews` ORDER BY DATE(`interview_date`) = CURDATE() DESC, interview_date
+          $this->db->order_by("DATE(ji.interview_date) = CURDATE() DESC, ji.interview_date");
         }
+
          if(!empty($details['admin_id'])){
                   
                   $where .= " AND ji.created_by_admin = ".$details['admin_id'];
@@ -596,16 +600,24 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
          if(!empty($filter['start_date']) || !empty($filter['end_date'])){
              $where .= " AND ji.interview_date` BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
         }
+         if(!empty($filter['filter_by_status'])){
+             $where .= " AND ji.status` = '".$filter['filter_by_status']."' ";
+        }
 
     $this->db->select('ji.*, ev.name, ev.skill, vjp.job_title, vjp.company_id, vjp.company_name');
     $this->db->from('job_interviews as ji');
     $this->db->join('view_job_posted as vjp', 'ji.job_id = vjp.job_id', 'inner');
     $this->db->join('employee_view as ev', 'ji.employee_id = ev.employee_id', 'inner');
     $this->db->where($where)->where('ji.is_reschedule !=', 1)->where('ji.is_active !=', 0);
-    $query = $this->db->get('',$limit, $offset);
-    $total_rows = $query->num_rows();
-    $res = $query->result_array();
-    return array('total_rows' => $total_rows, 'data' => $res);
+    $query = $this->db->get('',$limit, $offset)->result_array();
+    // print_r($this->db->last_query());
+    // Total_row count --------------------------------------------------------------------------
+    $this->db->select('ji.*, ev.name, ev.skill, vjp.job_title, vjp.company_id, vjp.company_name');
+    $this->db->from('job_interviews as ji');
+    $this->db->join('view_job_posted as vjp', 'ji.job_id = vjp.job_id', 'inner');
+    $this->db->join('employee_view as ev', 'ji.employee_id = ev.employee_id', 'inner');
+    $total_rows = $this->db->where($where)->where('ji.is_reschedule !=', 1)->where('ji.is_active !=', 0)->count_all_results();
+    return array('total_rows' => $total_rows, 'data' => $query);
 }
 
 

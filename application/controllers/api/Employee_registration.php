@@ -141,13 +141,14 @@ if($resume) {
             //  print_r($loginStatus);die;
             if ($loginStatus != false) {
                 $userId = array('employee_id' => $loginStatus->employee_id,
-                                 'user_type' => 'employee');
+                                'user_type' => 'employee');
                 $bearerToken = $this->authorization_token->generateToken($userId);
                  $this->response(array(
                     "status" => 1,
                     "message" => "Successfully Logged In",
                     'employee_id'=> $loginStatus->employee_id,
                     'name'=> $loginStatus->name,
+                    'profile_photo'=> $loginStatus->profile_photo,
                     'token' => $bearerToken,
                     ) , REST_Controller::HTTP_OK);
                     return;
@@ -187,8 +188,8 @@ if($resume) {
                             $unique_id .= mt_rand(1000, 9999);
                             $email_template_id = 6;
                             $email = array('to' => $loginStatus->email ?? NULL,
-                                          'token'=>$detail['token'],
-                                          'reset_link' => 'http://localhost:3000/resetpassword/user'
+                                          // 'token'=>$detail['token'],
+                                          'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 
@@ -256,5 +257,67 @@ if($resume) {
         }
 
     }
-  
+  public function signupLoginViaSocialMedia_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    $email = $data->email;
+    $existing_employee = $this->employee_model->get_employee_by_email($email);
+       if(!$existing_employee){
+          $employee = array('name' => $data->name,
+          'email' => $email);
+          if(isset($data->picture)){
+            if(!empty($data->picture)){
+              $employee['profile_photo'] = $data->picture;
+            }
+          }
+        }
+        // print_r(($existing_employee)->row());die;
+        if(isset($existing_employee)){
+          $employee_id = ($existing_employee)->row()->employee_id;
+          // print_r($employee_id);die;
+          if(!empty($employee_id)){
+            $employee['employee_id'] = $employee_id;
+           
+          }
+        }
+        if(isset($data->type)){
+          if(!empty($data->type)){
+            if($data->type === "Google"){
+              $employee['google'] = $data->token;
+            }
+            if($data->type === "Facebook"){
+              $employee['facebook'] = $data->token;
+            }
+            if($data->type === "Linkedin"){
+              $employee['linkedin'] = $data->token;
+            }
+          }
+        }
+        // print_r($employee);die;
+      $response = $this->employee_model->updatePersonal_details($employee);
+
+   
+    $credentials = array('email' => $email);
+    $loginStatus = $this->employee_model->checkLogin($credentials);
+    //  print_r($loginStatus);die;
+    if ($loginStatus != false) {
+        $userId = array('employee_id' => $loginStatus->employee_id,
+                        'user_type' => 'employee');
+        $bearerToken = $this->authorization_token->generateToken($userId);
+         $this->response(array(
+            "status" => 1,
+            "message" => "Successfully Logged In",
+            'employee_id'=> $loginStatus->employee_id,
+            'name'=> $loginStatus->name,
+            'profile_photo'=> $loginStatus->profile_photo,
+            'token' => $bearerToken,
+            ) , REST_Controller::HTTP_OK);
+            return;
+    } else {
+        $this->response(array(
+         "status" => 0,
+         "message" => "Invalid credentials !"
+         ), REST_Controller::HTTP_OK);
+         return;
+    }
+  }
 }

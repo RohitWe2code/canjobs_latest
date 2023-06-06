@@ -1116,12 +1116,24 @@ $response = $this->admin_model->addUpdateFilterList($list);
   if($response){
 
       if($response === "already exist"){
-        $msg = "item already exist !";
+        $this->response(array(
+
+
+
+          "status" => 1,
+    
+    
+    
+          "message" => "item already exist !"
+    
+    
+    
+        ), REST_Controller::HTTP_OK);
+        return;
       }
 
     // retruns true
-
-
+    $this->admin_model->getFilterList();
 
     $this->response(array(
 

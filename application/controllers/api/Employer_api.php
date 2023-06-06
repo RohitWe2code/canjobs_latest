@@ -1053,13 +1053,13 @@ if(empty($data->company_id)){
             $email_template_id = 3;
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
-            if($this->common_model->checkEmployerEmailPermission($company_id)){
-          // Sending mail and notification to company
-            $company_email = array('to' => $response->email ?? NULL,
-                             'job_title'=>$response->job_title,
-                             'company_name'=>$response->company_name);
-                             $this->common_model->email($company_email, $email_template_id, $unique_id);
-            }
+          //   if($this->common_model->checkEmployerEmailPermission($company_id)){
+          // // Sending mail and notification to company
+          //   $company_email = array('to' => $response->email ?? NULL,
+          //                    'job_title'=>$response->job_title,
+          //                    'company_name'=>$response->company_name);
+                            //  $this->common_model->email($company_email, $email_template_id, $unique_id);
+            // }
                         $company_notification['from_id'] = $response->company_id;
                         $company_notification['type'] = 'company';
                         $company_notification['subject'] = 'added_new_job';
@@ -1069,12 +1069,12 @@ if(empty($data->company_id)){
           // Sending mail and notification to Admin
           if(isset($this->admin_email)){
             if(!empty($this->admin_email)){
-              if($this->common_model->checkAdminEmailPermission($this->admin_id)){
-              $admin_email = array('to' => $this->admin_email,
-                             'job_title'=>$response->job_title,
-                             'company_name'=>$response->company_name);
-                             $this->common_model->email($admin_email, $email_template_id, $unique_id);
-              }
+              // if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              // $admin_email = array('to' => $this->admin_email,
+              //                'job_title'=>$response->job_title,
+              //                'company_name'=>$response->company_name);
+              //               //  $this->common_model->email($admin_email, $email_template_id, $unique_id);
+              // }
                         $admin_notification['from_id'] = $this->admin_id;
                         $admin_notification['type'] = $this->user_type;
                         $admin_notification['subject'] = 'added_new_job';
@@ -1238,13 +1238,13 @@ if(empty($data->company_id)){
             $email_template_id = 4;
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
-            if($this->common_model->checkEmployerEmailPermission($company_id)){
-                // Sending mail and notification to Company
-                $company_email = array('to' => $response->email ?? NULL,
-                                 'job_title'=>$response->job_title,
-                                 'company_name'=>$response->company_name);
-                $this->common_model->email($company_email, $email_template_id, $unique_id);
-            }
+            // if($this->common_model->checkEmployerEmailPermission($company_id)){
+            //     // Sending mail and notification to Company
+            //     $company_email = array('to' => $response->email ?? NULL,
+            //                      'job_title'=>$response->job_title,
+            //                      'company_name'=>$response->company_name);
+            //     $this->common_model->email($company_email, $email_template_id, $unique_id);
+            // }
               $company_notification['from_id'] = $response->company_id;
               $company_notification['type'] = 'company';
               $company_notification['subject'] = 'applied_on_job';
@@ -1254,12 +1254,12 @@ if(empty($data->company_id)){
             // Sending mail and notification to Admin
             if(isset($this->admin_email)){
             if(!empty($this->admin_email)){
-               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
-              $admin_email = array('to' => $this->admin_email,
-                                    'job_title'=>$response->job_title,
-                                    'company_name'=>$response->company_name);
-                                    $this->common_model->email($admin_email, $email_template_id, $unique_id);
-               }
+              //  if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              // $admin_email = array('to' => $this->admin_email,
+              //                       'job_title'=>$response->job_title,
+              //                       'company_name'=>$response->company_name);
+              //                       $this->common_model->email($admin_email, $email_template_id, $unique_id);
+              //  }
                         $admin_notification['from_id'] = $this->admin_id;
                         $admin_notification['type'] = $this->user_type;
                         $admin_notification['subject'] = 'applied_on_job';
@@ -1777,15 +1777,15 @@ public function addUpdateInterview_post(){
           $email_template_id = 5;
           $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
           $unique_id .= mt_rand(1000, 9999);
-          if($this->common_model->checkEmployeeEmailPermission($employee_id)){
-            // Sending mail and notification to Company
-             $company = array('to' => $response->email ?? NULL,
-                             'candidate_name'=>$response->name,
-                             'interview_date'=>$response->interview_date,
-                             'job_title'=>$response->job_title,
-                             'company_name'=>$response->company_name);
-             $this->common_model->email($company, $email_template_id, $unique_id);
-          }
+          // if($this->common_model->checkEmployeeEmailPermission($employee_id)){
+          //   // Sending mail and notification to Company
+          //    $company = array('to' => $response->email ?? NULL,
+          //                    'candidate_name'=>$response->name,
+          //                    'interview_date'=>$response->interview_date,
+          //                    'job_title'=>$response->job_title,
+          //                    'company_name'=>$response->company_name);
+          //    $this->common_model->email($company, $email_template_id, $unique_id);
+          // }
                         $notification['from_id'] = $response->employee_id;
                         $notification['type'] = 'employee';
                         $notification['subject'] = 'interview_scheduled';
@@ -1795,14 +1795,14 @@ public function addUpdateInterview_post(){
         // Sending mail and notification to Super-Admin
         if(isset($this->admin_email)){
             if(!empty($this->admin_email)){
-               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
-              $admin_email = array('to' => $this->admin_email,
-                                    'candidate_name'=>$response->name,
-                                    'interview_date'=>$response->interview_date,
-                                    'job_title'=>$response->job_title,
-                                    'company_name'=>$response->company_name);
-                                    $this->common_model->email($admin_email, $email_template_id, $unique_id);
-               }
+              //  if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              // $admin_email = array('to' => $this->admin_email,
+              //                       'candidate_name'=>$response->name,
+              //                       'interview_date'=>$response->interview_date,
+              //                       'job_title'=>$response->job_title,
+              //                       'company_name'=>$response->company_name);
+              //                       $this->common_model->email($admin_email, $email_template_id, $unique_id);
+              //  }
                         $admin_notification['from_id'] = $this->admin_id;
                         $admin_notification['type'] = $this->user_type;
                         $admin_notification['subject'] = 'interview_scheduled';
@@ -1811,15 +1811,6 @@ public function addUpdateInterview_post(){
                         $this->common_model->addNotification($admin_notification);
             }
           }
-          //  $admin = array('from_id'=> 1,
-          //                 'type'=>'Super-Admin',
-          //                 'to' =>'aashi.we2code@gmail.com',
-          //                 'subject'=>'new interview scheduled',
-          //                 'message'=>'new interview scheduled on '.$response->interview_date.' of candidate name '.$response->name.' with '.$response->company_name,
-          //                 'unique_id'=>$unique_id);  
-          //     $this->common_model->email($admin);
-          //     $this->common_model->addNotification($admin);
-
             $this->response(array(
 
               "status" => 1,
@@ -1865,8 +1856,8 @@ public function getInterview_post(){
                  );
 
      if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
-      $details = array("admin_id" =>  $this->admin_id,
-                          "admin_type" =>  $this->user_type);
+      $details["admin_id"] =  $this->admin_id;
+      $details["admin_type"] =  $this->user_type;
     }  
 
       $page =  $data->page ?? 1;
@@ -1908,13 +1899,18 @@ if(isset($data->filter_by_time)){
             
           }
     }
+    if(isset($data->filter_by_status)){
+      if(!empty($data->filter_by_status)){
+      $filter["filter_by_status"]=$data->filter_by_status;
+    }
+  }
       // Calculate offset for pagination
       $offset = ($page - 1) * $limit;
-
+    
       // sorting 
       $sort = [
-        'column_name' => $data->column_name ?? null ,
-        'sort_order' => $data->sort_order ?? null
+        'column_name' => $data->column_name ?? 'id' ,
+        'sort_order' => $data->sort_order ?? 'DESC'
       ];
       
       // print_r($details);die;

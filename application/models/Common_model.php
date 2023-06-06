@@ -113,8 +113,8 @@ public function getLastRecord_email(){
 public function getEmailByGroup($group_id){
    $query = "SELECT * FROM `email` WHERE status = 'PENDING' AND group_id = ".$group_id;
    $res = $this->db->query($query)->result_array();
-  //  $query = " UPDATE `email` SET status = 'SENT' WHERE group_id = ".$group_id;
-  //  $this->db->query($query);
+   $query = " UPDATE `email` SET status = 'PROCESSING' WHERE group_id = ".$group_id;
+   $this->db->query($query);
   return $res;
   //  print_r($group_id);die;
 }
@@ -141,16 +141,16 @@ public function addUpdateEmailTemplate($template){
   //             }
 }
 public function getEmailTemplate($id){
-  $id=$id['id'] ?? null;
-  if(isset($id)){
-    if(!empty($id)){
-      $this->db->where('id',$id);
-    }
-  }
+  if(!empty($id)){
+      $this->db->where('id',$id['id']);
+      $this->db->where('is_active != 0');
+      $result = $this->db->get('email_template')->row_array();
+  }else{
   // $this->db->where('type',$user_type);
   $this->db->where('is_active != 0');
   $result = $this->db->get('email_template')->result_array();
-  
+  // print_r($this->db->last_query());
+}
   $total_rows = $this->db->where('is_active != 0')->from('email_template')->count_all_results();
     return array('total_rows' => $total_rows, 'data' => $result);
 
