@@ -12,7 +12,9 @@ class Common_model extends CI_Model
 
 {
 public function sendMail($to, $subject, $body){
-      
+      // print_r($to);
+      // print_r($subject);
+      // print_r($body);die;
             $this->load->library('email');
             $config = array(
             'protocol' => 'smtp',
@@ -27,7 +29,7 @@ public function sendMail($to, $subject, $body){
 
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
-            $this->email->from('ashish.we2code@gmail.com', 'Your Name');
+            $this->email->from('ashish.we2code@gmail.com', 'CanJobs');
             $this->email->to($to);
             $this->email->subject($subject);         
             $this->email->message($body);

@@ -96,17 +96,27 @@ if($resume) {
             $response = $this->employee_model->insert_employee($employee);
             // print_r($response);die;
             if($response){
-              // Sending email
               $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
               $unique_id .= mt_rand(1000, 9999);
+              // Sending email
+              // Employee -----------------------------------------------------
               $email_template_id = 1;
               $eamil_detail = array('to' => $response->email ?? NULL);
               $this->common_model->email($eamil_detail, $email_template_id, $unique_id);
+              // Admin --------------------------------------------------------
+              $email_template_id = 8;
+              $eamil_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+                                          'admin_name' => 'Aashi',
+                                          'user_email' => $response->email ?? NULL);
+              $this->common_model->email($eamil_detail_admin, $email_template_id, $unique_id);
                         // Code to send notification
-                        // $detail['from_id'] = $response->employee_id;
-                        // $detail['type'] = 'employee';
+                        $detail['from_id'] = 5;
+                        $detail['type'] = 'manager';
+                        $detail['subject'] = 'new_user_registered';
+                        $detail['action_id'] = $response->employee_id ?? NULL;
+                        $detail['message'] = 'A new user '.$response->email.' registered successfully';
                         // $detail['message'] = 'hey, '.$response->email.' welcome onboard';
-                        // $this->common_model->addNotification($detail);
+                        $this->common_model->addNotification($detail);
               $this->response(array(
                 "status" => 1,
                 "message" => "Employee has been registered"
@@ -188,6 +198,7 @@ if($resume) {
                             $unique_id .= mt_rand(1000, 9999);
                             $email_template_id = 6;
                             $email = array('to' => $loginStatus->email ?? NULL,
+                                          'name' => $loginStatus->name ?? NULL,
                                           // 'token'=>$detail['token'],
                                           'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
                                          );

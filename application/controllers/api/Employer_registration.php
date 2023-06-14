@@ -135,10 +135,28 @@ class Employer_registration extends REST_Controller{
           // Sending email
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
-            $email_template_id = 1;
-            $email_detail = array('to' => $response->email ?? NULL);
-            $this->common_model->email($email_detail, $email_template_id, $unique_id);
-
+            // $email_template_id = 1;
+            // $email_detail = array('to' => $response->email ?? NULL);
+            // $this->common_model->email($email_detail, $email_template_id, $unique_id);
+             // Sending email
+              // Employee -----------------------------------------------------
+              $email_template_id = 1;
+              $email_detail = array('to' => $response->email ?? NULL);
+              $this->common_model->email($email_detail, $email_template_id, $unique_id);
+              // Admin --------------------------------------------------------
+              $email_template_id = 8;
+              $email_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+                                          'admin_name' => 'Aashi',
+                                          'user_email' => $response->email ?? NULL);
+              $this->common_model->email($email_detail_admin, $email_template_id, $unique_id);
+                        // Code to send notification
+                        $detail['from_id'] = 5;
+                        $detail['type'] = 'manager';
+                        $detail['subject'] = 'new_employer_registered';
+                        $detail['action_id'] = $response->company_id ?? NULL;
+                        $detail['message'] = 'A new employer '.$response->email.' registered successfully';
+                        // $detail['message'] = 'hey, '.$response->email.' welcome onboard';
+                        $this->common_model->addNotification($detail);
           $this->response(array(
 
             "status" => 1,
@@ -277,8 +295,8 @@ class Employer_registration extends REST_Controller{
                             //------------
                             $email_template_id = 6;
                             $email = array('to' => $loginStatus->email ?? NULL,
-                                          // 'token'=>$detail['token'],
-                                          'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
+                                           'name' => $loginStatus->contact_person_name ?? NULL,
+                                           'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 

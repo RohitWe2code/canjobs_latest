@@ -564,7 +564,11 @@ public function addUpdateInterview($interview_detail){
       if($res){
         // print_r($job_id);
         // print_r($employee_id);
-        return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' => $employee_id))->row();
+        $query = "SELECT *,
+        (SELECT email FROM employer WHERE company_id = view_applied_employee.company_id) AS company_email
+        FROM view_applied_employee WHERE job_id = '". $job_id."' AND employee_id ='".$employee_id."'";
+        return $this->db->query($query)->row();
+        // return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' => $employee_id))->row();
         // print_r($this->db->last_query());
         
       }
@@ -624,27 +628,47 @@ public function getInterview($details,$filter, $search, $limit, $offset, $sort) 
   public function addUpdateLmia($detail){
 
   //  $id = $detail['id'] ?? null;
-            
-            $this->db->where('job_id', $detail['job_id']);
-            $this->db->where('employee_id', $detail['employee_id']);
+            $job_id = $detail['job_id'] ?? NULL;
+            $employee_id = $detail['employee_id'] ?? NULL;
+            $this->db->where('job_id', $job_id);
+            $this->db->where('employee_id', $employee_id);
             $query = $this->db->get('lmia');        
 
             if ($query->num_rows() > 0) {
                 $row = $query->row();  
-
+                if($row->lmia_status == $detail['lmia_status']){     // If new status and old status are same than return
+                  return array('msg' => "Please provide different status, already exist");
+                }
                 $this->db->where('id', $row->id);
         
                 $this->db->set('updated_at', 'NOW()', FALSE);
         
                 $res = $this->db->update('lmia', $detail);
-                return "Data updated successfully";
+                if($res){
+                  $query = "SELECT *,
+                  (SELECT email FROM employer WHERE company_id=view_applied_employee.company_id) AS company_email 
+                  FROM view_applied_employee WHERE job_id = '". $job_id."' AND employee_id ='".$employee_id."'";
+                  $response = $this->db->query($query)->row();
+
+                return array('response' => $response, 'msg' => "Data updated successfully");
+              }
+             
+                // return "Data updated successfully";
              } else {  
 
+                                  
                                   $res = $this->db->insert('lmia', $detail);
 
                                   //print_r($this->db->last_query());
+                                  if($res){
+                                  $query = "SELECT *,
+                                  (SELECT email FROM employer WHERE company_id=view_applied_employee.company_id) AS company_email 
+                                  FROM view_applied_employee WHERE job_id = '". $job_id."' AND employee_id ='".$employee_id."'";
+                                  $response = $this->db->query($query)->row();
 
-                                  return "Data added successfully";
+                                  return array('response' => $response, 'msg' => "Data added successfully");
+                                  }
+                                  // return "Data added successfully";
 
                           }  
 
