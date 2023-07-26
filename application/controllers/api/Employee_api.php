@@ -774,7 +774,13 @@ if(isset($data->employee_id)){
     // Calculate offset for pagination
     $offset = ($page - 1) * $limit;
 
-    $result = $this->employee_model->getAllemployeeView($parameters,$filter, $search, $limit, $offset,$sort);
+    //Recommended
+    $recommended = [];
+    if(isset($data->job_keyskills)){
+    $recommended = array("job_skills"=>$data->job_keyskills);
+    }
+
+    $result = $this->employee_model->getAllemployeeView($parameters,$filter, $search, $limit, $offset, $sort, $recommended);
 
     if($result) {
               $this->response(array(
@@ -927,7 +933,8 @@ if(isset($data->employee_id)){
     // Get filter parameters
     $filter = array('experience'=>$data->filter_experience ?? null,
                'skill'=>$data->filter_skill ?? null,
-              'education'=>$data->filter_education ?? null
+              'education'=>$data->filter_education ?? null,
+              'lmia_status'=>$data->filter_lmia_status ?? null
     );
    if(isset($data->filter_by_time)){
      if($data->filter_by_time == "today"){
@@ -1177,6 +1184,261 @@ if(isset($data->employee_id)){
         }
 
     }
+    /*
+    ||------------------------------------------------------------------------------------
+    ||  upload documents of employee, creates seperate directory for each employee by name
+    ||  and upload document files.
+    ||------------------------------------------------------------------------------------
+  */
+    public function documentsUpload_put(){
+      $data = json_decode(file_get_contents("php://input"));
+     
+      $documents = [];
+      // $file_info = [];
+      $id = 0;
+      if(isset($data->employee_id) && isset($data->type) && isset($data->document_file)){
+          if(empty($data->employee_id) || empty($data->type) || empty($data->document_file)){
+                  $this->response(array(
+                    "status" => 0,
+                    "message" => "fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+                    $employee_id = $data->employee_id;
+                    $documents[$data->type] = $data->document_file;
+                    
+                    $response = $this->createDirectoryAndUploadDocs($employee_id, $documents);
+                    // print_r($response);die;
+                    if (is_array($response) && count($response) > 0) {
+                          $file_info = $response;
+                          $file_info['employee_id'] = $employee_id;
+                          if(isset($data->id)){
+                            if(!empty($data->id)){
+                              $id = $data->id;
+
+                            }
+                          }
+                          if(isset($data->is_varify)){
+                            if(!empty($data->is_varify)){
+                              $file_info['is_varify'] = $data->is_varify;
+
+                            }
+                          }
+                          // print_r($file_info);die;
+                          if($this->employee_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => "successfully"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+                        } 
+                    if($response == 1){
+                      // Unsupported file type
+                       $this->response(array(
+                          "status" => 0,
+                          "message" => "Unsupported file type !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+                    if($response == 2){
+                      // Invalid base64-encoded data
+                      $this->response(array(
+                          "status" => 0,
+                          "message" => "Invalid base64-encoded data !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }      
+    }
+    // Verify user documents
+    public function isVarify_put(){
+      $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && isset($data->is_varify)){
+          if(empty($data->id) || empty($data->is_varify)){
+            $this->response(array(
+                   "status" => 0,
+                   "message" => "fields must not be empty !"
+                   ) , REST_Controller::HTTP_OK);
+                   return;
+            }
+                     $id = $data->id;
+                     $file_info['is_varify'] = $data->is_varify;
+          if($this->employee_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => "successfully"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+  /*
+    ||------------------------------------------------------------------------------------
+    ||  check if directory exist with the given employee name if not than create directory
+    ||  and upload document file. 
+    ||------------------------------------------------------------------------------------
+  */
+    public function createDirectoryAndUploadDocs($id, $documents){
+      $dir_name = 'employee_'.$id;
+      $documents_url = [];
+      // print_r(FCPATH);die;
+      // echo'</n>';
+      $file_path = FCPATH.'uploads/employee_documents/'.$dir_name;        
+      // print_r($file_path);die;
+      // Checking whether if directory not exists than create directory
+      if (!file_exists($file_path)) {        
+          if(!mkdir($file_path, 0777, true)){
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+          }
+      }
+      if (file_exists($file_path)) {
+        // print_r($documents);die;
+        foreach($documents as $key=>$value){
+          $document_name = $key;
+          $base64_encoded_document = $value;
+          // echo($document_name." : ".$base64_encoded_document .PHP_EOL);
+                // Check if the image data is a base64-encoded string
+                // $pattern = '/data:\/jpeg;base64,([A-Za-z0-9+\/=]+)/';
+                if (preg_match('/^data:\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/^data:image\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type)) {
+                    $base64_encoded_document = substr($base64_encoded_document, strpos($base64_encoded_document, ',') + 1);
+                // '/^data:image\/(\w+);base64,/'
+                    $file_extension = strtolower($ext_type[1]);
+                // print_r($file_extension);die;
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'pdf'))) {
+                        $base64_decoded_document = base64_decode($base64_encoded_document);
+                    
+                        $file_name_for_upload = $document_name .'_'.$id. '.' . $file_extension;
+                        $file_path_for_upload = $file_path.'/'. $file_name_for_upload;
+                        // print_r($file_path_for_upload);die;
+                        file_put_contents($file_path_for_upload, $base64_decoded_document);
+                    
+                        $uploaded_document_url = base_url() . 'uploads/employee_documents/'.$dir_name.'/' . $file_name_for_upload;
+                        $documents_url["document_url"] = $uploaded_document_url;
+                        $documents_url["extension_type"] = $file_extension;
+                        $documents_url["type"] = $document_name;
+                    } else {
+                        // Unsupported file type
+                        unset($documents_url[$document_name]);
+                        return 1;
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($documents_url[$document_name]);
+                 return 2;
+                }
+      }
+        // print_r($documents_url);die;
+        $file_info = $documents_url;
+        return $file_info;
+      }
+    }
+    /*
+    ||------------------------------------------------------------------------------------
+    || get upload document file path and other info. 
+    ||------------------------------------------------------------------------------------
+  */
+     public function getDocumentsUploaded_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      $id = $data->id ?? null;
+      $employee_id = $data->employee_id ?? null;
+      $documents = $this->employee_model->get_documents_uploaded($id, $employee_id);
+      if($documents){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully",
+          "data" => $documents
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "No data found",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+  }
+  public function deleteDocumentsUploaded_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    if(isset($data->id)){
+          if(empty($data->id)){
+            $this->response(array(
+                  "status" => 0,
+                  "message" => "id must not be empty !"
+                ), REST_Controller::HTTP_OK);
+                 return;
+              }
+                     $id = $data->id;
+         
+    $documents = $this->employee_model->get_documents_uploaded($id);
+    if($documents){
+      // Explode the URL by slashes ('/') to get an array of its segments
+    $segments = explode('/', $documents['document_url']);
+
+    // Slice the desired portion (from the fouth until the last segment)
+    $sliced_portion = implode('/', array_slice($segments, 4));
+    $file_path = FCPATH . $sliced_portion;
+    // check if file exist, if yes than unlink(Delete) the file  
+    if (file_exists($file_path)) {
+        unlink($file_path);
+    } 
+    
+      if($this->employee_model->delete_document_uploaded($id)){
+        $this->response(array(
+          "status" => 1,
+          "message" => "document has been deleted"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed !"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+      }else{      
+       $this->response(array(
+          "status" => 0,
+          "message" => "No record found !"
+        ), REST_Controller::HTTP_OK);
+    }
+  }else{
+    $this->response(array(
+          "status" => 0,
+          "message" => "id must be provided !"
+        ), REST_Controller::HTTP_OK);
+         return;
+  }
+  }
 }
 
 

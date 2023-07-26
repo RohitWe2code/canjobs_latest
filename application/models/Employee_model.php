@@ -1118,7 +1118,7 @@ public function getAllEmployeeEducation(){
 
 
 
-  public function getAllemployeeView($parameters,$filter, $search, $limit, $offset,$sort){
+  public function getAllemployeeView($parameters,$filter, $search, $limit, $offset, $sort, $recommended){
 
 
 
@@ -1146,11 +1146,21 @@ public function getAllEmployeeEducation(){
 
 
 
-                  $skill = $this->db->escape_like_str($filter['skill']);
+                  // $skill = $this->db->escape_like_str($filter['skill']);
 
 
 
-                  $where .= " AND skill LIKE '%$skill%' ";
+                  // $where .= " AND skill LIKE '%$skill%' ";
+                   $keyskills = explode(",", $filter['skill']);
+                    $query = " AND ";
+                    $conditions = array();
+                    foreach ($keyskills as $skill) {
+                      $conditions[] = "skill LIKE '%" . $skill . "%'";
+                    }
+                    $query .= implode(" OR ", $conditions);
+                    // $keyskill = $this->db->escape_like_str($filter['keyskill']);
+                    // $where .= "  AND keyskill LIKE '%$keyskill%'";
+                    $where .= $query;
 
 
 
@@ -1237,11 +1247,36 @@ public function getAllEmployeeEducation(){
 
 
 
-                $result = $this->db->get('employee_view',$limit, $offset)->result_array();
+                $records = $this->db->get('employee_view',$limit, $offset)->result_array();
 
 
 
                 // print_r($this->db->last_query());
+                if(!empty($recommended)){
+                  $providedSkills = explode(',', strtolower($recommended['job_skills']));
+                  // print_r($providedSkills);die;
+                  function compareSkills($recordSkills, $providedSkills) {
+                      $recordSkillsArray = array_map('trim', explode(',', strtolower($recordSkills)));
+                      $matchedSkillsCount = count(array_intersect($recordSkillsArray, $providedSkills));
+                      // print_r($matchedSkillsCount);die;
+                      return $matchedSkillsCount * -1; // Multiply by -1 to sort in descending order
+                  }
+
+                  // Sort the Records
+                  usort($records, function ($a, $b) use ($providedSkills) {
+                      $aPriority = compareSkills($a['skill'], $providedSkills);
+                      $bPriority = compareSkills($b['skill'], $providedSkills);
+                      return $aPriority - $bPriority;
+                  });
+                  // Display the Sorted Records
+// foreach ($records as $record) {
+//     echo 'Employee ID: ' . $record['employee_id'] . ', Name: ' . $record['name'] . ', Skills: ' . $record['skill'] . PHP_EOL;
+// }
+
+                }
+                // die;
+                // print_r($recordSkills);die;
+
 
 
 
@@ -1253,7 +1288,7 @@ public function getAllEmployeeEducation(){
 
 
 
-                return array('total_rows' => $total_rows ?? null, 'data' => $result);              
+                return array('total_rows' => $total_rows ?? null, 'data' => $records);              
 
 
 
@@ -1527,6 +1562,19 @@ public function getJobResponse($parameters,$filter, $search, $limit, $offset,$so
 
 
               }
+              if (!empty($filter['lmia_status'])) {
+
+
+
+                  $lmia_status = $this->db->escape_like_str($filter['lmia_status']);
+
+
+
+                  $where .= " AND lmia_status LIKE '%$lmia_status%'";
+
+
+
+              }
                 if(!empty($filter['start_date']) || !empty($filter['end_date'])){
                   $where .= " AND DATE(created_at) BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
               }
@@ -1633,6 +1681,56 @@ public function getProfileCompletePercent(){
    return $result = $this->db->get()->result_array();
 
 } 
+public function documentsUpload($id, $file_info){
+  // print_r($file_info);die;
+            if (!empty($id)) {
+              // print_r("not empty id");die;
+              // $this->db->where('employee_id', $id);
+              // // $this->db->where('is_deleted != 1');
+              // $query = $this->db->get('employee_documents');  
+              // if ($query->num_rows() > 0) {                
+              // }
+                      // Update operation
+                      $this->db->where('id', $id);
+                      $this->db->set('updated_at', 'NOW()', FALSE);
+                      $query = $this->db->update('employee_documents', $file_info);                    
+                      return $query;
+                      } 
+              else{
+                  // print_r("insert");die;
+                 $res = $this->db->insert('employee_documents',$file_info);
+                return $res;
+              }
+}
+public function get_documents_uploaded($id, $employee_id=null){
+
+
+
+
+            if(!empty($id)){
+              $this->db->where('id', $id);
+            }
+            if(!empty($employee_id)){
+              $this->db->where('employee_id', $employee_id);
+            }
+            // $this->db->where('is_deleted != 1');
+            $query = $this->db->get('employee_documents');      
+
+            if ($query->num_rows() > 0 && $query->num_rows() < 2) {
+                return $query->row_array();
+            }
+            if ($query->num_rows() > 2) {
+                return $query->result_array();
+            }
+
+}
+ public function delete_document_uploaded($id){
+
+                $this->db->where("id", $id);
+                return $this->db->delete("employee_documents");
+
+   }
+
 }
 
 

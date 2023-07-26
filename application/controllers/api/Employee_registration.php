@@ -5,6 +5,8 @@ Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
+require APPPATH . 'libraries/Format.php';
+
 
 class Employee_registration extends REST_Controller{
 
@@ -21,6 +23,9 @@ class Employee_registration extends REST_Controller{
     $this->load->helper('url');
   }
 
+  // public function index_get(){
+
+  // }
   public function signup_post(){
     
     $email = $this->security->xss_clean($this->input->post("email"));
@@ -140,6 +145,7 @@ if($resume) {
   }
   public function login_post()
     {
+      // print_r($_POST);die;
         $email = $this->security->xss_clean($this->input->post("email"));
         $password = $this->security->xss_clean($this->input->post("password"));
 

@@ -1392,8 +1392,13 @@ if(empty($data->company_id)){
       'column_name' => $data->column_name ?? "created_at" ,
       'sort_order' => $data->sort_order ?? "DESC"
     ];
-// print_r($sort);die;
-    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort, $details);
+    //recommended
+    $recommend_sort = '';
+    if(isset($data->employee_skills)){
+      $recommend_sort = $data->employee_skills;
+    }
+    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort, $details, $recommend_sort);
+    // print_r($result);die;
 
     if ($result) {
               $this->response(array(
@@ -1802,11 +1807,11 @@ public function addUpdateInterview_post(){
         // print_r($response);die;
 
         if($interview_detail){
-          $employee_id = $response->employee_id;
+          $employee_id = $data->employee_id;
          
           $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
           $unique_id .= mt_rand(1000, 9999);
-          if($this->common_model->checkEmployeeEmailPermission($employee_id)){
+          if($this->common_model->checkEmployeeEmailPermission($data->employee_id)){
             // Sending mail and notification to Employee
             $email_template_id = 5;
              $company = array('to' => $response->email ?? NULL,
@@ -1816,7 +1821,7 @@ public function addUpdateInterview_post(){
                              'company_name'=>$response->company_name);
              $this->common_model->email($company, $email_template_id, $unique_id);
           }
-                        $notification['from_id'] = $response->employee_id;
+                        $notification['from_id'] = $data->employee_id;
                         $notification['type'] = 'employee';
                         $notification['subject'] = 'interview_scheduled';
                         $notification['action_id'] = $response->job_id;
@@ -2101,7 +2106,95 @@ public function changePassword_put(){
         }
 
     }
+    public function getAllJobsViewAdmin_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    $details['job_id'] =$data->job_id ?? null;
+    $details['employee_id'] = $data->employee_id ?? 0;
+    // if(!empty($this->employee_id) && $this->user_type == "employee"){
+    //   $details["employee_id"] = $this->employee_id;
+    // }  
+    // if(!empty($this->company_id) && $this->user_type == "company"){
+    //   $details["company_id"] = $this->company_id;
+    // }  
+    $page = $data->page ?? 1;
+    $limit =$data->limit ?? 10; 
+
+    // if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
+    //   $details ["admin_id"] =  $this->admin_id;
+    //   $details["admin_type"] =  $this->user_type;
+    // }  
+
+    // Get search parameter
+    $search = isset($data->search) ? $data->search : '';
+
+    // Get filter parameters
+
+    $filter = [
+    "category_id" => $data->filter_category_id ?? null,
+    "job_type" => $data->filter_job_swap ?? null,
+    "keyskill" => $data->filter_keyskill ?? null,
+    "location" => $data->filter_location ?? null,
+    "company_name" => $data->company_name ?? null,
+    ];
+    if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
+      if($data->filter_by_time == "last_week"){
+            $filter['start_date'] = date('Y-m-d', strtotime('last week'));
+            $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
+
+      }
+     
+      if($data->filter_by_time == "last_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('last month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('last month'));
+            
+          }
+      if($data->filter_by_time == "current_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('this month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('this month'));
+            
+          }
+    }
+
     
+    // Calculate offset for pagination
+    $offset = ($page - 1) * $limit;
+
+    // sorting 
+    $sort = [
+      'column_name' => $data->column_name ?? "created_at" ,
+      'sort_order' => $data->sort_order ?? "DESC"
+    ];
+    $result = $this->employer_model->viewJobsAdmin($filter, $search, $limit, $offset, $sort, $details);
+    // print_r($result);die;
+
+    if ($result) {
+              $this->response(array(
+                "status" => 1,
+                "message" => "successful",
+                "total_rows" => $result['total_rows'],
+                "data" => $result['data']
+              ), REST_Controller::HTTP_OK);
+
+          }else{
+
+
+
+            $this->response(array(
+
+              "status" => 0,
+
+              "messsage" => "No data found"
+
+            ), REST_Controller::HTTP_OK);
+
+          }
+
+   }
 }
 
  

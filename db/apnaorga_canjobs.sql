@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 14, 2023 at 10:16 AM
--- Server version: 5.7.41
+-- Generation Time: Jul 26, 2023 at 04:03 PM
+-- Server version: 5.7.42-cll-lve
 -- PHP Version: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -26,9 +26,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`apnaorga`@`localhost` PROCEDURE `otp` ()   BEGIN
-    DELETE FROM otp WHERE created_at < (NOW() - INTERVAL 2 MINUTE);
-END$$
+$$
 
 DELIMITER ;
 
@@ -62,7 +60,9 @@ INSERT INTO `admin` (`admin_id`, `email`, `password`, `name`, `contact_no`, `adm
 (2, 'gourav.we2code@gmail.com', '3f30aff52f55a2a0c2d7a0e02e7872eb', 'Gourav choudary', NULL, 'manager', 1, 1, '2023-05-20 11:52:02', '2023-05-20 11:52:02', 1, ''),
 (3, 'raj@gmail.com', 'c13b1fd8824c5577074601c325503a9a', 'Raj', NULL, 'manager', 1, 0, '2023-05-22 05:52:01', '2023-05-22 05:52:01', 1, ''),
 (4, 'ragj.we2code@gmail.com', 'fbfabfa598f91231dac740696a4c34e4', 'dfvx cv', NULL, 'manager', 1, 1, '2023-06-05 06:26:32', '2023-06-05 06:26:32', 1, ''),
-(5, 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 'Annu', NULL, 'manager', 1, 0, '2023-06-12 05:22:59', '2023-06-12 05:22:59', 1, '');
+(5, 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 'Annu', NULL, 'manager', 1, 1, '2023-06-12 05:22:59', '2023-06-12 05:22:59', 1, ''),
+(6, 'rfghgfhaj.we2code@gmail.com', '62aef6cd4c8087f2c38868e155706995', 'tghfghf', NULL, 'manager', 1, 1, '2023-06-20 09:31:09', '2023-06-20 09:31:09', 1, ''),
+(7, 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 'Aashi vyas', NULL, 'super-admin', 1, 0, '2023-06-30 07:08:53', '2023-06-30 07:08:53', 1, '');
 
 -- --------------------------------------------------------
 
@@ -74,10 +74,10 @@ CREATE TABLE `apply_on_job` (
   `apply_id` int(101) NOT NULL,
   `job_id` int(101) NOT NULL,
   `employee_id` int(101) NOT NULL,
-  `is_viewed` smallint(11) NOT NULL DEFAULT '1',
+  `is_viewed` smallint(11) NOT NULL DEFAULT '5',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='apply job = 0, view job = 1, connect job = 2, save job = 3';
 
 --
 -- Dumping data for table `apply_on_job`
@@ -112,7 +112,27 @@ INSERT INTO `apply_on_job` (`apply_id`, `job_id`, `employee_id`, `is_viewed`, `c
 (26, 10, 23, 1, '2023-06-07 10:20:30', '2023-06-07 10:20:30'),
 (27, 20, 26, 0, '2023-06-12 10:10:33', '2023-06-12 10:10:33'),
 (28, 19, 26, 0, '2023-06-12 10:37:05', '2023-06-12 10:37:05'),
-(29, 21, 26, 0, '2023-06-12 10:40:10', '2023-06-12 10:40:10');
+(29, 19, 26, 0, '2023-06-12 10:40:10', '2023-06-20 09:25:09'),
+(30, 4, 27, 0, '2023-06-20 07:22:48', '2023-07-24 11:09:00'),
+(31, 19, 27, 0, '2023-06-20 07:31:26', '2023-06-20 09:24:59'),
+(32, 19, 27, 0, '2023-06-20 07:31:35', '2023-06-20 07:31:37'),
+(33, 21, 27, 0, '2023-06-20 08:47:33', '2023-06-30 10:06:37'),
+(34, 14, 27, 0, '2023-06-30 10:12:50', '2023-06-30 10:12:50'),
+(35, 11, 27, 0, '2023-06-30 10:12:56', '2023-06-30 10:12:56'),
+(36, 26, 27, 0, '2023-07-03 12:13:36', '2023-07-03 12:13:36'),
+(37, 16, 26, 1, '2023-07-04 04:24:38', '2023-07-04 04:24:38'),
+(38, 26, 26, 0, '2023-07-04 04:24:51', '2023-07-04 04:24:53'),
+(39, 3, 26, 0, '2023-07-22 07:11:20', '2023-07-22 07:11:20'),
+(40, 22, 26, 0, '2023-07-22 07:12:24', '2023-07-22 07:12:24'),
+(41, 27, 26, 0, '2023-07-22 07:12:40', '2023-07-22 07:12:40'),
+(42, 24, 23, 0, '2023-07-22 17:24:28', '2023-07-22 17:24:28'),
+(43, 6, 20, 0, '2023-07-24 12:18:30', '2023-07-24 12:18:30'),
+(44, 26, 26, 0, '2023-07-24 12:39:30', '2023-07-24 12:39:30'),
+(45, 29, 12, 0, '2023-07-24 12:49:36', '2023-07-24 12:49:36'),
+(46, 19, 26, 5, '2023-07-24 13:06:46', '2023-07-24 13:06:46'),
+(47, 27, 15, 0, '2023-07-24 13:17:00', '2023-07-24 13:17:00'),
+(48, 28, 15, 0, '2023-07-24 13:17:02', '2023-07-24 13:17:02'),
+(49, 19, 7, 0, '2023-07-24 13:17:19', '2023-07-24 13:17:19');
 
 -- --------------------------------------------------------
 
@@ -767,7 +787,8 @@ CREATE TABLE `company_kyc` (
 INSERT INTO `company_kyc` (`id`, `company_id`, `pan_no`, `name`, `pan_date`, `address`, `pincode`, `city`, `state`, `country`, `gstin`, `fax_number`, `tan_number`, `document`, `created_at`, `updated_at`) VALUES
 (1, 1, 'ABCTY1234D', 'Molly', '1993-02-19', ' Vijay Nagar ', 452010, 'Indore', 'Madhya Pradesh ', 'India', 'AAACC4175D', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1684580874.pdf', '2023-05-20 11:07:54', '2023-05-20 11:07:54'),
 (2, 3, 'ABCTY1234D', 'Priyanshu Gupta', '1995-05-12', 'Ram nagar', 752963, 'indore', 'mp', 'India', 'AAACC4175D', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1684825382.pdf', '2023-05-23 07:03:02', '2023-05-23 07:03:02'),
-(3, 8, 'ABCTY1234D', 'Mayur', '1998-02-20', 'Ram nagar', 752963, 'indore', 'mp', 'India', 'AAACC4175D', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1685949943.pdf', '2023-06-05 07:25:43', '2023-06-05 07:25:43');
+(3, 8, 'ABCTY1234D', 'Mayur', '1998-02-20', 'Ram nagar', 752963, 'indore', 'mp', 'India', 'AAACC4175D', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1685949943.pdf', '2023-06-05 07:25:43', '2023-06-05 07:25:43'),
+(4, 14, 'ABCTY1234D', 'Chetn ', '1992-07-16', 'Ram nagar', 4500123, 'indore', ' Madhya Pradesh ', 'India', 'AAACC4175D', '123-456-7890', 'PDES03028F', 'https://apnaorganicstore.in/canjobs/uploads/1687251466.pdf', '2023-06-20 08:57:46', '2023-06-20 08:57:46');
 
 -- --------------------------------------------------------
 
@@ -1169,7 +1190,51 @@ INSERT INTO `email` (`id`, `email_template_id`, `email_json`, `status`, `group_i
 (110, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Annu\", \"interview_date\": \"2023-06-13\"}', 'SENT', 18498, '2023-06-12 12:20:14'),
 (114, 12, '{\"to\": \"utkarsh.we2code@gmail.com\", \"lmia_status\": \"Complete\", \"company_name\": \"WE2CODE\", \"employee_name\": \"Rajaram\"}', 'SENT', 15632, '2023-06-13 09:37:36'),
 (115, 12, '{\"to\": \"utkarsh.we2code@gmail.com\", \"lmia_status\": \"Reject\", \"company_name\": \"WE2CODE\", \"employee_name\": \"Rajaram\"}', 'SENT', 11071, '2023-06-13 09:39:28'),
-(116, 12, '{\"to\": \"utkarsh.we2code@gmail.com\", \"lmia_status\": \"Complete\", \"company_name\": \"WE2CODE\", \"employee_name\": \"Rajaram\"}', 'SENT', 11998, '2023-06-13 09:41:57');
+(116, 12, '{\"to\": \"utkarsh.we2code@gmail.com\", \"lmia_status\": \"Complete\", \"company_name\": \"WE2CODE\", \"employee_name\": \"Rajaram\"}', 'SENT', 11998, '2023-06-13 09:41:57'),
+(117, 6, '{\"to\": \"aashi.we2code@gmail.com\", \"name\": \"Annu\", \"reset_link\": \"http://localhost:3000/resetpassword/user:587ea74f1e1c1b667fcfa0826f5ac338\"}', 'SENT', 13811, '2023-06-20 07:15:16'),
+(118, 7, '{\"to\": \"raj.we2code@gmail.com\", \"otp\": 502048}', 'SENT', 15343, '2023-06-20 07:17:31'),
+(119, 7, '{\"to\": \"chetan.barod.we2code@gmail.com\", \"otp\": 877988}', 'SENT', 11713, '2023-06-20 07:21:21'),
+(120, 1, '{\"to\": \"chetan.barod.we2code@gmail.com\"}', 'SENT', 17394, '2023-06-20 07:22:35'),
+(121, 8, '{\"to\": \"aashi.we2code@gmail.com\", \"admin_name\": \"Aashi\", \"user_email\": \"chetan.barod.we2code@gmail.com\"}', 'SENT', 17394, '2023-06-20 07:22:35'),
+(122, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"dgfh\", \"company_name\": \"Infobeans\"}', 'SENT', 1216501, '2023-06-20 07:22:48'),
+(123, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'SENT', 16684, '2023-06-20 07:31:26'),
+(124, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'SENT', 1233839, '2023-06-20 07:31:35'),
+(125, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'SENT', 1244045, '2023-06-20 07:31:37'),
+(127, 1, '{\"to\": \"chetan.barod.we2code@gmail.com\"}', 'SENT', 12317, '2023-06-20 07:35:09'),
+(126, 7, '{\"to\": \"chetan.barod.we2code@gmail.com\", \"otp\": 947156}', 'SENT', 1237612, '2023-06-20 07:33:06'),
+(128, 8, '{\"to\": \"aashi.we2code@gmail.com\", \"admin_name\": \"Aashi\", \"user_email\": \"chetan.barod.we2code@gmail.com\"}', 'SENT', 12317, '2023-06-20 07:35:09'),
+(129, 9, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"admin_name\": \"aAshi\", \"website_url\": \"fgfdgvb.com\", \"company_name\": null, \"job_location\": \"India\", \"job_description\": \" the job profile requires four years of experience, your headline can be “4+ years experienced React. js developer.” On the other hand, if you want to highlight your certifications or particular skill in your headline you can use “Redux Certified React\"}', 'SENT', 18207, '2023-06-20 07:36:34'),
+(130, 12, '{\"to\": \"aashi.we2code@gmail.com\", \"lmia_status\": \"Reject\", \"company_name\": \"Infobeans\", \"employee_name\": \"Chetan Barod\"}', 'SENT', 17589, '2023-06-20 08:37:14'),
+(131, 10, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shreestha soni\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Chetan Barod\", \"interview_date\": \"2023-06-21\"}', 'SENT', 18242, '2023-06-20 09:21:12'),
+(132, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shreestha soni\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Chetan Barod\", \"interview_date\": \"2023-06-21\"}', 'SENT', 18242, '2023-06-20 09:21:12'),
+(133, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shop worker\", \"company_name\": \"Sention\", \"candidate_name\": \"Warren\", \"interview_date\": \"2023-06-20\"}', 'SENT', 15434, '2023-06-20 09:25:20'),
+(134, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shop worker\", \"company_name\": \"Sention\", \"candidate_name\": \"Warren\", \"interview_date\": \"2023-06-20\"}', 'SENT', 11751, '2023-06-20 10:07:41'),
+(135, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shop worker\", \"company_name\": \"Sention\", \"candidate_name\": \"Warren\", \"interview_date\": \"2023-06-20\"}', 'SENT', 16618, '2023-06-20 10:10:20'),
+(136, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Shop worker\", \"company_name\": \"Sention\", \"candidate_name\": \"Warren\", \"interview_date\": \"2023-06-20\"}', 'SENT', 1353555, '2023-06-20 10:10:28'),
+(137, 5, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Annu\", \"interview_date\": \"2023-06-12\"}', 'SENT', 15518, '2023-06-20 10:26:18'),
+(138, 10, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Annu\", \"interview_date\": \"2023-06-12\"}', 'SENT', 15518, '2023-06-20 10:26:18'),
+(139, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\", \"candidate_name\": \"Annu\", \"interview_date\": \"2023-06-12\"}', 'SENT', 15518, '2023-06-20 10:26:18'),
+(140, 7, '{\"to\": \"utkarsh.we2code@gmail.com\", \"otp\": 751741}', 'SENT', 12518, '2023-06-30 06:43:24'),
+(141, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Mayur industries \"}', 'SENT', 12726, '2023-06-30 10:12:50'),
+(142, 4, '{\"to\": \"utkarsh.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"WE2CODE\"}', 'SENT', 1417280, '2023-06-30 10:12:56'),
+(143, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"WE2CODE\"}', 'SENT', 1417280, '2023-06-30 10:12:56'),
+(144, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"Raju\", \"company_name\": \"Sention\"}', 'SENT', 18176, '2023-07-03 12:13:36'),
+(145, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'SENT', 13991, '2023-07-04 04:24:38'),
+(146, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"Shop worker\", \"company_name\": \"Sention\"}', 'PROCESSING', 14127, '2023-07-22 07:11:20'),
+(147, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"dgfh\", \"company_name\": \"Infobeans\"}', 'PROCESSING', 16611, '2023-07-22 07:12:24'),
+(148, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"dgfh\", \"company_name\": \"Infobeans\"}', 'PROCESSING', 16611, '2023-07-22 07:12:24'),
+(149, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"manager\", \"company_name\": \"Sanchi\"}', 'PROCESSING', 1488130, '2023-07-22 07:12:40'),
+(150, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"Driver\", \"company_name\": \"Amul \"}', 'PROCESSING', 12653, '2023-07-22 17:24:28'),
+(151, 10, '{\"to\": \"utkarsh.we2code@gmail.com\", \"job_title\": \"Web Developer\", \"company_name\": \"WE2CODE\", \"candidate_name\": \"Chetan Barod\", \"interview_date\": \"2023-07-25\"}', 'PROCESSING', 18367, '2023-07-24 11:08:42'),
+(152, 11, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"Web Developer\", \"company_name\": \"WE2CODE\", \"candidate_name\": \"Chetan Barod\", \"interview_date\": \"2023-07-25\"}', 'PROCESSING', 18367, '2023-07-24 11:08:42'),
+(153, 4, '{\"to\": \"utkarsh.we2code@gmail.com\", \"job_title\": \"Hr\", \"company_name\": \"WE2CODE\"}', 'PROCESSING', 18454, '2023-07-24 12:18:30'),
+(154, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"Hr\", \"company_name\": \"WE2CODE\"}', 'PROCESSING', 18454, '2023-07-24 12:18:30'),
+(155, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"Driver\", \"company_name\": \"Sanchi\"}', 'PROCESSING', 16951, '2023-07-24 12:49:36'),
+(156, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"manager\", \"company_name\": \"Sanchi\"}', 'PROCESSING', 19991, '2023-07-24 13:17:00'),
+(157, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"ytujtygjmyj\", \"company_name\": \"Sention\"}', 'PROCESSING', 17743, '2023-07-24 13:17:02'),
+(158, 4, '{\"to\": \"aashi.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'PROCESSING', 1571773, '2023-07-24 13:17:19'),
+(159, 4, '{\"to\": \"raj.we2code@gmail.com\", \"job_title\": \"React js developer\", \"company_name\": \"Infobeans\"}', 'PROCESSING', 1571773, '2023-07-24 13:17:19'),
+(160, 7, '{\"to\": \"g.choudhary.we2wcode@gmail.com\", \"otp\": 424971}', 'PROCESSING', 17610, '2023-07-26 04:29:15');
 
 -- --------------------------------------------------------
 
@@ -1232,7 +1297,10 @@ CREATE TABLE `employee` (
   `experience` varchar(100) DEFAULT NULL,
   `work_permit_canada` char(100) DEFAULT NULL,
   `work_permit_other_country` text,
+  `status` text NOT NULL,
+  `message` text NOT NULL,
   `is_posted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_featured` tinyint(1) NOT NULL DEFAULT '0',
   `posted_company_id` int(51) NOT NULL,
   `date_of_posting` date NOT NULL,
   `designation``` varchar(251) NOT NULL,
@@ -1252,28 +1320,28 @@ CREATE TABLE `employee` (
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`employee_id`, `name`, `email`, `password`, `contact_no`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `is_posted`, `posted_company_id`, `date_of_posting`, `designation``, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `token`, `google`, `facebook`, `linkedin`) VALUES
-(1, 'Shayam mohan', 'shayam.@gmail.com', '', 9517862430, 'Add the professional experience section to your scholarship resume. This is where your work and internship experience should go. No professional experience? Focus on your volunteering work, part-time gigs, side jobs, or community service.', '2000-05-02', 'male', 'single', 'indian', 'india', 'India', 'Hindi', NULL, 'swap', '1-3 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684581729.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684581729.jpeg', '2023-05-20 11:17:48', 1, '2023-05-20 11:22:09', 0, '', '', '', ''),
-(2, 'UV', 'utkarsh.we2code@gmail.com', '836bb04de698e84f5229dee6d9b9c9ec', 9165100000, 'This is sunny day today.', '1883-11-05', 'male', 'single', 'Canadian', 'Alaska', 'USA', 'English', NULL, 'swap', '7+ ', 'yes', NULL, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684756863.pdf', NULL, '2023-05-20 12:05:59', 0, '2023-06-06 08:53:53', 0, '716435ac874e7229afdd9007f7b744e2', '', '', ''),
-(3, 'Vinod', 'vinod@test.com', '', 1234567890, 'Testing ', '2023-05-01', 'male', 'single', 'indian', 'Indore', 'india', 'Hindi', NULL, 'swap', '5-7 ', 'no', 'Yes', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684731163.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684731163.jpeg', '2023-05-22 04:28:36', 1, '2023-05-22 04:52:43', 0, '', '', '', ''),
-(4, 'Roshni sharma', 'aashi.we2code@gmail.com', 'cb3defedb4e15498b0b27082c8e59dcd', 9632587410, 'A highly motivated and results-driven professional seeking a challenging position in developing. Offering 1 years of experience in react js with a strong focus on frontend Committed to achieving excellence, exceeding goals, and driving organizational success.', '2001-05-02', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '0-1 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684822166.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684822121.jpeg', '2023-05-22 08:53:45', 0, '2023-06-03 10:05:20', 1, '', '107979113144063469587', '111284241984986', ''),
-(5, 'Sakshi desai', 'sakshi@gmail.com', '', 9630258741, 'Receptionists may greet visitors, handle incoming and outgoing correspondence, maintain files and records, perform data entry, maintain office calendars and schedules, keep the office clean, safe and organized and keep office supply inventory fully stocked', '2000-05-01', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'yes', 'yes', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684756398.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684746465.jpeg', '2023-05-22 09:07:45', 3, '2023-05-22 11:53:18', 0, '', '', '', ''),
-(6, 'Warren', 'sagar.we2code@gmail.com', '4ff691f69007c66f2c03e45a0ed6b760', 9945474420, NULL, '2017-06-21', 'male', 'married', 'Indonesia', 'australia', NULL, 'Bengali', NULL, 'swap', 'Other', 'yes', 'dafsds', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684842272.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684842026.jpeg', '2023-05-23 11:29:48', 0, '2023-05-23 11:44:32', 0, '', '', '', ''),
-(7, 'Nakul mehta', 'Nakul@gmail.com', '', 9898989898, 'A typical Professional Actor resume describes responsibilities such as rehearsing, performing character research, wearing costumes and makeup, doing voice-overs for commercials, and performing in front of a camera or of a live audience.', '1995-02-17', 'male', 'married', 'indian', 'india', 'India', 'English', NULL, 'swap', '7+ ', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685168056.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685168056.jpeg', '2023-05-24 06:22:56', 3, '2023-05-27 06:14:16', 0, '', '', '', ''),
-(8, 'Rajaram', 'raj.we2code@gmail.com', '1537c1dea8479ff52bc68336e323385f', 5656575668, 'testing', '2023-05-10', 'male', 'married', 'indian', 'Indore', 'Spain', 'Hindi', NULL, 'swap', '1-3 ', 'yes', 'no', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685034210.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685028652.jpeg', '2023-05-25 15:28:12', 0, '2023-05-25 17:03:30', 0, '', '', '', ''),
-(9, 'Gourav choudary', 'g.choudhary.we2code@gmail.com', '', 4544444444, 'fghfgh', '2023-05-10', 'male', 'single', 'indian', 'india', 'India', 'Bashkir', NULL, 'parttime', '0-1 ', 'no', NULL, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089430.pdf', NULL, '2023-05-26 08:23:50', 1, '2023-05-26 08:23:50', 1, '', '', '', ''),
-(10, 'Gourav choudary', 'g.choudhary.we2code@gmail.com', '', 7777777888, '77uyihk', '2023-05-10', 'female', 'single', 'indian', 'india', 'India', 'Bashkir', NULL, 'parttime', 'Fresher', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089458.pdf', NULL, '2023-05-26 08:24:18', 1, '2023-05-26 08:24:18', 1, '', '', '', ''),
-(11, 'Gowdsawurav choudary', 'g.choaudhary.we2code@gmail.com', '', 21457896300, 'scdxzdsfcdzfc', '2023-05-12', 'male', 'single', 'indian', 'india', 'India', 'Basque', NULL, 'swap', '0-1 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089626.pdf', NULL, '2023-05-26 08:27:06', 1, '2023-05-26 08:27:06', 1, '', '', '', ''),
-(12, NULL, 'g.choudhary.we2code@gmail.com', '1409db4b6d1ec9f083528315c9bb4560', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-29 04:38:09', 0, '2023-05-29 04:38:09', 0, '', '', '', ''),
-(14, 'Aashi vyas', 'aashivyas2001@gmail.com', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, 'https://lh3.googleusercontent.com/a/AAcHTtdBR6zly-joPz9RVhKMyt21sy1HveO5PXJISTHe=s96-c', '2023-06-03 05:57:17', 0, '2023-06-03 05:57:17', 1, '', 'Google', '', ''),
-(15, 'Aashi vyas', 'aashivyas2001@gmail.com', '', 6266987374, '\nReact. js developers design and implement user interface components for JavaScript-based web and mobile applications using the React open-source library ecosystem. These skilled front-end developers are involved in all stages of interface component design, from conception through to final testing.', '2001-10-07', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'all', '1-3 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685944535.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685944301.jpeg', '2023-06-03 05:58:57', 0, '2023-06-05 05:55:35', 0, '', '103153431810961540185', '', ''),
-(18, 'Deepali Rai', 'aashi.we2code@gmail.com', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=111284241984986&height=50&width=50&ext=1688367326&hash=AeQ14XjM4iX9D0TSeZw', '2023-06-03 06:55:25', 0, '2023-06-03 07:26:32', 1, '', '107979113144063469587', '111284241984986', ''),
-(19, NULL, 'Google', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, '0000-00-00', '', NULL, NULL, '2023-06-03 07:12:22', 0, '2023-06-03 07:12:22', 0, '', '', '', ''),
-(20, 'Reena solanki', 'reena@gmail.com', '', 9874563210, 'I\'m here to serve your organization with good products.', '1997-03-01', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685941882.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685941882.jpeg', '2023-06-05 05:10:32', 1, '2023-06-05 05:11:22', 0, '', '', '', ''),
-(21, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 2587410369, NULL, '2000-01-01', 'male', 'single', 'indian', 'india', 'India', 'English', NULL, 'parttime', '1-3 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685947564.pdf', NULL, '2023-06-05 06:46:04', 1, '2023-06-12 07:14:59', 1, '587ea74f1e1c1b667fcfa0826f5ac338', '', '', ''),
-(22, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 8745213690, 'hello', '1999-07-13', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'no', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685948833.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685948823.jpeg', '2023-06-05 07:03:07', 0, '2023-06-12 07:14:59', 1, '587ea74f1e1c1b667fcfa0826f5ac338', '', '', ''),
-(23, 'mayur Yadav', 'mayur.we2code@gmail.com', '167b5b0d9cd1650a147abb3d41dba85d', 6985742310, 'Node js developer', '1999-05-31', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'parttime', '1-3 ', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1686133756.pdf', NULL, '2023-06-07 09:58:37', 0, '2023-06-07 10:29:16', 0, '', '', '', ''),
-(26, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 9632587410, 'sdfdxssd sdgvdxv  sdfv ', '2001-10-07', 'female', 'single', 'indian', 'india', NULL, 'Basque', NULL, 'swap', '0-1 ', 'yes', 'India', 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1686564623.pdf', NULL, '2023-06-12 06:57:23', 0, '2023-06-12 10:10:23', 0, '587ea74f1e1c1b667fcfa0826f5ac338', '', '', '');
+INSERT INTO `employee` (`employee_id`, `name`, `email`, `password`, `contact_no`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `status`, `message`, `is_posted`, `is_featured`, `posted_company_id`, `date_of_posting`, `designation``, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `token`, `google`, `facebook`, `linkedin`) VALUES
+(1, 'Shayam mohan', 'shayam.@gmail.com', '', 9517862430, 'Add the professional experience section to your scholarship resume. This is where your work and internship experience should go. No professional experience? Focus on your volunteering work, part-time gigs, side jobs, or community service.', '2000-05-02', 'male', 'single', 'indian', 'india', 'India', 'Hindi', NULL, 'swap', '1-3 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684581729.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684581729.jpeg', '2023-05-20 11:17:48', 1, '2023-05-20 11:22:09', 0, '', '', '', ''),
+(2, 'UV', 'utkarsh.we2code@gmail.com', '836bb04de698e84f5229dee6d9b9c9ec', 9165100000, 'This is sunny day today.', '1883-11-05', 'male', 'single', 'Canadian', 'Alaska', 'USA', 'English', NULL, 'swap', '7+ ', 'yes', NULL, '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684756863.pdf', NULL, '2023-05-20 12:05:59', 0, '2023-06-06 08:53:53', 0, '716435ac874e7229afdd9007f7b744e2', '', '', ''),
+(3, 'Vinod', 'vinod@test.com', '', 1234567890, 'Testing ', '2023-05-01', 'male', 'single', 'indian', 'Indore', 'india', 'Hindi', NULL, 'swap', '5-7 ', 'no', 'Yes', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684731163.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684731163.jpeg', '2023-05-22 04:28:36', 1, '2023-05-22 04:52:43', 0, '', '', '', ''),
+(4, 'Roshni sharma', 'aashi.we2code@gmail.com', 'cb3defedb4e15498b0b27082c8e59dcd', 9632587410, 'A highly motivated and results-driven professional seeking a challenging position in developing. Offering 1 years of experience in react js with a strong focus on frontend Committed to achieving excellence, exceeding goals, and driving organizational success.', '2001-05-02', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '0-1 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684822166.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684822121.jpeg', '2023-05-22 08:53:45', 0, '2023-06-03 10:05:20', 1, '', '107979113144063469587', '111284241984986', ''),
+(5, 'Sakshi desai', 'sakshi@gmail.com', '', 9630258741, 'Receptionists may greet visitors, handle incoming and outgoing correspondence, maintain files and records, perform data entry, maintain office calendars and schedules, keep the office clean, safe and organized and keep office supply inventory fully stocked', '2000-05-01', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'yes', 'yes', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1684756398.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1684746465.jpeg', '2023-05-22 09:07:45', 3, '2023-05-22 11:53:18', 0, '', '', '', ''),
+(7, 'Nakul mehta', 'Nakul@gmail.com', '', 9898989898, 'A typical Professional Actor resume describes responsibilities such as rehearsing, performing character research, wearing costumes and makeup, doing voice-overs for commercials, and performing in front of a camera or of a live audience.', '1995-02-17', 'male', 'married', 'indian', 'india', 'India', 'English', NULL, 'swap', '7+ ', 'yes', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685168056.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685168056.jpeg', '2023-05-24 06:22:56', 3, '2023-05-27 06:14:16', 0, '', '', '', ''),
+(8, 'Rajaram', 'raj.we2code@gmail.com', '1537c1dea8479ff52bc68336e323385f', 5656575668, 'testing', '2023-05-10', 'male', 'married', 'indian', 'Indore', 'Spain', 'Hindi', NULL, 'swap', '1-3 ', 'yes', 'no', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685034210.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685028652.jpeg', '2023-05-25 15:28:12', 0, '2023-07-22 18:57:37', 0, '', '103776226635607600492', '', ''),
+(9, 'Gourav choudary', 'g.choudhary.we2code@gmail.com', '', 4544444444, 'fghfgh', '2023-05-10', 'male', 'single', 'indian', 'india', 'India', 'Bashkir', NULL, 'parttime', '0-1 ', 'no', NULL, '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089430.pdf', NULL, '2023-05-26 08:23:50', 1, '2023-05-26 08:23:50', 1, '', '', '', ''),
+(10, 'Gourav choudary', 'g.choudhary.we2code@gmail.com', '', 7777777888, '77uyihk', '2023-05-10', 'female', 'single', 'indian', 'india', 'India', 'Bashkir', NULL, 'parttime', 'Fresher', 'yes', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089458.pdf', NULL, '2023-05-26 08:24:18', 1, '2023-05-26 08:24:18', 1, '', '', '', ''),
+(11, 'Gowdsawurav choudary', 'g.choaudhary.we2code@gmail.com', '', 21457896300, 'scdxzdsfcdzfc', '2023-05-12', 'male', 'single', 'indian', 'india', 'India', 'Basque', NULL, 'swap', '0-1 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685089626.pdf', NULL, '2023-05-26 08:27:06', 1, '2023-05-26 08:27:06', 1, '', '', '', ''),
+(12, NULL, 'g.choudhary.we2code@gmail.com', '1409db4b6d1ec9f083528315c9bb4560', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', 0, 0, 0, '0000-00-00', '', NULL, NULL, '2023-05-29 04:38:09', 0, '2023-05-29 04:38:09', 0, '', '', '', ''),
+(14, 'Aashi vyas', 'aashivyas2001@gmail.com', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', 0, 0, 0, '0000-00-00', '', NULL, 'https://lh3.googleusercontent.com/a/AAcHTtdBR6zly-joPz9RVhKMyt21sy1HveO5PXJISTHe=s96-c', '2023-06-03 05:57:17', 0, '2023-06-03 05:57:17', 1, '', 'Google', '', ''),
+(15, 'Aashi vyas', 'aashivyas2001@gmail.com', '', 6266922374, '\nReact. js developers design and implement user interface components for JavaScript-based web and mobile applications using the React open-source library ecosystem. These skilled front-end developers are involved in all stages of interface component design, from conception through to final testing.', '2001-10-07', 'female', 'single', 'indian', 'india', 'India', 'English', 'hindu', 'all', '1-3 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1690258781.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685944301.jpeg', '2023-06-03 05:58:57', 0, '2023-07-25 04:19:41', 0, '', '103153431810961540185', '', ''),
+(18, 'Deepali Rai', 'aashi.we2code@gmail.com', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', 0, 0, 0, '0000-00-00', '', NULL, 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=111284241984986&height=50&width=50&ext=1688367326&hash=AeQ14XjM4iX9D0TSeZw', '2023-06-03 06:55:25', 0, '2023-06-03 07:26:32', 1, '', '107979113144063469587', '111284241984986', ''),
+(19, NULL, 'Google', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', 0, 0, 0, '0000-00-00', '', NULL, NULL, '2023-06-03 07:12:22', 0, '2023-06-03 07:12:22', 1, '', '', '', ''),
+(20, 'Reena solanki', 'reena@gmail.com', '', 9874563210, 'I\'m here to serve your organization with good products.', '1997-03-01', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685941882.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685941882.jpeg', '2023-06-05 05:10:32', 1, '2023-06-05 05:11:22', 0, '', '', '', ''),
+(21, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 2587410369, NULL, '2000-01-01', 'male', 'single', 'indian', 'india', 'India', 'English', NULL, 'parttime', '1-3 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685947564.pdf', NULL, '2023-06-05 06:46:04', 1, '2023-06-12 07:14:59', 1, '587ea74f1e1c1b667fcfa0826f5ac338', '', '', ''),
+(22, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 8745213690, 'hello', '1999-07-13', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'swap', '1-3 ', 'no', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1685948833.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1685948823.jpeg', '2023-06-05 07:03:07', 0, '2023-06-12 07:14:59', 1, '587ea74f1e1c1b667fcfa0826f5ac338', '', '', ''),
+(23, 'mayur Yadav', 'mayur.we2code@gmail.com', '167b5b0d9cd1650a147abb3d41dba85d', 6985742310, 'Node js developer', '1999-05-31', 'female', 'single', 'indian', 'india', 'India', 'English', NULL, 'parttime', '1-3 ', 'yes', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1686133756.pdf', NULL, '2023-06-07 09:58:37', 0, '2023-06-07 10:29:16', 0, '', '', '', ''),
+(26, 'Annu', 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 9632587410, 'sdfdxssd sdgvdxv  sdfv ', '2001-10-07', 'female', 'single', 'indian', 'india', NULL, 'Basque', NULL, 'swap', '0-1 ', 'yes', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1686564623.pdf', NULL, '2023-06-12 06:57:23', 0, '2023-07-04 04:36:57', 0, '587ea74f1e1c1b667fcfa0826f5ac338', '107979113144063469587', '111284241984986', ''),
+(27, 'Chetan Barod', 'chetan.barod.we2code@gmail.com', 'a82880e4812a95d15aa1537b96d9ddad', 9874563210, 'Learning full-stack development will help you master a wide set of skills ranging from HTML, CSS, JavaScript, back-end languages (Python, PHP, Ruby), database storage, HTTP, REST, and NPM, along with a good set of Agile project management and soft skills.', '1993-06-07', 'male', 'married', 'indian', 'india', 'India', 'Hindi', NULL, 'swap', '3-5 ', 'yes', 'India', '', '', 0, 0, 0, '0000-00-00', '', 'https://apnaorganicstore.in/canjobs/uploads/1688364942.pdf', 'https://apnaorganicstore.in/canjobs/uploads/1687246149.jpeg', '2023-06-20 07:22:35', 0, '2023-07-03 06:15:42', 0, '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -1313,7 +1381,25 @@ INSERT INTO `employee_career` (`career_id`, `employee_id`, `company`, `designati
 (9, 15, 'matrimonial', 'data entry ', NULL, 'Other', 'Data entry', 'Fresher', '2020-12-08', '2021-03-31', NULL, '2023-06-05 05:29:44', '2023-06-05 05:48:50'),
 (10, 15, 'Tr', 'Internship', 'indore', 'Information Technology', 'Learning', NULL, '2022-05-23', '2022-12-30', NULL, '2023-06-05 05:47:07', '2023-06-05 05:49:02'),
 (11, 15, 'we2code', 'React js developer', 'indore', 'Information Technology', 'Development ', NULL, '2023-01-10', '2023-06-05', 1, '2023-06-05 05:47:52', '2023-06-05 05:49:19'),
-(12, 22, 'Apna Sweet', 'Delivery boy', 'mumbai', 'Retail & Wholesale', ' Manages the organization\'s technology infrastructure, including network systems, software development, cybersecurity, data management, and IT support services.', '67', '2020-07-09', '2022-01-01', NULL, '2023-06-05 07:06:36', '2023-06-05 07:06:36');
+(12, 22, 'Apna Sweet', 'Delivery boy', 'mumbai', 'Retail & Wholesale', ' Manages the organization\'s technology infrastructure, including network systems, software development, cybersecurity, data management, and IT support services.', '67', '2020-07-09', '2022-01-01', NULL, '2023-06-05 07:06:36', '2023-06-05 07:06:36'),
+(13, 27, 'we2code', 'full stack developer', 'indore', 'Information Technology', 'indore', 'experience', '2022-03-15', '2023-06-20', 1, '2023-06-20 07:30:10', '2023-06-20 07:30:10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee_documents`
+--
+
+CREATE TABLE `employee_documents` (
+  `id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `type` varchar(51) NOT NULL,
+  `document_url` varchar(251) NOT NULL,
+  `extension_type` text NOT NULL,
+  `is_varify` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1355,7 +1441,8 @@ INSERT INTO `employee_education` (`education_id`, `employee_id`, `qualification`
 (14, 15, 'Metric', 'Holy spirit ', '10th', 'All', 'India', 2017, '2023-06-05 05:23:30', '2023-06-05 05:50:32'),
 (15, 15, 'Post Metric', 'Holy spirit ', '12th', 'PE', 'India', 2019, '2023-06-05 05:24:04', '2023-06-05 05:50:56'),
 (16, 15, 'Graduate', 'Davv', 'Bachelor of Commerce', 'Computer Applications', 'India', 2022, '2023-06-05 05:24:54', '2023-06-05 05:24:54'),
-(17, 22, 'Post Metric', 'gfhghb', 'Bachelor of Arts', 'ghfghfghf', 'Azerbaijan', 2018, '2023-06-05 07:06:56', '2023-06-05 07:06:56');
+(17, 22, 'Post Metric', 'gfhghb', 'Bachelor of Arts', 'ghfghfghf', 'Azerbaijan', 2018, '2023-06-05 07:06:56', '2023-06-05 07:06:56'),
+(18, 27, 'Metric', 'Oxford ', '10th', 'computer', 'India', 2005, '2023-06-20 07:31:02', '2023-06-20 07:31:02');
 
 -- --------------------------------------------------------
 
@@ -1396,8 +1483,6 @@ CREATE TABLE `employee_skill` (
 
 INSERT INTO `employee_skill` (`skill_id`, `employee_id`, `skill`) VALUES
 (1, 1, 'Other'),
-(2, 5, 'Food & Beverage Occupations'),
-(4, 5, 'Personal Service Occupations'),
 (5, 2, 'Farming, Fisheries & Forestry Occupations '),
 (7, 4, 'Technology Occupations'),
 (10, 4, 'Legal Occupations'),
@@ -1417,7 +1502,20 @@ INSERT INTO `employee_skill` (`skill_id`, `employee_id`, `skill`) VALUES
 (25, 15, 'Html'),
 (26, 15, 'JavaScript'),
 (27, 15, 'Tally'),
-(28, 22, 'Organization Operations & Administrative Occupations');
+(28, 22, 'Organization Operations & Administrative Occupations'),
+(35, 26, 'Healthcare Occupations'),
+(36, 26, 'Sales, Retail, & Customer Support Occupations'),
+(38, 15, 'Supply Chain & Logistics Occupations'),
+(39, 23, 'Repair, Maintenance & Installation Occupations'),
+(40, 23, 'Supply Chain & Logistics Occupations'),
+(41, 27, 'Technology Occupations'),
+(44, 26, 'Legal Occupations'),
+(45, 8, 'Healthcare Occupations'),
+(46, 12, 'Construction & Extraction Occupations'),
+(47, 3, 'Tally'),
+(48, 3, 'Construction & Extraction Occupations'),
+(49, 5, 'Construction & Extraction Occupations'),
+(50, 5, 'Tally');
 
 -- --------------------------------------------------------
 
@@ -1518,7 +1616,10 @@ INSERT INTO `employer` (`company_id`, `company_name`, `industry`, `corporation`,
 (10, 'greenbay tech', 'Retail & Wholesale', NULL, NULL, NULL, '1', NULL, 'fgvhb', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://apnaorganicstore.in/canjobs/uploads/1686056652.png', 0, '2023-06-06 12:40:42', '2023-06-06 13:04:12', 3, 0, '', '', '', '', ''),
 (11, 'Cognizant', 'Healthcare', NULL, NULL, NULL, '33', NULL, 'SOFTWARE ENGINEER', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://apnaorganicstore.in/canjobs/uploads/1686056638.jpeg', 0, '2023-06-06 12:43:42', '2023-06-06 13:03:58', 3, 0, '', '', '', '', ''),
 (12, 'RADISON BLUE', 'Information Technology', 'G2B', NULL, '2007-06-01', '1', 'www.radisonblue.in', 'Developer', 'Web scraping is the automatic process of extracting information from a website. Most of this data is unstructured in an HTML format which is then converted into a structured data in a spreadsheet or a database so that it can be used for other applications. There are several ways to scrape data from websites which include using different tools, particular APIs or even writing your own code for web scraping from scratch.\n\n[Disclaimer: Before beginning, many websites can restrict scraping of data from their pages. How do you know which websites are allowed or not? You can look at the ‘robots.txt’ file of the website. You can simply put robots.txt after the URL that you want to scrape, and you will find the information on whether the website host allows you to scrape the website. The data I have scraped is purely for learning purpose]\n\nFor this project, I was looking to scrape job postings from Indeed using selenium and Java. When I looked up online, I saw that most of them were done using python and could not find enough resources using selenium and Java. This blog is for all those who are looking to scrape data using selenium-Java.\n\nThe challenging part here is identifying the elements in the DOM structure using the different locators. My suggestion would be to use your own customized xpath/css locators instead of relying on the browser tools as it does not work all the time.\n\nWe can use the id, name, className, tagName, linkText, partialLinkText wherever applicable else use the customized xpath/css locators. There are several ways to define xpath and CSS locators.\n\nSyntax for xpath\n\n//tagname[@attribute=’value’] For e.g., //input[@class=’xyz’]\n//*[@attribute=’value’]\n//tagname[contains(@attribute,’value’)]\nSyntax for CSS\n\ntagname[attribute=’value’]\ntagname#id\ntagname.classname\ntagname#attribute\nThere are several other ways to define xpath using the parent child relationship or traversing all the way from the root and identifying the elements as well.\n\nPre-requisites\n\nBefore we get started, the following should be installed in the system:\n\nJava\nMaven\nAn IDE (here I have used eclipse)\nHere we are using Maven to manage our project in terms of generation, packaging, and dependency management. Maven is a POM (project object model) based build automation and project management tool. Maven is widely used for dependency management in Java. It also provides a predefined folder structure to write the code. We can add different plugins and JARs in our project.\n\nEnsure the POM file has all the required dependencies (testng, selenium-java, selenium-chrome-driver, selenium-support, selenium-api, selenium-server, poi-ooxml, poi-ooxml-schemas)\n\nThe following steps is specific to scrape job data from indeed. This could be refined as per the requirement.\n\nSteps to scrape job data from indeed\n\nCreate a testng class under the respective package in the Maven project. Launch the browser and navigate to the URL (indeed.com).\n2. Key in the required job postings and hit on search.\n\n3. Use the pagination logic to traverse through the different pages and get the job details from the job cards.\n\n4. Inspect the required elements and get the data.\n\n5. Write the scraped data into a spreadsheet\n\nStep 1: After creating the class, launch the browser and navigate to the URL\n\n@BeforeTest\npublic void beforeTest() {\nSystem.setProperty(\"webdriver.chrome.driver\",\"C:\\\\Users\\*******\\\\Drivers\\\\chromedriver.exe\");\ndriver = new ChromeDriver();\ndriver.navigate().to(\"https://www.indeed.com/\");\ndriver.manage().window().maximize();\n}\nStep 2: In my script, user input is prompted to look for the job postings for which we are looking to scrape the details. Here I have used the Scanner class for prompting the input.\n\n// Create a Scanner object to prompt for user input\nScanner myObj = new Scanner(System.in);\nSystem.out.println(\"What jobs are you looking for ? \");\njob_Search = myObj.nextLine();\ndriver.findElement(By.id(\"text-input-what\")).sendKeys(job_Search);\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://apnaorganicstore.in/canjobs/uploads/1686055680.jpeg', 0, '2023-06-06 12:47:05', '2023-06-06 12:49:28', 3, 0, 'IT', '', '', '', ''),
-(13, 'Infobeans', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 2587410369, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-06-12 07:20:27', '2023-06-12 07:20:27', 0, 0, '', '', '', '', '');
+(13, 'Infobeans', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'aashi.we2code@gmail.com', 'c96948cbdaefbff6638d644f7b25b1c4', 2587410369, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2023-06-12 07:20:27', '2023-06-12 07:20:27', 0, 0, '', '', '', '', ''),
+(14, 'Yo', 'Construction, Repair & Maintenance Services', 'G2C', 'sanchi', '2018-02-08', '4', 'www.sention.com', 'office boy', 'tg hr hg u ier tgue rgk vjkcf n mfn gbj kjfdkgj dkgg ', 'Ox Factory', 'chetan.barod.we2code@gmail.com', 'a82880e4812a95d15aa1537b96d9ddad', 9874563210, NULL, 'Club Colony, Clerk Colony,', 452011, 'Indore', ' Madhya Pradesh ', 'India', 'CEO', 'https://apnaorganicstore.in/canjobs/uploads/1687251686.png', 0, '2023-06-20 07:35:09', '2023-06-20 09:06:27', 0, 0, 'Indore', '', '', '', ''),
+(15, 'hfghfg', 'Construction, Repair & Maintenance Services', 'B2C', 'amul', '2023-06-15', '55', 'amazon.in', 'fgdfghfhd', 'jygtfh r rt y  f yghtfh ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://apnaorganicstore.in/canjobs/uploads/1687252766.jpeg', 0, '2023-06-20 09:19:26', '2023-06-20 09:19:26', 1, 1, 'Vijay nagar', '', '', '', ''),
+(16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Rajaram Patidar', 'raj.we2code@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/AAcHTtfW9jXWLCGjpCOMP7tOe386izc7-UMuM75DlHNfx2pRbQ=s96-c', 0, '2023-07-22 18:44:29', '2023-07-22 18:44:29', 0, 0, '', '', '103776226635607600492', '', '');
 
 -- --------------------------------------------------------
 
@@ -2119,7 +2220,9 @@ INSERT INTO `follow_up` (`id`, `admin_id`, `job_id`, `employee_id`, `remark`, `n
 (554, 3, 7, 3, 'hell97', '0000-00-00', '2023-06-06 09:02:34'),
 (555, 3, 7, 3, 'hell98', '0000-00-00', '2023-06-06 09:02:37'),
 (556, 3, 7, 3, 'hell99', '0000-00-00', '2023-06-06 09:02:41'),
-(557, 3, 7, 3, 'hell100', '0000-00-00', '2023-06-06 09:02:44');
+(557, 3, 7, 3, 'hell100', '0000-00-00', '2023-06-06 09:02:44'),
+(558, 1, 21, 27, 'Hello chetan', '2023-06-20', '2023-06-20 09:21:01'),
+(559, 1, 21, 27, 'This employee having experience ', '2023-07-24', '2023-07-24 11:08:11');
 
 -- --------------------------------------------------------
 
@@ -2161,7 +2264,7 @@ CREATE TABLE `jobs` (
 
 INSERT INTO `jobs` (`job_id`, `company_id`, `job_title`, `experience_required`, `salary`, `location`, `industry_type`, `apply_link`, `job_description`, `your_duties`, `requirement`, `department`, `job_type`, `role_category`, `education`, `language`, `keyskill`, `employement`, `job_category_id`, `is_active`, `created_at`, `updated_at`, `created_by_admin`, `is_featured`, `is_deleted`) VALUES
 (1, 1, 'Delivery boy', '1-3 ', '5Lac-10Lac', 'India', 'Restaurants & Food Service', 'www.careerattcs.com', 'He/She will be responsible for prospecting, qualifying, negotiating and strategizing business development for given area. His/her success will be measured by the delivery of business critical goals, growth and gain in market share.', 'He/She will be responsible for prospecting, qualifying, negotiating .', ' responsible for prospecting, ', ' responsible for prospecting, ', 'Full-Time', NULL, 'Other', 'Hindi', 'Food & Beverage Occupations', 'Full-Time', 2, 1, '2023-05-20 11:13:38', '2023-05-20 11:14:14', 1, 0, 0),
-(2, 2, 'Delivery boy', '1-3 ', '1Lac-3Lac', 'India', 'Restaurants & Food Service', 'www.careerattcs.com', 'Sanchi is a milk product brand name of Madhya Pradesh State Cooperative Dairy Federation Limited', 'Sanchi is a milk product brand name of Madhya Pradesh State Cooperative Dairy Federation Limited', 'Sanchi is a milk product brand', 'Sanchi ', 'Full-Time', NULL, 'Bachelor of Liberal Arts', 'Hindi', 'Farming, Fisheries & Forestry Occupations ', 'Full-Time', 2, 1, '2023-05-20 11:34:07', '2023-05-20 11:34:07', 1, 0, 0),
+(2, 2, 'Delivery boy', '1-3 ', '1Lac-3Lac', 'India', 'Restaurants & Food Service', 'www.careerattcs.com', 'Sanchi is a milk product brand name of Madhya Pradesh State Cooperative Dairy Federation Limited', 'Sanchi is a milk product brand name of Madhya Pradesh State Cooperative Dairy Federation Limited', 'Sanchi is a milk product brand', 'Sanchi ', 'Full-Time', NULL, 'Bachelor of Liberal Arts', 'Hindi', '', 'Full-Time', 2, 1, '2023-05-20 11:34:07', '2023-05-20 11:34:07', 1, 0, 0),
 (3, 3, 'Shop worker', '0-1 ', 'Below 1 Lac', 'India', 'Retail & Wholesale', 'dps.com', 'Maintains staff by recruiting, selecting, orienting, and training employees. Ensures a safe, secure, and legal work environment. Develops personal growth opportunities. Accomplishes staff results by communicating job expectations; planning, monitoring, and appraising job results.', 'Maintains staff by recruiting, selecting, orienting, and training employees. Ensures a safe, secure,', 'Maintains staff by recruiting,', 'Maintains staff by recruiting,', 'Full-Time', '10', 'Bachelor of Liberal Arts', 'Hindi', 'Sales, Retail, & Customer Support Occupations', 'Full-Time', 2, 1, '2023-05-20 12:08:20', '2023-05-27 09:31:35', 0, 0, 1),
 (4, 4, 'Web Developer', '3-5 ', '5Lac-10Lac', 'Antarctica', 'Information Technology', 'we2code.com', 'Tetsting', 'test', 'tes', 'HR', 'Full-Time', NULL, 'Bachelor of Software Engineering', 'English', 'Technology Occupations', 'Full-Time', 7, 1, '2023-05-22 06:37:10', '2023-05-22 06:38:01', 3, 0, 0),
 (5, 4, 'Office boy', '1-3 ', 'Below 1 Lac', 'India', 'Information Technology', 'www.we2code.com', 'Job responsibilities will include: Office cleaning and maintenance, Preparing Tea and Serving, Banking work, Filing and deliveries. Local Language, Working knowledge of English, Willingness to travel.', 'Serve Tea and Coffee to Staff and office Visitor.\nClean office kitchen on daily basis.', 'Humane and respectful.', 'office staff', 'Full-Time', '5', 'Other', 'Hindi', 'Cleaning & Grounds Maintenance Occupations', 'Full-Time', 4, 1, '2023-05-22 07:24:21', '2023-05-22 07:24:21', 1, 0, 0),
@@ -2181,7 +2284,15 @@ INSERT INTO `jobs` (`job_id`, `company_id`, `job_title`, `experience_required`, 
 (19, 13, 'React js developer', '3-5 ', '5Lac-10Lac', 'Algeria', 'Restaurants & Food Service', 'dps.com', 'dtggf', 'gffhf', 'fghfh', 'fgh fgh ', 'Permanent', '2', 'Bachelor of Arts', 'Afar', 'Healthcare Occupations', 'Other', 5, 1, '2023-06-12 09:44:19', '2023-06-12 09:44:19', 1, 0, 0),
 (20, 13, 'React js developer', '1-3 ', '5Lac-10Lac', 'Afghanistan', 'Construction, Repair & Maintenance Services', 'dps.com', 'sdfdxfg', 'fgfgf', 'fghfgh', 'fgh dgh', 'Permanent', NULL, 'Bachelor of Arts', 'Aymara', 'Science & Research Occupations', 'Part-Time', 5, 1, '2023-06-12 09:46:48', '2023-06-12 09:46:48', 0, 0, 0),
 (21, 13, 'Shreestha soni', '0-1 ', '1Lac-3Lac', 'Albania', 'Finance', 'ddd.com', 'tyhgjgh', 'hghgjhg', 'jghjghj', 'jgj', 'Permanent', '2', 'Bachelor of Liberal Arts', 'Afrikaans', 'Food & Beverage Occupations', 'Other', 5, 1, '2023-06-12 09:51:14', '2023-06-12 09:51:14', 0, 0, 0),
-(22, 13, 'dgfh', '1-3 ', '1Lac-3Lac', 'Åland Islands', 'Restaurants & Food Service', 'ddd.comghfvh', 'hfghfg', 'ghfhfghb', 'fghfgh', 'fghfgh', 'Internship', NULL, 'Bachelor of Applied Science', 'Aymara', 'Transportation Occupations', 'Full-Time', 5, 1, '2023-06-12 09:56:52', '2023-06-12 09:56:52', 0, 0, 0);
+(22, 13, 'dgfh', '1-3 ', '1Lac-3Lac', 'Åland Islands', 'Restaurants & Food Service', 'ddd.comghfvh', 'hfghfg', 'ghfhfghb', 'fghfgh', 'fghfgh', 'Internship', NULL, 'Bachelor of Applied Science', 'Aymara', 'Transportation Occupations, Legal Occupations', 'Full-Time', 5, 1, '2023-06-12 09:56:52', '2023-07-03 07:11:59', 0, 0, 0),
+(23, 14, 'React js developer', '1-3 ', '3Lac-5Lac', 'India', 'Information Technology', 'fgfdgvb.com', ' the job profile requires four years of experience, your headline can be “4+ years experienced React. js developer.” On the other hand, if you want to highlight your certifications or particular skill in your headline you can use “Redux Certified React', ' the job profile requires four years of experience, your headline can be “4+ years experienced React', ' the job profile requires four', 'Frontend', 'Freelance', '2', 'Bachelor of Applied Science', 'Bambara', 'Transportation Occupations', 'Part-Time', 28, 1, '2023-06-20 07:36:34', '2023-06-20 07:36:38', 0, 0, 0),
+(24, 1, 'Driver', '1-3 ', 'Below 1 Lac', 'Albania', 'Manufacturing', 'ddd.com', 'tfgjng', 'ghg', 'ghgh', 'ghgg', 'Internship', '3', 'Bachelor of Applied Studies', 'Aymara', 'Supply Chain & Logistics Occupations', 'Full-Time', 4, 1, '2023-06-20 08:24:58', '2023-06-20 08:25:04', 1, 0, 1),
+(25, 14, 'Driver', '1-3 ', '1Lac-3Lac', 'Albania', 'Healthcare', 'www.careerattcs.com', 'fg fgtfd fgfg fgvbf fgbgfv fgbfg gbnfgb gfhf ', 'gfdg fdgfd ', 'fghb fgf', 'gdfg', 'Permanent', '3', 'Bachelor of Liberal Arts', 'Akan', 'Cleaning & Grounds Maintenance Occupations', 'Full-Time', 4, 1, '2023-06-20 09:09:53', '2023-06-20 09:09:59', 1, 0, 1),
+(26, 3, 'Raju', '0-1 ', '3Lac-5Lac', 'Algeria', 'Construction, Repair & Maintenance Services', 'fgfdgvb.com', 'dfd', 'dfgdg', 'dfgdfg', 'dfdf', 'Permanent', '4', 'Bachelor of Liberal Arts', 'Afar', 'Healthcare Occupations, Technology Occupations, Cleaning & Grounds Maintenance Occupations', 'Other', 5, 1, '2023-06-30 11:29:16', '2023-07-03 05:36:30', 7, 0, 0),
+(27, 2, 'manager', '5+yrs', '1400000', 'banglore', 'IT', 'www.careerattcs.com', ' hhsiod  oijos oijoj iojh DOIIJ OIJd oh oSDJO OIsdjioj oiSCFJOIJIO', ' OIJO FOIJOJASDFVJ I JOJ Okdwjfoj oiho jOSDJFOIH9wrugh JM[- wmc MJDFHVBIU', 'OJOK ojioj 90dfujpjknel; oijcxjiojoHDFVB OIRBFNDC ,ZXMN HG JKDV', 'Bussiness', 'qefgvqdfv', NULL, 'POST-GRADUATE', 'English,spanish', 'koqdv kja  jio okjoa jojoqjdo, html, Education & Instruction Occupations, Safety, Security & Civil Defence Occupations, Sales, Retail, & Customer Support Occupations', 'adfdv refgvefrv eqarfvrtg qev', 3, 1, '2023-07-03 05:25:58', '2023-07-03 06:04:44', 1, 0, 0),
+(28, 3, 'ytujtygjmyj', '1-3 ', 'Below 1 Lac', 'American Samoa', 'Human Resources & Staffing', 'ddd.com', 'ukjkjkj', 'kkjk', 'kjkk', 'jkjkjk', 'Permanent', '7', 'Bachelor of Liberal Arts', 'Akan', 'Repair, Maintenance & Installation Occupations, Supply Chain & Logistics Occupations', 'Part-Time', 5, 1, '2023-07-03 06:05:51', '2023-07-03 06:05:57', 1, 0, 0),
+(29, 2, 'Driver', '1-3 ', '3Lac-5Lac', 'Canada', 'Finance', 'www.careerattcs.com', 'j dgh fdh gfgfhrtyh gfhdth bvnfyh ghgh hfth bn', 'ghfg ghfgh th vghfgh gjhgh ghfh ', 'ghfgh fghrt fght hg tht gvh fg', 'gffghfgh', 'SWEP', '15', 'Bachelor of Applied Science', 'Avestan', 'Construction & Extraction Occupations', 'Full-Time', 2, 1, '2023-07-24 12:32:48', '2023-07-24 12:32:48', 1, 0, 0),
+(30, 1, 'xcvx', '1-3 ', '1Lac-3Lac', 'Åland Islands', NULL, 'www.careerattcs.com', 'cfvdsv', 'dfcvcv', 'dfsdfc', 'fsdf', 'Freelance', '26', 'Bachelor of Applied Science', 'Azerbaijani', 'Tally', 'Part-Time', 4, 1, '2023-07-24 12:54:36', '2023-07-24 12:54:36', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -2235,8 +2346,10 @@ INSERT INTO `job_category` (`job_category_id`, `category_name`, `parent_id`, `ca
 (28, 'Frontend Developer', 27, 'Development ', 1, '2023-05-26 07:29:50', '2023-05-26 07:29:50', 0),
 (29, NULL, 0, 'developmentf', 1, '2023-05-27 07:00:49', '2023-05-27 09:57:32', 0),
 (30, 'frontend developer', 1, 'Factory', 1, '2023-05-27 07:02:27', '2023-05-27 07:02:27', 1),
-(32, NULL, 0, 'IT', 1, '2023-05-27 10:02:36', '2023-05-27 10:02:36', 0),
-(33, 'cloths', 1, 'Factory', 1, '2023-06-05 06:24:22', '2023-06-05 06:24:22', 0);
+(32, NULL, 0, 'IT', 1, '2023-05-27 10:02:36', '2023-06-20 09:30:04', 0),
+(33, 'cloths', 1, 'Factory', 1, '2023-06-05 06:24:22', '2023-06-05 06:24:22', 0),
+(34, 'clothshh', 1, 'Factory', 1, '2023-06-20 09:29:52', '2023-06-20 09:29:52', 1),
+(35, NULL, 0, 'Fashion', 1, '2023-06-20 09:30:07', '2023-06-20 09:30:16', 0);
 
 -- --------------------------------------------------------
 
@@ -2263,10 +2376,10 @@ CREATE TABLE `job_interviews` (
 
 INSERT INTO `job_interviews` (`id`, `job_id`, `employee_id`, `interview_date`, `is_reschedule`, `is_active`, `status`, `created_at`, `created_by_admin`, `updated_at`) VALUES
 (1, 7, 8, '2023-05-27', 1, 0, 'PENDING', '2023-05-27 05:37:49', 1, '2023-05-27 05:37:49'),
-(2, 3, 6, '2023-05-28', 0, 1, 'PENDING', '2023-05-27 05:37:56', 1, '2023-05-27 05:37:56'),
+(2, 3, 6, '2023-05-28', 1, 0, 'PENDING', '2023-05-27 05:37:56', 1, '2023-05-27 05:37:56'),
 (3, 7, 5, '2023-05-27', 1, 0, 'PENDING', '2023-05-27 05:38:18', 1, '2023-05-27 05:38:18'),
 (4, 7, 5, '2023-05-27', 1, 0, 'COMPLETE', '2023-05-27 05:38:25', 1, '2023-05-27 05:38:25'),
-(5, 11, 12, '2023-06-07', 0, 1, 'PENDING', '2023-06-05 06:21:42', 1, '2023-06-05 06:21:42'),
+(5, 11, 12, '2023-06-07', 1, 0, 'PENDING', '2023-06-05 06:21:42', 1, '2023-06-05 06:21:42'),
 (6, 7, 8, '2023-05-27', 1, 0, 'COMPLETE', '2023-06-05 06:23:02', 1, '2023-06-05 06:23:02'),
 (7, 4, 12, '2023-06-29', 1, 0, 'PENDING', '2023-06-05 10:58:22', 3, '2023-06-05 10:58:22'),
 (8, 4, 6, '2023-06-29', 0, 1, 'COMPLETE', '2023-06-05 11:44:27', 3, '2023-06-05 11:44:27'),
@@ -2309,8 +2422,8 @@ INSERT INTO `job_interviews` (`id`, `job_id`, `employee_id`, `interview_date`, `
 (45, 7, 3, '2023-06-09', 1, 0, 'PENDING', '2023-06-06 06:44:30', 3, '2023-06-06 06:44:30'),
 (46, 7, 3, '2023-06-23', 1, 0, 'PENDING', '2023-06-06 06:45:11', 3, '2023-06-06 06:45:11'),
 (47, 7, 12, '2023-06-08', 1, 0, 'PENDING', '2023-06-06 06:45:24', 3, '2023-06-06 06:45:24'),
-(48, 7, 5, '2023-06-08', 0, 1, 'PENDING', '2023-06-06 06:45:36', 3, '2023-06-06 06:45:36'),
-(49, 7, 12, '2023-06-17', 0, 1, 'PENDING', '2023-06-06 06:45:40', 3, '2023-06-06 06:45:40'),
+(48, 7, 5, '2023-06-08', 1, 0, 'PENDING', '2023-06-06 06:45:36', 3, '2023-06-06 06:45:36'),
+(49, 7, 12, '2023-06-17', 1, 0, 'PENDING', '2023-06-06 06:45:40', 3, '2023-06-06 06:45:40'),
 (50, 7, 3, '2023-06-09', 0, 1, 'PENDING', '2023-06-06 06:47:08', 3, '2023-06-06 06:47:08'),
 (51, 7, 22, '2023-07-05', 0, 1, 'PENDING', '2023-06-06 06:47:29', 3, '2023-06-06 06:47:29'),
 (52, 20, 26, '2023-06-12', 1, 0, 'PENDING', '2023-06-12 10:44:52', 1, '2023-06-12 10:44:52'),
@@ -2326,8 +2439,22 @@ INSERT INTO `job_interviews` (`id`, `job_id`, `employee_id`, `interview_date`, `
 (62, 20, 26, '2023-06-13', 1, 0, 'PENDING', '2023-06-12 12:01:58', 1, '2023-06-12 12:01:58'),
 (63, 19, 26, '2023-06-13', 1, 0, 'PENDING', '2023-06-12 12:05:15', 1, '2023-06-12 12:05:15'),
 (64, 20, 26, '2023-06-12', 1, 0, 'PENDING', '2023-06-12 12:12:11', 1, '2023-06-12 12:12:11'),
-(65, 19, 26, '2023-06-12', 0, 1, 'PENDING', '2023-06-12 12:15:37', 1, '2023-06-12 12:15:37'),
-(66, 20, 26, '2023-06-13', 0, 1, 'PENDING', '2023-06-12 12:20:14', 1, '2023-06-12 12:20:14');
+(65, 19, 26, '2023-06-12', 1, 0, 'PENDING', '2023-06-12 12:15:37', 1, '2023-06-12 12:15:37'),
+(66, 20, 26, '2023-06-13', 0, 1, 'PENDING', '2023-06-12 12:20:14', 1, '2023-06-12 12:20:14'),
+(67, 7, 5, '2023-06-08', 1, 0, 'PENDING', '2023-06-20 08:36:32', 1, '2023-06-20 08:36:32'),
+(68, 7, 5, '2023-06-08', 1, 0, 'PENDING', '2023-06-20 08:36:44', 1, '2023-06-20 08:36:44'),
+(69, 21, 27, '2023-06-21', 1, 0, 'PENDING', '2023-06-20 09:21:12', 1, '2023-06-20 09:21:12'),
+(70, 3, 6, '2023-06-20', 1, 0, 'PENDING', '2023-06-20 09:25:20', 1, '2023-06-20 09:25:20'),
+(71, 7, 5, '2023-06-20', 0, 1, 'COMPLETE', '2023-06-20 09:25:30', 1, '2023-06-20 09:25:30'),
+(72, 11, 12, '2023-06-07', 0, 1, 'COMPLETE', '2023-06-20 09:25:45', 1, '2023-06-20 09:25:45'),
+(73, 21, 27, '2023-06-21', 0, 1, 'COMPLETE', '2023-06-20 10:04:14', 1, '2023-06-20 10:04:14'),
+(74, 7, 12, '2023-06-20', 1, 0, 'PENDING', '2023-06-20 10:05:16', 1, '2023-06-20 10:05:16'),
+(75, 3, 6, '2023-06-20', 1, 0, 'PENDING', '2023-06-20 10:07:41', 1, '2023-06-20 10:07:41'),
+(76, 7, 12, '2023-06-20', 0, 1, 'COMPLETE', '2023-06-20 10:07:47', 1, '2023-06-20 10:07:47'),
+(77, 3, 6, '2023-06-20', 1, 0, 'PENDING', '2023-06-20 10:10:20', 1, '2023-06-20 10:10:20'),
+(78, 3, 6, '2023-06-20', 0, 1, 'COMPLETE', '2023-06-20 10:10:28', 1, '2023-06-20 10:10:28'),
+(79, 19, 26, '2023-06-12', 0, 1, 'COMPLETE', '2023-06-20 10:26:18', 1, '2023-06-20 10:26:18'),
+(80, 4, 27, '2023-07-25', 0, 1, 'PENDING', '2023-07-24 11:08:42', 1, '2023-07-24 11:08:42');
 
 -- --------------------------------------------------------
 
@@ -2348,14 +2475,14 @@ CREATE TABLE `list` (
 --
 
 INSERT INTO `list` (`id`, `item_name`, `json`, `created_at`, `updated_at`) VALUES
-(1, 'Skill', '{\"1\": \"Sales, Retail, & Customer Support Occupations\", \"2\": \"Healthcare Occupations\", \"3\": \"Organization Operations & Administrative Occupations\", \"4\": \"Food & Beverage Occupations\", \"5\": \"Technology Occupations\", \"6\": \"Finance & Accounting Occupations\", \"7\": \"Repair, Maintenance & Installation Occupations\", \"8\": \"Architecture & Engineering Occupations\", \"9\": \"Construction & Extraction Occupations\", \"10\": \"Supply Chain & Logistics Occupations\", \"11\": \"Manufacturing & Utilities Occupations\", \"12\": \"Marketing, Advertising & Public Relations Occupations\", \"13\": \"Community & Social Services Occupations\", \"14\": \"Education & Instruction Occupations\", \"15\": \"Transportation Occupations\", \"16\": \"Science & Research Occupations\", \"17\": \"Cleaning & Grounds Maintenance Occupations\", \"18\": \"Media, Arts & Design Occupations\", \"19\": \"Safety, Security & Civil Defence Occupations\", \"20\": \"Personal Service Occupations\", \"21\": \"Travel, Attractions & Events Occupations\", \"22\": \"Legal Occupations\", \"23\": \"Farming, Fisheries & Forestry Occupations \", \"24\": \"Other\", \"25\": \"JavaScript\", \"26\": \"Html\", \"27\": \"Css\", \"28\": \"Bootstrap\", \"29\": \"Typing\", \"30\": \"React js\", \"31\": \"Tally\"}', '2023-04-18 05:52:56', '2023-06-06 11:20:03'),
-(2, 'Category', '{\"2\": \"Driver\", \"4\": \"Cleaner\", \"5\": \"Receptionist\", \"7\": \"Manager\", \"28\": \"Frontend Developer\", \"33\": \"cloths\"}', '2023-04-18 09:02:44', '2023-06-05 06:24:22'),
+(1, 'Skill', '{\"1\": \"Sales, Retail, & Customer Support Occupations\", \"2\": \"Healthcare Occupations\", \"3\": \"Organization Operations & Administrative Occupations\", \"4\": \"Food & Beverage Occupations\", \"5\": \"Technology Occupations\", \"6\": \"Finance & Accounting Occupations\", \"7\": \"Repair, Maintenance & Installation Occupations\", \"8\": \"Architecture & Engineering Occupations\", \"9\": \"Construction & Extraction Occupations\", \"10\": \"Supply Chain & Logistics Occupations\", \"11\": \"Manufacturing & Utilities Occupations\", \"12\": \"Marketing, Advertising & Public Relations Occupations\", \"13\": \"Community & Social Services Occupations\", \"14\": \"Education & Instruction Occupations\", \"15\": \"Transportation Occupations\", \"16\": \"Science & Research Occupations\", \"17\": \"Cleaning & Grounds Maintenance Occupations\", \"18\": \"Media, Arts & Design Occupations\", \"19\": \"Safety, Security & Civil Defence Occupations\", \"20\": \"Personal Service Occupations\", \"21\": \"Travel, Attractions & Events Occupations\", \"22\": \"Legal Occupations\", \"23\": \"Farming, Fisheries & Forestry Occupations \", \"24\": \"Other\", \"25\": \"JavaScript\", \"26\": \"Html\", \"27\": \"Css\", \"28\": \"Bootstrap\", \"29\": \"Typing\", \"30\": \"React js\", \"31\": \"Tally\"}', '2023-04-18 05:52:56', '2023-06-20 09:31:45'),
+(2, 'Category', '{\"2\": \"Driver\", \"4\": \"Cleaner\", \"5\": \"Receptionist\", \"7\": \"Manager\", \"28\": \"Frontend Developer\", \"33\": \"cloths\", \"34\": \"clothshh\"}', '2023-04-18 09:02:44', '2023-06-20 09:29:52'),
 (3, 'Location', '{}', '2023-04-18 09:03:51', '2023-04-20 12:38:47'),
 (4, 'Industry', '{\"1\": \"Retail & Wholesale\", \"2\": \"Healthcare\", \"3\": \"Manufacturing\", \"4\": \"Construction, Repair & Maintenance Services\", \"5\": \"Restaurants & Food Service\", \"6\": \"Finance\", \"7\": \"Human Resources & Staffing\", \"8\": \"Transportation & Logistics\", \"9\": \"Information Technology\", \"10\": \"Energy, Mining, Utilities\", \"11\": \"Management & Consulting\", \"12\": \"Non-profit & NGO\", \"13\": \"Education\", \"14\": \"Insurance\", \"15\": \"Government & Public Administration\", \"16\": \"Telecommunications\", \"17\": \"Aerospace & Defence\", \"18\": \"Hotel & Travel Accommodation\", \"19\": \"Agriculture\", \"20\": \"Legal\", \"21\": \"Real Estate\", \"22\": \"Media & Communication\", \"23\": \"Arts, Entertainment & Recreation\", \"24\": \"Pharmaceutical & Biotechnology\", \"25\": \"Personal Consumer Services\", \"26\": \"Other\"}', '2023-04-18 09:04:56', '2023-05-15 11:18:30'),
 (5, 'Education', '{\"1\": \"Bachelor of Liberal Arts\", \"2\": \"Bachelor of Arts\", \"3\": \"Bachelor of Liberal Arts\", \"4\": \"Alternate Entry Master of Science in Nursing\", \"5\": \"Master of Liberal Arts\", \"6\": \"Bachelor of Arts\", \"7\": \"Bachelor of Applied Arts\", \"8\": \"Bachelor of Applied Arts and Sciences\", \"9\": \"Bachelor of Arts in Communication\", \"10\": \"Bachelor of Aerospace Engineering\", \"11\": \"Bachelor of Arts and Economics\", \"12\": \"Bachelor of Economics\", \"13\": \"Bachelor of Arts in Education\", \"14\": \"Bachelor of Applied Studies\", \"15\": \"Bachelor of Applied Science\", \"16\": \"Bachelor of Architectural Studies\", \"17\": \"Bachelor of Applied Science\", \"18\": \"Bachelor of Art & Technology\", \"19\": \"Bachelor of Applied Technology\", \"20\": \"Bachelor of Accountancy\", \"21\": \"Bachelor of Agricultural Science\", \"22\": \"Bachelor of Applied Finance\", \"23\": \"Bachelor of Applied Science\", \"24\": \"Bachelor of Architecture\", \"25\": \"Bachelor of Asian Studies\", \"26\": \"Bachelor of Business Analysis - Financial\", \"27\": \"Bachelor of Business Administration\", \"28\": \"Bachelor of Built Environment\", \"29\": \"Bachelor of Biosystems Engineering\", \"30\": \"Bachelor of Behavioural Neuroscience\", \"31\": \"Bachelor of Business\", \"32\": \"Bachelor of Commerce and Administration\", \"33\": \"Bachelor of Civil Engineering\", \"34\": \"Bachelor of Computer Information Systems\", \"35\": \"Bachelor of Criminal Justice\", \"36\": \"Bachelor of Computer and Mathematical Sciences\", \"37\": \"Bachelor of Computing & Mathematical Sciences\", \"38\": \"Bachelor of Surgery\", \"39\": \"Bachelor of Chemical Engineering\", \"40\": \"Bachelor of Commerce\", \"41\": \"Bachelor of Commerce\", \"42\": \"Bachelor of Communication\", \"43\": \"Bachelor of Computing\", \"44\": \"Bachelor of Computer Operations Technology\", \"45\": \"Bachelor of Communications Studies\", \"46\": \"Bachelor of Design\", \"47\": \"Bachelor of Engineering\", \"48\": \"Bachelor of Electrical Engineering\", \"49\": \"Bachelor of Electronics Engineering Technology\", \"50\": \"Bachelor of Environmental Studies\", \"51\": \"Bachelor of Economics\", \"52\": \"Bachelor of Finance & Economics\", \"53\": \"Bachelor of Economic Science\", \"54\": \"Bachelor of Education\", \"55\": \"Bachelor of Environmental Design\", \"56\": \"Bachelor of Engineering\", \"57\": \"Bachelor of Fine Arts\", \"58\": \"Bachelor of Finance\", \"59\": \"Bachelor of General Studies\", \"60\": \"Bachelor of Game & Simulation Programming\", \"61\": \"Bachelor of Humanities and Arts\", \"62\": \"Bachelor of Hotel Management\", \"63\": \"Bachelor of Health Science\", \"64\": \"Bachelor of Health Sciences\", \"65\": \"Bachelor of Interior Architecture\", \"66\": \"Bachelor of Integrated Studies\", \"67\": \"Bachelor of Interdisciplinary Studies\", \"68\": \"Bachelor of Industrial and Science Engineering\", \"69\": \"Bachelor of Information Technology\", \"70\": \"Bachelor of Industrial Design\", \"71\": \"Bachelor of Information Science\", \"72\": \"Bachelor of Information Technology\", \"73\": \"Bachelor of International Studies\", \"74\": \"Bachelor of Journalism\", \"75\": \"Bachelor of Liberal Arts\", \"76\": \"Bachelor of Landscape Architecture\", \"77\": \"Bachelor of Liberal Studies\", \"78\": \"Bachelor of Languages\", \"79\": \"Bachelor of Music\", \"80\": \"Bachelor of Mechanical Engineering\", \"81\": \"Bachelor of Music Education\", \"82\": \"Bachelor of Materials Engineering\", \"83\": \"Bachelor of Music\", \"84\": \"Bachelor of Public Affairs\", \"85\": \"Bachelor of Polymer and Fiber Engineering\", \"86\": \"Bachelor of Professional Health Science\", \"87\": \"Bachelor of Science\", \"88\": \"Bachelor of Science in Aerospace Engineering\", \"89\": \"Bachelor of Science in Business Administration\", \"90\": \"Bachelor of Science in Biomedical Engineering\", \"91\": \"Bachelor of Science in Commerce Business Administration\", \"92\": \"Bachelor of Science in Civil Engineering\", \"93\": \"Bachelor of Science in Computer & Information Sciences\", \"94\": \"Bachelor of Science in Computer Science\", \"95\": \"Bachelor of Science in Computer Technology\", \"96\": \"Bachelor of Science in Chemical Engineering\", \"97\": \"Bachelor of Science in Chemistry\", \"98\": \"Bachelor of Science in Engineering\", \"99\": \"Bachelor of Science in Electrical Engineering\", \"100\": \"Bachelor of Science in Engineering Technology\", \"101\": \"Bachelor of Science in Education\", \"102\": \"Bachelor of Science in Geology\", \"103\": \"Bachelor of Science in Human Environmental Sciences\", \"104\": \"Bachelor of Science in Mechanical Engineering\", \"105\": \"Bachelor of Science in Manufacturing Engineering Technology\", \"106\": \"Bachelor of Science in Metallurgical Engineering\", \"107\": \"Bachelor of Science in Microbiology\", \"108\": \"Bachelor of Science in Materials Engineering\", \"109\": \"Bachelor of Science in Nursing\", \"110\": \"Bachelor of Science in Social Work\", \"111\": \"Bachelor of Social Work\", \"112\": \"Bachelor of Software Engineering\", \"113\": \"Bachelor of Textile Engineering\", \"114\": \"Bachelor of Technical & Interdisciplinary Studies\", \"115\": \"Bachelor of Textile Management and Technology\", \"116\": \"Bachelor of Wireless Engineering\", \"117\": \"Bachelor of Arts\", \"118\": \"Bachelor of Economics\", \"119\": \"Bachelor of Education\", \"120\": \"Bachelor of Arts and Economics\", \"121\": \"Bachelor of Journalism\", \"122\": \"Bachelor of Architecture\", \"123\": \"Bachelor of Applied Science\", \"124\": \"Bachelor of Applied Studies\", \"125\": \"Bachelor of Applied Science\", \"126\": \"Bachelor of Arts for Teaching\", \"127\": \"Bachelor of Aviation\", \"128\": \"Bachelor of Biomedical Science\", \"129\": \"Bachelor of Business Information Systems\", \"130\": \"Bachelor of Surgery\", \"131\": \"Bachelor of Surgery\", \"132\": \"Bachelor of Dental Surgery\", \"133\": \"Bachelor of Surgery Degree\", \"134\": \"Bachelor of Civil Law\", \"135\": \"Bachelor of Counseling\", \"136\": \"Bachelor of Divinity\", \"137\": \"Bachelor of Divisionnity\", \"138\": \"Bachelor of Design\", \"139\": \"Bachelor of Dental Surgery\", \"140\": \"Bachelor of Dental Science\", \"141\": \"Bachelor of Engineering\", \"142\": \"Bachelor of Economics\", \"143\": \"Bachelor of Economics and Finance\", \"144\": \"Bachelor of Science in Education\", \"145\": \"Bachelor of Engineering\", \"146\": \"Bachelor of Fine Arts\", \"147\": \"Bachelor of Finance\", \"148\": \"Bachelor of General Studies\", \"149\": \"Bachelor of Health & Physical Education\", \"150\": \"Bachelor of Health Science\", \"151\": \"Bachelor of Health Science\", \"152\": \"bachelor of hygiene\", \"153\": \"Bachelor of Information and Communications Technology\", \"154\": \"Bachelor of Integrated Studies\", \"155\": \"Bachelor of Journalism\", \"156\": \"Bachelor of Kinesiology\", \"157\": \"Bachelor of Liberal Arts\", \"158\": \"Bachelor of Landscape Architecture\", \"159\": \"Bachelor of Music (degree)\", \"160\": \"Bachelor of Medicine\", \"161\": \"Bachelor of Biomedical science\", \"162\": \"Bachelor of Medical Science\", \"163\": \"Bachelor of Medical Science\", \"164\": \"Bachelor of Midwifery\", \"165\": \"Bachelor of Ministry\", \"166\": \"Bachelor of Medical Science\", \"167\": \"Bachelor of Biomedical science\", \"168\": \"Bachelor of Medical Science\", \"169\": \"Bachelor of Music\", \"170\": \"Bachelor of Nursing\", \"171\": \"Bachelor of Nursing Science\", \"172\": \"Bachelor of Nursing\", \"173\": \"Bachelor of Physical Education\", \"174\": \"Bachelor of Pharmacy\", \"175\": \"Bachelor of Philosophy\", \"176\": \"bachelor of public health nursing\", \"177\": \"Bachelor of Professional Studies\", \"178\": \"Bachelor of Religious Education\", \"179\": \"Bachelor of Religious Studies\", \"180\": \"Bachelor of Science (clear in education line)\", \"181\": \"Bachelor of Science in Education\", \"182\": \"Bachelor of Science in Business Administration\", \"183\": \"Bachelor of Science (university degree)\", \"184\": \"Bachelor of Science and/with Education\", \"185\": \"Bachelor of Science in Economics\", \"186\": \"Bachelor of Science in Engineering\", \"187\": \"Bachelor of Science in Psychology\", \"188\": \"Bachelor of Nursing Science\", \"189\": \"Bachelor of Science in Education\", \"190\": \"Bachelor of Science in Engineering\", \"191\": \"Bachelor of Science in Education\", \"192\": \"Bachelor of Science in Environmental Health\", \"193\": \"Bachelor of Science in Engineering Technology\", \"194\": \"Bachelor of Science in Family and Consumer Sciences\", \"195\": \"Bachelor of Science in General Studies\", \"196\": \"Bachelor of Journalism\", \"197\": \"Bachelor of Science in Law\", \"198\": \"Bachelor of Science in Medicine\", \"199\": \"Bachelor of Science in Nursing\", \"200\": \"Bachelor of Science in Nuclear Engineering\", \"201\": \"Bachelor of Social Science\", \"202\": \"Bachelor of Science in Public Health\", \"203\": \"Bachelor of Social Work\", \"204\": \"Bachelor of Teaching\", \"205\": \"Bachelor of Technology\", \"206\": \"Bachelor of Theology\", \"207\": \"Bachelor of Theology\", \"208\": \"Bachelor of Veterinary Medicine\", \"209\": \"Bachelor of Veterinary Medicine and Science\", \"210\": \"Bachelor of Surgery\", \"211\": \"Bachelor of Surgery\", \"212\": \"Master in Surgery\", \"213\": \"Bachelor of Education\", \"214\": \"Master of Laws\", \"215\": \"Legum Baccalaureus (Latin: Bachelor Of Laws)\", \"216\": \"Master of Laws\", \"217\": \"Licensed Master of Social Work\", \"218\": \"Master of Arts in Education\", \"219\": \"Master of Education\", \"220\": \"Master of Fine Arts\", \"221\": \"Master of Interdisciplinary Studies\", \"222\": \"Master of Library and Information Science\", \"223\": \"Master of Ministry\", \"224\": \"Master of Music\", \"225\": \"Master of Occupational Therapy\", \"226\": \"Master of Science in Engineering Technology\", \"227\": \"Master of Science in Education\", \"228\": \"Master of Science in Nursing\", \"229\": \"Master of Social Work\", \"230\": \"Master of Urban Planning\", \"231\": \"Master of Arts\", \"232\": \"Master of Arts in Education\", \"233\": \"Master of Applied Anthropology\", \"234\": \"Master of Accountancy\", \"235\": \"Master of Arts in Christian Education\", \"236\": \"Master of Accountancy\", \"237\": \"Master of Arts in international economics and finance\", \"238\": \"Master of Arts in International Hotel Management\", \"239\": \"Master of Arts in Liberal Studies\", \"240\": \"Master of Arts Management\", \"241\": \"Master of Arts in Public Service\", \"242\": \"Master of Arts in Professional Writing\", \"243\": \"Master of Architecture\", \"244\": \"Master of Archival Studies\", \"245\": \"Master of Engineering\", \"246\": \"Master of Applied Sciences\", \"247\": \"Master of Arts and Teaching\", \"248\": \"Bachelor of Medicine\", \"249\": \"Master of Business Administration\", \"250\": \"Medicinae Baccalaureus, Baccalaureus Chirurgiae (Latin: Bachelor of Medicine, Bachelor of Surgery)\", \"251\": \"Master of Biochemistry\", \"252\": \"Master of Biology\", \"253\": \"Master of Biological Science\", \"254\": \"Master of Surgery\", \"255\": \"Master of Surgery\", \"256\": \"Master of Chemistry\", \"257\": \"Master of Criminal Justice\", \"258\": \"Master of Clinical Dentistry\", \"259\": \"Master of Clinical Medical Science\", \"260\": \"Master of Divisionnity\", \"261\": \"Master of Divinity\", \"262\": \"Master of Digital Media\", \"263\": \"Master of Drama\", \"264\": \"Master of Dental Surgery\", \"265\": \"Master of Engineering\", \"266\": \"Master of Electronic Business\", \"267\": \"Master of Economics\", \"268\": \"Master of Education\", \"269\": \"Master of Environmental Design\", \"270\": \"Master of Engineering\", \"271\": \"Master of Environmental Science\", \"272\": \"Master of Environmental Studies\", \"273\": \"Master of Earth Science\", \"274\": \"Master of Educational Technology\", \"275\": \"Master of Fine Art\", \"276\": \"Master of Forensic Sciences\", \"277\": \"Master of Geography\", \"278\": \"Master of Geology\", \"279\": \"Master of Geophysics\", \"280\": \"Master of Health Administration\", \"281\": \"Master of Health Education\", \"282\": \"Master of Health Science\", \"283\": \"Master of Industrial Design\", \"284\": \"Master of International Development\", \"285\": \"Master of Management in the Network Economy\", \"286\": \"Master of Informatics\", \"287\": \"Master of Engineering\", \"288\": \"Master of Information Systems Management\", \"289\": \"Master of Jurisprudence\", \"290\": \"Master of Labor and Human Resources\", \"291\": \"Master of Librarianship\", \"292\": \"Master of Library and Information Science degree\", \"293\": \"Master of Letters\", \"294\": \"Master of Library Science\", \"295\": \"Master of Liberal Studies\", \"296\": \"Master of Music\", \"297\": \"Master of Mathematics\", \"298\": \"Master of Mathematics and Physics\", \"299\": \"Master of Mass Communications\", \"300\": \"Master of Music Education\", \"301\": \"Master of Ministry\", \"302\": \"Master of Mathematics, Operational Research, Statistics and Economics\", \"303\": \"Master of Marketing Research\", \"304\": \"Master of Medical Science\", \"305\": \"Master of Medical Science\", \"306\": \"Master of Management Sciences\", \"307\": \"Master of Music\", \"308\": \"Master of Nursing\", \"309\": \"Master of Natural Science\", \"310\": \"Master of Science in Nursing\", \"311\": \"Master of Nursing Science\", \"312\": \"Master of Oceanography\", \"313\": \"Master of Occupational Therapy\", \"314\": \"Master of Pharmacy Administration\", \"315\": \"Master of Public Administration\", \"316\": \"Master of Professional Accountancy\", \"317\": \"Master of Physician Assistant Studies\", \"318\": \"Master of Pharmacy\", \"319\": \"Master of Public Health\", \"320\": \"master of pharmacy\", \"321\": \"Master of Philosophy\", \"322\": \"Master of Physics\", \"323\": \"Master of Pacific International Affairs\", \"324\": \"Master of Planning\", \"325\": \"Master of Project Management\", \"326\": \"Master of Public Management\", \"327\": \"Master of Public Policy\", \"328\": \"Master of Professional Studies\", \"329\": \"Master of Professional Studies\", \"330\": \"Master of Physical Therapy\", \"331\": \"Master of Radiology\", \"332\": \"Master of Research\", \"333\": \"Master of Science\", \"334\": \"Master of Surgery\", \"335\": \"Master of Science in Education\", \"336\": \"Master of Surgery\", \"337\": \"Master of Science\", \"338\": \"Master in Science\", \"339\": \"Master of Science in Dentistry\", \"340\": \"Master of Science in Engineering\", \"341\": \"Master of Science in Electrical Engineering\", \"342\": \"Master of Science in Environmental Health\", \"343\": \"Master of Science in Finance\", \"344\": \"Master of Science in Information\", \"345\": \"Master of Science in Information Systems\", \"346\": \"Master of Science in Information Studies\", \"347\": \"Master of Criminal Justice\", \"348\": \"Master of Science in Library Science\", \"349\": \"Master of Sacred Music\", \"350\": \"Master Of Science In Nursing\", \"351\": \"Master of Science in Natural Sciences\", \"352\": \"Master of Social Science\", \"353\": \"Master of Science In Organizational Leadership\", \"354\": \"Master of Science in Public Health\", \"355\": \"Master of Social Science\", \"356\": \"Master of Science in Strategic Leadership\", \"357\": \"Master of Science in Social Work\", \"358\": \"Master of Studies\", \"359\": \"Master of Science in Taxation\", \"360\": \"Master of Statistics\", \"361\": \"Master of Surgery\", \"362\": \"Master of Social Work\", \"363\": \"Master of Theology\", \"364\": \"Master of Theology\", \"365\": \"Master of the University\", \"366\": \"Master of Urban Studies\", \"367\": \"Master of Urban and Regional Planning\", \"368\": \"Bachelor of Music\", \"369\": \"Master of Music\", \"370\": \"Post Master\'s Graduate Certificate\", \"371\": \"Bachelor of Science\", \"372\": \"Scientiar Baccalaureus, Bachelor of Science\", \"373\": \"Master of Surgery\", \"374\": \"Master of Theology\", \"375\": \"Bachelor of Theology\", \"376\": \"Master of Theology\", \"379\": \"Other\", \"380\": \"10th\", \"381\": \"12th\", \"382\": \"PCM\", \"383\": \"PCB\", \"384\": \"Commerce\", \"385\": \"Arts\"}', '2023-04-18 09:05:35', '2023-06-05 05:25:45'),
 (6, 'Corporation', '{\"1\": \"B2B\", \"2\": \"B2C\", \"3\": \"C2C\", \"4\": \"B2G\", \"5\": \"G2C\", \"6\": \"G2B\", \"7\": \"Other\"}', '2023-04-18 09:06:14', '2023-05-19 09:36:40'),
 (7, 'Language', '{\"1\": \"Abkhaz\", \"2\": \"Afar\", \"3\": \"Afrikaans\", \"4\": \"Akan\", \"5\": \"Albanian\", \"6\": \"Amharic\", \"7\": \"Arabic\", \"8\": \"Aragonese\", \"9\": \"Armenian\", \"10\": \"Assamese\", \"11\": \"Avaric\", \"12\": \"Avestan\", \"13\": \"Aymara\", \"14\": \"Azerbaijani\", \"15\": \"Bambara\", \"16\": \"Bashkir\", \"17\": \"Basque\", \"18\": \"Belarusian\", \"19\": \"Bengali\", \"20\": \"Bihari\", \"21\": \"Bislama\", \"22\": \"Bosnian\", \"23\": \"Breton\", \"24\": \"Bulgarian\", \"25\": \"Burmese\", \"26\": \"Catalan- Valencian\", \"27\": \"Chamorro\", \"28\": \"Chechen\", \"29\": \"Chichewa- Chewa- Nyanja\", \"30\": \"Chinese\", \"31\": \"Chuvash\", \"32\": \"Cornish\", \"33\": \"Corsican\", \"34\": \"Cree\", \"35\": \"Croatian\", \"36\": \"Czech\", \"37\": \"Danish\", \"38\": \"Divehi- Dhivehi- Maldivian-\", \"39\": \"Dutch\", \"40\": \"English\", \"41\": \"Esperanto\", \"42\": \"Estonian\", \"43\": \"Ewe\", \"44\": \"Faroese\", \"45\": \"Fijian\", \"46\": \"Finnish\", \"47\": \"French\", \"48\": \"Fula- Fulah- Pulaar- Pular\", \"49\": \"Galician\", \"50\": \"Georgian\", \"51\": \"German\", \"52\": \"Greek, Modern\", \"53\": \"Guaraní\", \"54\": \"Gujarati\", \"55\": \"Haitian- Haitian Creole\", \"56\": \"Hausa\", \"57\": \"Hebrew (modern)\", \"58\": \"Herero\", \"59\": \"Hindi\", \"60\": \"Hiri Motu\", \"61\": \"Hungarian\", \"62\": \"Interlingua\", \"63\": \"Indonesian\", \"64\": \"Interlingue\", \"65\": \"Irish\", \"66\": \"Igbo\", \"67\": \"Inupiaq\", \"68\": \"Ido\", \"69\": \"Icelandic\", \"70\": \"Italian\", \"71\": \"Inuktitut\", \"72\": \"Japanese\", \"73\": \"Javanese\", \"74\": \"Kalaallisut, Greenlandic\", \"75\": \"Kannada\", \"76\": \"Kanuri\", \"77\": \"Kashmiri\", \"78\": \"Kazakh\", \"79\": \"Khmer\", \"80\": \"Kikuyu, Gikuyu\", \"81\": \"Kinyarwanda\", \"82\": \"Kirghiz, Kyrgyz\", \"83\": \"Komi\", \"84\": \"Kongo\", \"85\": \"Korean\", \"86\": \"Kurdish\", \"87\": \"Kwanyama, Kuanyama\", \"88\": \"Latin\", \"89\": \"Luxembourgish, Letzeburgesch\", \"90\": \"Luganda\", \"91\": \"Limburgish\", \"92\": \"Lingala\", \"93\": \"Lao\", \"94\": \"Lithuanian\", \"95\": \"Luba-Katanga\", \"96\": \"Latvian\", \"97\": \"Manx\", \"98\": \"Macedonian\", \"99\": \"Malagasy\", \"100\": \"Malay\", \"101\": \"Malayalam\", \"102\": \"Maltese\", \"103\": \"Māori\", \"104\": \"Marathi (Marāṭhī)\", \"105\": \"Marshallese\", \"106\": \"Mongolian\", \"107\": \"Nauru\", \"108\": \"Navajo, Navaho\", \"109\": \"Norwegian Bokmål\", \"110\": \"North Ndebele\", \"111\": \"Nepali\", \"112\": \"Ndonga\", \"113\": \"Norwegian Nynorsk\", \"114\": \"Norwegian\", \"115\": \"Nuosu\", \"116\": \"South Ndebele\", \"117\": \"Occitan\", \"118\": \"Ojibwe, Ojibwa\", \"119\": \"Old Church Slavonic\", \"120\": \"Oromo\", \"121\": \"Oriya\", \"122\": \"Ossetian, Ossetic\", \"123\": \"Panjabi, Punjabi\", \"124\": \"Pāli\", \"125\": \"Persian\", \"126\": \"Polish\", \"127\": \"Pashto, Pushto\", \"128\": \"Portuguese\", \"129\": \"Quechua\", \"130\": \"Romansh\", \"131\": \"Kirundi\", \"132\": \"Romanian\", \"133\": \"Russian\", \"134\": \"Sanskrit (Saṁskṛta)\", \"135\": \"Sardinian\", \"136\": \"Sindhi\", \"137\": \"Northern Sami\", \"138\": \"Samoan\", \"139\": \"Sango\", \"140\": \"Serbian\", \"141\": \"Scottish Gaelic- Gaelic\", \"142\": \"Shona\", \"143\": \"Sinhala, Sinhalese\", \"144\": \"Slovak\", \"145\": \"Slovene\", \"146\": \"Somali\", \"147\": \"Southern Sotho\", \"148\": \"Spanish- Castilian\", \"149\": \"Sundanese\", \"150\": \"Swahili\", \"151\": \"Swati\", \"152\": \"Swedish\", \"153\": \"Tamil\", \"154\": \"Telugu\", \"155\": \"Tajik\", \"156\": \"Thai\", \"157\": \"Tigrinya\", \"158\": \"Tibetan Standard, Tibetan, Central\", \"159\": \"Turkmen\", \"160\": \"Tagalog\", \"161\": \"Tswana\", \"162\": \"Tonga (Tonga Islands)\", \"163\": \"Turkish\", \"164\": \"Tsonga\", \"165\": \"Tatar\", \"166\": \"Twi\", \"167\": \"Tahitian\", \"168\": \"Uighur, Uyghur\", \"169\": \"Ukrainian\", \"170\": \"Urdu\", \"171\": \"Uzbek\", \"172\": \"Venda\", \"173\": \"Vietnamese\", \"174\": \"Volapük\", \"175\": \"Walloon\", \"176\": \"Welsh\", \"177\": \"Wolof\", \"178\": \"Western Frisian\", \"179\": \"Xhosa\", \"180\": \"Yiddish\", \"181\": \"Yoruba\", \"182\": \"Zhuang, Chuang\", \"183\": \"Other\"}', '2023-04-18 09:06:36', '2023-05-19 09:31:59'),
-(8, 'Category_type', '{\"1\": \"Factory\", \"8\": \"Hospital\", \"9\": \"Hotel\", \"26\": \"Remote\", \"27\": \"Development \", \"29\": \"developmentf\", \"32\": \"IT\"}', '2023-05-15 11:27:47', '2023-06-05 06:24:52'),
+(8, 'Category_type', '{\"1\": \"Factory\", \"8\": \"Hospital\", \"9\": \"Hotel\", \"26\": \"Remote\", \"27\": \"Development \", \"29\": \"developmentf\", \"32\": \"IT\", \"35\": \"Fashion\"}', '2023-05-15 11:27:47', '2023-06-20 09:30:16'),
 (9, 'degree', '{}', '2023-05-19 09:16:30', '2023-05-19 09:16:30');
 
 -- --------------------------------------------------------
@@ -2394,7 +2521,11 @@ INSERT INTO `lmia` (`id`, `job_id`, `employee_id`, `lmia_status`, `expected_time
 (12, 7, 22, 'Reject', '2023-06-30', 1, '2023-06-05 11:45:07', '2023-06-05 11:45:07'),
 (13, 7, 12, 'Approved', '2023-06-30', 1, '2023-06-05 11:51:24', '2023-06-05 11:53:37'),
 (14, 4, 8, 'Complete', '2023-05-05', 1, '2023-06-06 04:26:17', '2023-06-13 09:41:57'),
-(15, 7, 5, 'Complete', '2023-05-05', 1, '2023-06-06 07:03:48', '2023-06-13 08:43:14');
+(15, 7, 5, 'Complete', '2023-05-05', 1, '2023-06-06 07:03:48', '2023-06-13 08:43:14'),
+(16, 22, 27, 'Reject', '2023-06-20', 1, '2023-06-20 08:37:14', '2023-06-20 08:37:14'),
+(17, 21, 27, 'Approved', '2023-06-20', 1, '2023-06-20 09:21:20', '2023-06-21 06:00:33'),
+(18, 16, 27, 'Draft', '2023-06-21', 1, '2023-06-21 05:24:05', '2023-06-21 05:24:05'),
+(19, 4, 27, 'Pending', '2023-07-24', 1, '2023-07-24 11:08:52', '2023-07-24 11:08:52');
 
 -- --------------------------------------------------------
 
@@ -2428,12 +2559,12 @@ INSERT INTO `notification` (`id`, `from_id`, `type`, `subject`, `action_id`, `me
 (7, 1, 'employee', 'interview_scheduled', 2, 'hello, Shayam mohan you have interview scheduled on 2023-05-22 for job with title - Delivery boy you have applied on, scheduled with Sanchi', 0, '2023-05-20 11:36:36', '2023-05-20 11:36:36'),
 (8, 1, 'Super-Admin', 'interview_scheduled', 2, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-22 for job title Delivery boy posted by company Sanchi', 1, '2023-05-20 11:36:36', '2023-05-25 17:54:58'),
 (9, 1, 'employee', 'interview_scheduled', 1, 'hello, Shayam mohan you have interview scheduled on 2023-05-23 for job with title - Delivery boy you have applied on, scheduled with Amul ', 0, '2023-05-20 11:43:33', '2023-05-20 11:43:33'),
-(10, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-23 for job title Delivery boy posted by company Amul ', 1, '2023-05-20 11:43:33', '2023-05-26 12:22:21'),
+(10, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-23 for job title Delivery boy posted by company Amul ', 1, '2023-05-20 11:43:33', '2023-06-23 05:30:50'),
 (11, 3, 'company', 'added_new_job', 3, 'A new job with title-Shop worker has been added successfully', 0, '2023-05-20 12:08:20', '2023-05-20 12:08:20'),
 (12, 1, 'employee', 'interview_scheduled', 1, 'hello, Shayam mohan you have interview scheduled on 2023-05-23 for job with title - Delivery boy you have applied on, scheduled with Amul ', 0, '2023-05-22 04:17:53', '2023-05-22 04:17:53'),
 (13, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-23 for job title Delivery boy posted by company Amul ', 1, '2023-05-22 04:17:53', '2023-05-23 11:44:36'),
 (14, 1, 'employee', 'interview_scheduled', 1, 'hello, Shayam mohan you have interview scheduled on 2023-05-23 for job with title - Delivery boy you have applied on, scheduled with Amul ', 0, '2023-05-22 04:18:07', '2023-05-22 04:18:07'),
-(15, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-23 for job title Delivery boy posted by company Amul ', 1, '2023-05-22 04:18:07', '2023-05-25 17:54:57'),
+(15, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-23 for job title Delivery boy posted by company Amul ', 1, '2023-05-22 04:18:07', '2023-06-20 08:26:25'),
 (16, 1, 'employee', 'interview_scheduled', 1, 'hello, Shayam mohan you have interview scheduled on 2023-05-27 for job with title - Delivery boy you have applied on, scheduled with Amul ', 0, '2023-05-22 04:19:09', '2023-05-22 04:19:09'),
 (17, 1, 'Super-Admin', 'interview_scheduled', 1, 'A new interview scheduled of candidate Shayam mohan on date 2023-05-27 for job title Delivery boy posted by company Amul ', 1, '2023-05-22 04:19:09', '2023-05-25 17:54:55'),
 (18, 1, 'employee', 'interview_scheduled', 1, 'hello, Shayam mohan you have interview scheduled on 2023-05-28 for job with title - Delivery boy you have applied on, scheduled with Amul ', 0, '2023-05-22 04:24:30', '2023-05-22 04:24:30'),
@@ -2774,7 +2905,72 @@ INSERT INTO `notification` (`id`, `from_id`, `type`, `subject`, `action_id`, `me
 (352, 4, 'company', 'Lmia status changed', 8, 'Lmia status changed to Reject for employee Rajaram', 0, '2023-06-13 09:12:10', '2023-06-13 09:12:10'),
 (353, 4, 'company', 'Lmia status changed', 8, 'Lmia status changed to Complete for employee Rajaram', 0, '2023-06-13 09:37:36', '2023-06-13 09:37:36'),
 (354, 4, 'company', 'Lmia status changed', 8, 'Lmia status changed to Reject for employee Rajaram', 0, '2023-06-13 09:39:28', '2023-06-13 09:39:28'),
-(355, 4, 'company', 'Lmia status changed', 8, 'Lmia status changed to Complete for employee Rajaram', 0, '2023-06-13 09:41:57', '2023-06-13 09:41:57');
+(355, 4, 'company', 'Lmia status changed', 8, 'Lmia status changed to Complete for employee Rajaram', 0, '2023-06-13 09:41:57', '2023-06-13 09:41:57'),
+(356, 5, 'manager', 'new_user_registered', 27, 'A new user chetan.barod.we2code@gmail.com registered successfully', 0, '2023-06-20 07:22:35', '2023-06-20 07:22:35'),
+(357, 13, 'company', 'applied_on_job', 22, 'A new user applied on job with title - dgfh', 0, '2023-06-20 07:22:48', '2023-06-20 07:22:48'),
+(358, 13, 'company', 'applied_on_job', 20, 'A new user applied on job with title - React js developer', 0, '2023-06-20 07:31:26', '2023-06-20 07:31:26'),
+(359, 13, 'company', 'applied_on_job', 19, 'A new user applied on job with title - React js developer', 0, '2023-06-20 07:31:35', '2023-06-20 07:31:35'),
+(360, 13, 'company', 'applied_on_job', 19, 'A new user applied on job with title - React js developer', 0, '2023-06-20 07:31:37', '2023-06-20 07:31:37'),
+(361, 5, 'manager', 'new_employer_registered', 14, 'A new employer chetan.barod.we2code@gmail.com registered successfully', 0, '2023-06-20 07:35:09', '2023-06-20 07:35:09'),
+(362, 5, 'manager', 'added_new_job', 23, 'A new job with title-React js developer has been added successfully', 0, '2023-06-20 07:36:34', '2023-06-20 07:36:34'),
+(363, 1, 'company', 'added_new_job', 24, 'A new job with title-Driver has been added successfully', 0, '2023-06-20 08:24:58', '2023-06-20 08:24:58'),
+(364, 13, 'company', 'Lmia status changed', 27, 'Lmia status changed to Reject for employee Chetan Barod', 0, '2023-06-20 08:37:14', '2023-06-20 08:37:14'),
+(365, 14, 'company', 'applied_on_job', 23, 'A new user applied on job with title - React js developer', 0, '2023-06-20 08:47:33', '2023-06-20 08:47:33'),
+(366, 14, 'company', 'applied_on_job', 23, 'A new user applied on job with title - React js developer', 0, '2023-06-20 08:47:36', '2023-06-20 08:47:36'),
+(367, 14, 'company', 'added_new_job', 25, 'A new job with title-Driver has been added successfully', 0, '2023-06-20 09:09:53', '2023-06-20 09:09:53'),
+(368, 27, 'employee', 'interview_scheduled', 21, 'hello, Chetan Barod you have interview scheduled on 2023-06-21 for job with title - Shreestha soni you have applied on, scheduled with Infobeans', 0, '2023-06-20 09:21:12', '2023-06-20 09:21:12'),
+(369, 13, 'company', 'interview_scheduled', 21, 'hello, Infobeans you have interview scheduled on 2023-06-21 for job with title - Shreestha soni, scheduled with Chetan Barod', 0, '2023-06-20 09:21:12', '2023-06-20 09:21:12'),
+(370, 1, 'super-admin', 'interview_scheduled', 21, 'A new interview scheduled of candidate Chetan Barod on date 2023-06-21 for job title Shreestha soni posted by company Infobeans', 0, '2023-06-20 09:21:12', '2023-06-20 09:21:12'),
+(371, 6, 'employee', 'interview_scheduled', 3, 'hello, Warren you have interview scheduled on 2023-06-20 for job with title - Shop worker you have applied on, scheduled with Sention', 0, '2023-06-20 09:25:20', '2023-06-20 09:25:20'),
+(372, 3, 'company', 'interview_scheduled', 3, 'hello, Sention you have interview scheduled on 2023-06-20 for job with title - Shop worker, scheduled with Warren', 0, '2023-06-20 09:25:20', '2023-06-20 09:25:20'),
+(373, 1, 'super-admin', 'interview_scheduled', 3, 'A new interview scheduled of candidate Warren on date 2023-06-20 for job title Shop worker posted by company Sention', 0, '2023-06-20 09:25:20', '2023-06-20 09:25:20'),
+(374, 6, 'employee', 'interview_scheduled', 3, 'hello, Warren you have interview scheduled on 2023-06-20 for job with title - Shop worker you have applied on, scheduled with Sention', 0, '2023-06-20 10:07:41', '2023-06-20 10:07:41'),
+(375, 3, 'company', 'interview_scheduled', 3, 'hello, Sention you have interview scheduled on 2023-06-20 for job with title - Shop worker, scheduled with Warren', 0, '2023-06-20 10:07:41', '2023-06-20 10:07:41'),
+(376, 1, 'super-admin', 'interview_scheduled', 3, 'A new interview scheduled of candidate Warren on date 2023-06-20 for job title Shop worker posted by company Sention', 0, '2023-06-20 10:07:41', '2023-06-20 10:07:41'),
+(377, 6, 'employee', 'interview_scheduled', 3, 'hello, Warren you have interview scheduled on 2023-06-20 for job with title - Shop worker you have applied on, scheduled with Sention', 0, '2023-06-20 10:10:20', '2023-06-20 10:10:20'),
+(378, 3, 'company', 'interview_scheduled', 3, 'hello, Sention you have interview scheduled on 2023-06-20 for job with title - Shop worker, scheduled with Warren', 0, '2023-06-20 10:10:20', '2023-06-20 10:10:20'),
+(379, 1, 'super-admin', 'interview_scheduled', 3, 'A new interview scheduled of candidate Warren on date 2023-06-20 for job title Shop worker posted by company Sention', 0, '2023-06-20 10:10:20', '2023-06-20 10:10:20'),
+(380, 6, 'employee', 'interview_scheduled', 3, 'hello, Warren you have interview scheduled on 2023-06-20 for job with title - Shop worker you have applied on, scheduled with Sention', 0, '2023-06-20 10:10:28', '2023-06-20 10:10:28'),
+(381, 3, 'company', 'interview_scheduled', 3, 'hello, Sention you have interview scheduled on 2023-06-20 for job with title - Shop worker, scheduled with Warren', 0, '2023-06-20 10:10:28', '2023-06-20 10:10:28'),
+(382, 1, 'super-admin', 'interview_scheduled', 3, 'A new interview scheduled of candidate Warren on date 2023-06-20 for job title Shop worker posted by company Sention', 0, '2023-06-20 10:10:28', '2023-06-20 10:10:28'),
+(383, 26, 'employee', 'interview_scheduled', 19, 'hello, Annu you have interview scheduled on 2023-06-12 for job with title - React js developer you have applied on, scheduled with Infobeans', 0, '2023-06-20 10:26:18', '2023-06-20 10:26:18'),
+(384, 13, 'company', 'interview_scheduled', 19, 'hello, Infobeans you have interview scheduled on 2023-06-12 for job with title - React js developer, scheduled with Annu', 0, '2023-06-20 10:26:18', '2023-06-20 10:26:18'),
+(385, 1, 'super-admin', 'interview_scheduled', 19, 'A new interview scheduled of candidate Annu on date 2023-06-12 for job title React js developer posted by company Infobeans', 0, '2023-06-20 10:26:18', '2023-06-20 10:26:18'),
+(386, 8, 'company', 'applied_on_job', 14, 'A new user applied on job with title - React js developer', 0, '2023-06-30 10:12:50', '2023-06-30 10:12:50'),
+(387, 7, 'super-admin', 'applied_on_job', 14, 'A new user applied on job with title - React js developer', 0, '2023-06-30 10:12:50', '2023-06-30 10:12:50'),
+(388, 4, 'company', 'applied_on_job', 11, 'A new user applied on job with title - React js developer', 0, '2023-06-30 10:12:56', '2023-06-30 10:12:56'),
+(389, 7, 'super-admin', 'applied_on_job', 11, 'A new user applied on job with title - React js developer', 0, '2023-06-30 10:12:56', '2023-06-30 10:12:56'),
+(390, 3, 'company', 'added_new_job', 26, 'A new job with title-Raju has been added successfully', 0, '2023-06-30 11:29:16', '2023-06-30 11:29:16'),
+(391, 2, 'company', 'added_new_job', 27, 'A new job with title-manager has been added successfully', 0, '2023-07-03 05:25:58', '2023-07-03 05:25:58'),
+(392, 3, 'company', 'added_new_job', 28, 'A new job with title-ytujtygjmyj has been added successfully', 0, '2023-07-03 06:05:51', '2023-07-03 06:05:51'),
+(393, 3, 'company', 'applied_on_job', 26, 'A new user applied on job with title - Raju', 0, '2023-07-03 12:13:36', '2023-07-03 12:13:36'),
+(394, 1, 'super-admin', 'applied_on_job', 26, 'A new user applied on job with title - Raju', 0, '2023-07-03 12:13:36', '2023-07-03 12:13:36'),
+(395, 13, 'company', 'applied_on_job', 16, 'A new user applied on job with title - React js developer', 0, '2023-07-04 04:24:38', '2023-07-04 04:24:38'),
+(396, 3, 'company', 'applied_on_job', 26, 'A new user applied on job with title - Raju', 0, '2023-07-04 04:24:52', '2023-07-04 04:24:52'),
+(397, 3, 'company', 'applied_on_job', 26, 'A new user applied on job with title - Raju', 0, '2023-07-04 04:24:53', '2023-07-04 04:24:53'),
+(398, 3, 'company', 'applied_on_job', 3, 'A new user applied on job with title - Shop worker', 0, '2023-07-22 07:11:20', '2023-07-22 07:11:20'),
+(399, 1, 'super-admin', 'applied_on_job', 3, 'A new user applied on job with title - Shop worker', 0, '2023-07-22 07:11:20', '2023-07-22 07:11:20'),
+(400, 13, 'company', 'applied_on_job', 22, 'A new user applied on job with title - dgfh', 0, '2023-07-22 07:12:24', '2023-07-22 07:12:24'),
+(401, 1, 'super-admin', 'applied_on_job', 22, 'A new user applied on job with title - dgfh', 0, '2023-07-22 07:12:24', '2023-07-22 07:12:24'),
+(402, 2, 'company', 'applied_on_job', 27, 'A new user applied on job with title - manager', 0, '2023-07-22 07:12:40', '2023-07-22 07:12:40'),
+(403, 1, 'super-admin', 'applied_on_job', 27, 'A new user applied on job with title - manager', 0, '2023-07-22 07:12:40', '2023-07-22 07:12:40'),
+(404, 1, 'company', 'applied_on_job', 24, 'A new user applied on job with title - Driver', 0, '2023-07-22 17:24:28', '2023-07-22 17:24:28'),
+(405, 1, 'super-admin', 'applied_on_job', 24, 'A new user applied on job with title - Driver', 0, '2023-07-22 17:24:28', '2023-07-22 17:24:28'),
+(406, 27, 'employee', 'interview_scheduled', 4, 'hello, Chetan Barod you have interview scheduled on 2023-07-25 for job with title - Web Developer you have applied on, scheduled with WE2CODE', 0, '2023-07-24 11:08:42', '2023-07-24 11:08:42'),
+(407, 4, 'company', 'interview_scheduled', 4, 'hello, WE2CODE you have interview scheduled on 2023-07-25 for job with title - Web Developer, scheduled with Chetan Barod', 0, '2023-07-24 11:08:42', '2023-07-24 11:08:42'),
+(408, 1, 'super-admin', 'interview_scheduled', 4, 'A new interview scheduled of candidate Chetan Barod on date 2023-07-25 for job title Web Developer posted by company WE2CODE', 0, '2023-07-24 11:08:42', '2023-07-24 11:08:42'),
+(409, 4, 'company', 'applied_on_job', 6, 'A new user applied on job with title - Hr', 0, '2023-07-24 12:18:30', '2023-07-24 12:18:30'),
+(410, 1, 'super-admin', 'applied_on_job', 6, 'A new user applied on job with title - Hr', 0, '2023-07-24 12:18:30', '2023-07-24 12:18:30'),
+(411, 2, 'company', 'added_new_job', 29, 'A new job with title-Driver has been added successfully', 0, '2023-07-24 12:32:48', '2023-07-24 12:32:48'),
+(412, 2, 'company', 'applied_on_job', 29, 'A new user applied on job with title - Driver', 0, '2023-07-24 12:49:36', '2023-07-24 12:49:36'),
+(413, 1, 'super-admin', 'applied_on_job', 29, 'A new user applied on job with title - Driver', 0, '2023-07-24 12:49:36', '2023-07-24 12:49:36'),
+(414, 1, 'company', 'added_new_job', 30, 'A new job with title-xcvx has been added successfully', 0, '2023-07-24 12:54:36', '2023-07-24 12:54:36'),
+(415, 2, 'company', 'applied_on_job', 27, 'A new user applied on job with title - manager', 0, '2023-07-24 13:17:00', '2023-07-24 13:17:00'),
+(416, 1, 'super-admin', 'applied_on_job', 27, 'A new user applied on job with title - manager', 0, '2023-07-24 13:17:00', '2023-07-24 13:17:00'),
+(417, 3, 'company', 'applied_on_job', 28, 'A new user applied on job with title - ytujtygjmyj', 0, '2023-07-24 13:17:02', '2023-07-24 13:17:02'),
+(418, 1, 'super-admin', 'applied_on_job', 28, 'A new user applied on job with title - ytujtygjmyj', 0, '2023-07-24 13:17:02', '2023-07-24 13:17:02'),
+(419, 13, 'company', 'applied_on_job', 19, 'A new user applied on job with title - React js developer', 0, '2023-07-24 13:17:19', '2023-07-24 13:17:19'),
+(420, 1, 'super-admin', 'applied_on_job', 19, 'A new user applied on job with title - React js developer', 0, '2023-07-24 13:17:19', '2023-07-24 13:17:19');
 
 -- --------------------------------------------------------
 
@@ -2824,7 +3020,12 @@ INSERT INTO `otp` (`id`, `email`, `otp`, `created_at`) VALUES
 (28, 'aashi.we2code@gmail.com', 198930, '2023-06-12 06:47:30'),
 (29, 'aashi.we2code@gmail.com', 784267, '2023-06-12 06:56:37'),
 (30, 'aashi.we2codae@gmail.com', 522048, '2023-06-12 07:18:01'),
-(31, 'aashi.we2code@gmail.com', 533399, '2023-06-12 07:19:04');
+(31, 'aashi.we2code@gmail.com', 533399, '2023-06-12 07:19:04'),
+(32, 'raj.we2code@gmail.com', 502048, '2023-06-20 07:17:31'),
+(33, 'chetan.barod.we2code@gmail.com', 877988, '2023-06-20 07:21:21'),
+(34, 'chetan.barod.we2code@gmail.com', 947156, '2023-06-20 07:33:06'),
+(35, 'utkarsh.we2code@gmail.com', 751741, '2023-06-30 06:43:24'),
+(36, 'g.choudhary.we2wcode@gmail.com', 424971, '2023-07-26 04:29:15');
 
 -- --------------------------------------------------------
 
@@ -3183,6 +3384,12 @@ ALTER TABLE `employee_career`
   ADD PRIMARY KEY (`career_id`);
 
 --
+-- Indexes for table `employee_documents`
+--
+ALTER TABLE `employee_documents`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `employee_education`
 --
 ALTER TABLE `employee_education`
@@ -3268,19 +3475,19 @@ ALTER TABLE `otp`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `admin_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `apply_on_job`
 --
 ALTER TABLE `apply_on_job`
-  MODIFY `apply_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `apply_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `company_kyc`
 --
 ALTER TABLE `company_kyc`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -3292,7 +3499,7 @@ ALTER TABLE `countries`
 -- AUTO_INCREMENT for table `email`
 --
 ALTER TABLE `email`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT for table `email_template`
@@ -3304,19 +3511,25 @@ ALTER TABLE `email_template`
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `employee_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `employee_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `employee_career`
 --
 ALTER TABLE `employee_career`
-  MODIFY `career_id` int(251) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `career_id` int(251) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `employee_documents`
+--
+ALTER TABLE `employee_documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `employee_education`
 --
 ALTER TABLE `employee_education`
-  MODIFY `education_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `education_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `employee_setting`
@@ -3328,13 +3541,13 @@ ALTER TABLE `employee_setting`
 -- AUTO_INCREMENT for table `employee_skill`
 --
 ALTER TABLE `employee_skill`
-  MODIFY `skill_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `skill_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `company_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `company_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `employer_setting`
@@ -3346,25 +3559,25 @@ ALTER TABLE `employer_setting`
 -- AUTO_INCREMENT for table `follow_up`
 --
 ALTER TABLE `follow_up`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=558;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=560;
 
 --
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `job_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `job_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `job_category`
 --
 ALTER TABLE `job_category`
-  MODIFY `job_category_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `job_category_id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `job_interviews`
 --
 ALTER TABLE `job_interviews`
-  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `list`
@@ -3376,19 +3589,19 @@ ALTER TABLE `list`
 -- AUTO_INCREMENT for table `lmia`
 --
 ALTER TABLE `lmia`
-  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(51) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=356;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=421;
 
 --
 -- AUTO_INCREMENT for table `otp`
 --
 ALTER TABLE `otp`
-  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(101) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 DELIMITER $$
 --
