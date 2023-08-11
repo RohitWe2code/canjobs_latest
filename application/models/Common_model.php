@@ -12,7 +12,9 @@ class Common_model extends CI_Model
 
 {
 public function sendMail($to, $subject, $body){
-      
+      // print_r($to);
+      // print_r($subject);
+      // print_r($body);die;
             $this->load->library('email');
             $config = array(
             'protocol' => 'smtp',
@@ -27,7 +29,7 @@ public function sendMail($to, $subject, $body){
 
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
-            $this->email->from('ashish.we2code@gmail.com', 'Your Name');
+            $this->email->from('ashish.we2code@gmail.com', 'CanJobs');
             $this->email->to($to);
             $this->email->subject($subject);         
             $this->email->message($body);
@@ -36,10 +38,14 @@ public function sendMail($to, $subject, $body){
     }
 public function addNotification($notification){
     // print_r($data);die;
-    // $notify = array('from_id'=>$data['from_id'],
-    //                 'type'=>$data['type'],
-    //                 'message'=> $data['message']);
     $this->db->insert('notification', $notification);
+}
+public function isReadNotification($id){
+                $this->db->where('id', $id);
+                $this->db->set('is_read', 1);
+                $this->db->set('updated_at', 'NOW()', FALSE);
+               return $this->db->update('notification');
+    
 }
 // Getting categories from job_category table and updating in filter list  
 public function getJobCategory(){
@@ -109,8 +115,8 @@ public function getLastRecord_email(){
 public function getEmailByGroup($group_id){
    $query = "SELECT * FROM `email` WHERE status = 'PENDING' AND group_id = ".$group_id;
    $res = $this->db->query($query)->result_array();
-  //  $query = " UPDATE `email` SET status = 'SENT' WHERE group_id = ".$group_id;
-  //  $this->db->query($query);
+   $query = " UPDATE `email` SET status = 'PROCESSING' WHERE group_id = ".$group_id;
+   $this->db->query($query);
   return $res;
   //  print_r($group_id);die;
 }
@@ -137,22 +143,22 @@ public function addUpdateEmailTemplate($template){
   //             }
 }
 public function getEmailTemplate($id){
-  $id=$id['id'] ?? null;
-  if(isset($id)){
-    if(!empty($id)){
-      $this->db->where('id',$id);
-    }
-  }
+  if(!empty($id)){
+      $this->db->where('id',$id['id']);
+      $this->db->where('is_active != 0');
+      $result = $this->db->get('email_template')->row_array();
+  }else{
   // $this->db->where('type',$user_type);
   $this->db->where('is_active != 0');
   $result = $this->db->get('email_template')->result_array();
-  
+  // print_r($this->db->last_query());
+}
   $total_rows = $this->db->where('is_active != 0')->from('email_template')->count_all_results();
     return array('total_rows' => $total_rows, 'data' => $result);
 
 }
 public function checkEmployeeEmailPermission($employee_id){
-  $query = "SELECT * FROM `employee_setting` WHERE employee_id = ".$employee_id." AND is_deleted != 1 AND email_permission = 1";
+  $query = "SELECT * FROM `employee_setting` WHERE employee_id = ".$employee_id." AND email_permission = 1";
   $res = $this->db->query($query);
    if ($res->num_rows() > 0) {
         return true;
@@ -161,7 +167,7 @@ public function checkEmployeeEmailPermission($employee_id){
     }
 }
 public function checkEmployerEmailPermission($company_id){
-  $query = "SELECT * FROM `employer_setting` WHERE company_id = ".$company_id." AND is_deleted != 1 AND email_permission = 1";
+  $query = "SELECT * FROM `employer_setting` WHERE company_id = ".$company_id."  AND email_permission = 1";
   $res = $this->db->query($query);
    if ($res->num_rows() > 0) {
         return true;
@@ -252,5 +258,5 @@ public function sendImgMail($to, $subject, $base64_image) {
 }
 
 }
-?>
+
 

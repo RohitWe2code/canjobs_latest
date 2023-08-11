@@ -32,6 +32,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     $this->load->model(array("employer_model"));
 
     $this->load->model(array("common_model"));
+    
     $this->load->library('Authorization_Token');
 
     $this->load->helper("security");
@@ -160,7 +161,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           }           
    }
   // Retrieve mail from email table and send it to sendMail model function 
-  public function sendEmail_post(){
+  public function sendEmail_get(){
         $last_record = $this->common_model->getLastRecord_email();
         if (isset($last_record['group_id'])) {
             $group_id = $last_record['group_id'];
@@ -176,47 +177,97 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           return;
         }
         $response = $this->common_model->getEmailByGroup($group_id);
-        print_r($response);die;
+        // print_r($response);die;
         foreach($response as $data){
-          $email_template_id = $data['email_template_id'];
-          $email_template = $this->common_model->getEmailTemplate($email_template_id);
+          $template_id['id'] = intval($data['email_template_id']);
+          $email_template = $this->common_model->getEmailTemplate($template_id)['data'];
+          // print_r($email_template);die;
           $detail = json_decode($data['email_json'],true);
           $to = $detail['to'];
-          $subject = $email_template['subject'];
+          $email_template_id = intval($data['email_template_id']);
+          // var_dump($email_template_id);die;
+          // $subject = $email_template['subject'];
           // check for email type
-          if($email_template_id = 3) // post_job 
+          if($email_template_id == 1) // Employee_signup welcome message 
+          {
+            $body = str_replace('{email_address}', $detail['to'], $email_template['message']);
+          }
+          if($email_template_id == 3) // post_job -> email to company 
           {
             $body = str_replace('{postjob_job_title}', $detail['job_title'], $email_template['message']);
             $body = str_replace('{postjob_company_name}', $detail['company_name'], $body);
+            $body = str_replace('{job_description}', $detail['job_description'], $body);
+            $body = str_replace('{job_location}', $detail['job_location'], $body);
+            $body = str_replace('{website_url}', $detail['website_url'], $body);
           }
-          if($email_template_id = 4) // apply_on_job 
+          if($email_template_id == 9) // post_job -> email to admin
           {
             $body = str_replace('{postjob_job_title}', $detail['job_title'], $email_template['message']);
+            $body = str_replace('{name}', $detail['admin_name'], $body);
             $body = str_replace('{postjob_company_name}', $detail['company_name'], $body);
+            $body = str_replace('{job_description}', $detail['job_description'], $body);
+            $body = str_replace('{job_location}', $detail['job_location'], $body);
+            $body = str_replace('{website_url}', $detail['website_url'], $body);
           }
-          if($email_template_id = 5) // interview_schedule 
+          if($email_template_id == 4) // apply_on_job 
+          {
+            $body = str_replace('{applyjob_title}', $detail['job_title'], $email_template['message']);
+            $body = str_replace('{applyjob_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id == 5) // interview_schedule(employee)
           {
             $body = str_replace('{interview_schedule_name}', $detail['candidate_name'], $email_template['message']);
             $body = str_replace('{interview_schedule_interview_date}', $detail['interview_date'], $body);
             $body = str_replace('{interview_schedule_job_title}', $detail['job_title'], $body);
             $body = str_replace('{interview_schedule_company_name}', $detail['company_name'], $body);
           }
-          if($email_template_id = 6) // forget_password 
+          if($email_template_id == 10) // interview_schedule(employer) 
+          {
+            $body = str_replace('{interview_schedule_name}', $detail['candidate_name'], $email_template['message']);
+            $body = str_replace('{interview_schedule_interview_date}', $detail['interview_date'], $body);
+            $body = str_replace('{interview_schedule_job_title}', $detail['job_title'], $body);
+            $body = str_replace('{interview_schedule_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id == 11) // interview_schedule(admin) 
+          {
+            $body = str_replace('{interview_schedule_name}', $detail['candidate_name'], $email_template['message']);
+            $body = str_replace('{interview_schedule_interview_date}', $detail['interview_date'], $body);
+            $body = str_replace('{interview_schedule_job_title}', $detail['job_title'], $body);
+            $body = str_replace('{interview_schedule_company_name}', $detail['company_name'], $body);
+          }
+          if($email_template_id == 6) // forget_password 
           {
             // {token} {reset_link}
-            $body = str_replace('{token}', $detail['token'], $email_template['message']);
-            $body = str_replace('{reset_link}', $detail['reset_link'], $body);
+            // $body = str_replace('{token}', $detail['token'], $email_template['message']);
+            $body = str_replace('{reset_link}', $detail['reset_link'],$email_template['message']);
+            $body = str_replace('{name}', $detail['name'] ?? '',$body);
           }
-          if($email_template_id = 7) // otp_signup 
+          if($email_template_id == 7) // otp_signup 
           {
             $body = str_replace('{otp}', $detail['otp'], $email_template['message']);
           }
+          if($email_template_id == 8) // User_registration to admin 
+          {
+            $body = str_replace('{admin_name}', $detail['admin_name'], $email_template['message']);
+            $body = str_replace('{user_email_address}', $detail['user_email'], $body);
+          }
+          if($email_template_id == 12) // User_registration to admin 
+          {
+            $body = str_replace('{company_name}', $detail['company_name'], $email_template['message']);
+            $body = str_replace('{employee_name}', $detail['employee_name'], $body);
+            $body = str_replace('{lmia_status}', $detail['lmia_status'], $body);
+          }
           $subject = $email_template['subject'];
-          $body = str_replace('{job_message_body}', $detail['candidate_name'], $email_template['message']);
+          // print_r($to);
+          // print_r($subject);
+          // print_r($body);die;
           $status = $this->common_model->sendMail($to, $subject, $body);
         }
         // print_r($status);die;
         if($status){
+          $query = " UPDATE `email` SET status = 'SENT' WHERE group_id = ".$group_id;
+          $res = $this->db->query($query);
+          // print_r($res);die;
           $this->response(array(
 
               "status" => 1,
@@ -288,6 +339,65 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           "status" => 0,
 
           "message" => "No data found",
+
+        ), REST_Controller::HTTP_OK);
+
+      }
+    }
+     public function isReadNotification_put(){
+         $data = json_decode(file_get_contents("php://input"));
+         if(isset($data->id))
+         {
+          $error_flag = 0;
+         if(empty($data->id))
+         {
+           $error_flag = 1;
+         }
+          if($error_flag){
+
+            $this->response(array(
+
+            "status" => 0,
+
+            "message" => "Fields must not be empty!"
+
+          ) , REST_Controller::HTTP_OK);
+
+         return;
+
+        }
+         $id = $data->id;
+          if($this->common_model->isReadNotification($id))
+          {
+          $this->response(array(
+
+              "status" => 1,
+
+              "message" =>  "Successful"
+
+            ), REST_Controller::HTTP_OK);
+
+      
+        }
+        else{
+          $this->response(array(
+
+            "status" => 0,
+
+            "messsage" => "Failed"
+
+          ), REST_Controller::HTTP_OK);
+
+        }
+
+
+         }else{
+
+        $this->response(array(
+
+          "status" => 0,
+
+          "message" => "All fields are required !"
 
         ), REST_Controller::HTTP_OK);
 
@@ -429,5 +539,99 @@ public function getEmailTemplate_post(){
         ), REST_Controller::HTTP_OK);
 
       }
+    }
+    public function linkedinLogin_post($value='')
+    {
+      error_reporting(0);
+      $code = $_POST['code'];
+      $ch = curl_init();
+      $url = 'https://www.linkedin.com/oauth/v2/accessToken?code='.$code.'&grant_type=authorization_code&client_id=78mhwjaumkvtbm&client_secret=ZoZKbJgORl0vYJFr&redirect_uri=http://localhost:3000/';
+      $curlConfig = array(
+          CURLOPT_URL            => $url,
+          CURLOPT_POST           => true,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_POSTFIELDS     => array(
+              'field1' => 'some date',
+              'field2' => 'some other data',
+          )
+      );
+      curl_setopt_array($ch, $curlConfig);
+      $result = curl_exec($ch);
+      $res = json_decode($result,true);
+      if(isset($res['access_token']))
+      {
+      $authToken = $res['access_token'];
+      // echo "authToken===============";
+      // print_r($authToken);
+      curl_close($ch);
+      $ch = curl_init();
+      // $url = 'https://api.linkedin.com/v2/emailAddress';
+      // $url = 'https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))';
+      // $url = 'https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))';
+      // $url = 'https://api.linkedin.com/v2/me?fields=id,firstName,lastName,headline,profilePicture,industry,positions,educations';
+      $url = 'https://api.linkedin.com/v2/userinfo';
+       $authorization = "Authorization: Bearer ".$authToken;
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_POSTFIELDS,array());
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+      $result = curl_exec($ch);
+      curl_close($ch);
+      // return json_decode($result);
+      // echo "<hr>";
+      // echo "final result ===============";
+      // print_r($result);
+      // curl_close($ch);
+      
+      $this->response(array(
+
+          "status" => 1,
+
+          "data" => json_decode($result,true),
+
+        ), REST_Controller::HTTP_OK);
+    }else{
+      $this->response(array(
+
+          "status" => 0,
+
+          "data" => $result,
+
+        ), REST_Controller::HTTP_OK);
+    }
+    }
+    public function testEmail_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      // echo($data);
+      $to = $data->email_id;
+      $email_template_id['id'] = $data->email_template_id;
+      $email_template = $this->common_model->getEmailTemplate($email_template_id)['data'];
+      $subject = $email_template['subject'];
+      $body = $email_template['message'];
+      // print_r($to);
+      // print_r($subject);
+      // print_r($body);die;
+      $status = $this->common_model->sendMail($to, $subject, $body);
+    // print_r($status);die;
+    if($status){
+      $this->response(array(
+
+          "status" => 1,
+
+          "message" => "email sent successfully"
+
+        ), REST_Controller::HTTP_OK);
+    }
+    else{
+      $this->response(array(
+
+        "status" => 0,
+
+        "messsage" => "Failed !"
+
+      ), REST_Controller::HTTP_OK);
+    } 
     }
 }

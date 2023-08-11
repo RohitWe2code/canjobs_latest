@@ -222,11 +222,11 @@ if(isset($data->employee_id)){
         }
     }else{
       ////////  Insert employee personal detail /////////////
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->description) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->currently_located_country) && isset($data->language) && isset($data->religion) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->work_permit_other_country))
+      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada))
       { 
          $error_flag = 0;
       
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->description) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->currently_located_country) || empty($data->language) || empty($data->religion) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->work_permit_other_country))
+        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada))
         {
             $error_flag = 1;
         }
@@ -242,7 +242,6 @@ if(isset($data->employee_id)){
           "name" => $data->name,
           "email" => $data->email,
           "contact_no" => $data->contact_no,
-          "description" => $data->description,
           "date_of_birth" => $data->date_of_birth, //yy-mm-dd
           "gender" => $data->gender,
           "marital_status" => $data->marital_status,
@@ -250,12 +249,25 @@ if(isset($data->employee_id)){
           "current_location" => $data->current_location,
           "currently_located_country" => $data->currently_located_country,
           "language" => $data->language,
-          "religion" => $data->religion,
           "interested_in" => $data->interested_in,
           "experience" => $data->experience,
-          "work_permit_canada" => $data->work_permit_canada,
-          "work_permit_other_country" => $data->work_permit_other_country,
+          "work_permit_canada" => $data->work_permit_canada
         );
+        if(isset($data->description)){
+          if(!empty($data->description)){
+                    $employee_info['description'] = $data->description;
+          }
+        }
+        if(isset($data->religion)){
+          if(!empty($data->religion)){
+                    $employee_info['religion'] = $data->religion;
+          }
+        }
+        if(isset($data->work_permit_other_country)){
+          if(!empty($data->work_permit_other_country)){
+                    $employee_info['work_permit_other_country'] = $data->work_permit_other_country;
+          }
+        }
         if(isset($data->resume)){
           if(!empty($data->resume)){
            
@@ -378,11 +390,11 @@ if(isset($data->employee_id)){
   public function employeeEducation_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      if(isset($data->employee_id) && isset($data->qualification)  && isset($data->university_institute) && isset($data->course) && isset($data->specialization)  && isset($data->institute_location) && isset($data->passing_year))
+      if(isset($data->employee_id) && isset($data->qualification)  && isset($data->university_institute) && isset($data->course) && isset($data->passing_year))
       { 
              $error_flag = 0;
 
-            if(empty($data->employee_id) || empty($data->qualification) || empty($data->university_institute) || empty   ($data->course) || empty($data->specialization) || empty($data->institute_location) || empty   ($data->passing_year) ){
+            if(empty($data->employee_id) || empty($data->qualification) || empty($data->university_institute) || empty   ($data->course) || empty   ($data->passing_year) ){
                 $error_flag = 1;
             }
                if($error_flag){
@@ -398,11 +410,19 @@ if(isset($data->employee_id)){
                  "qualification" => $data->qualification,
                  "university_institute" => $data->university_institute,
                  "course" => $data->course,
-                 "specialization" => $data->specialization, 
-                 "institute_location" => $data->institute_location,
                  "passing_year" => $data->passing_year,
                );
-               $msg = "Employee data inserted successfully";
+               if(isset($data->specialization)){
+                 if(!empty($data->specialization)){
+                   $education_info["specialization"] = $data->specialization;
+                  }
+                }
+                if(isset($data->institute_location)){
+                  if(!empty($data->institute_location)){
+                    $education_info["institute_location"] = $data->institute_location;
+                  }
+                }
+                $msg = "Employee data inserted successfully";
                if(isset($data->education_id)){
                 if(!empty($data->education_id)){
                   $education_info["education_id"] = $data->education_id;
@@ -435,11 +455,11 @@ if(isset($data->employee_id)){
   public function employeeCareer_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->company_location) && isset($data->industry)  && isset($data->functional_area) && isset($data->work_level)  && isset($data->start_date)  && isset($data->end_date))
+      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->start_date)  && isset($data->end_date))
       { 
              $error_flag = 0;
 
-            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty ($data->company_location) || empty($data->industry) || empty($data->functional_area) || empty     ($data->work_level) || empty($data->start_date) || empty($data->end_date)){
+            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty($data->start_date) || empty($data->end_date)){
                 $error_flag = 1;
             }
                if($error_flag){
@@ -454,23 +474,39 @@ if(isset($data->employee_id)){
                  "employee_id" => $data->employee_id,
                  "company" => $data->company,
                  "designation" => $data->designation,
-                 "company_location" => $data->company_location,
-                 "industry" => $data->industry, 
-                 "functional_area" => $data->functional_area,
-                 "work_level" => $data->work_level,
                  "start_date" => $data->start_date,
                  "end_date" => $data->end_date,
                );
+               if(isset($data->company_location)){
+                 if(!empty($data->company_location)){
+                   $career_info["company_location"] = $data->company_location;
+              }
+             }
+               if(isset($data->industry)){
+                 if(!empty($data->industry)){
+                   $career_info["industry"] = $data->industry;
+              }
+             }
+               if(isset($data->functional_area)){
+                 if(!empty($data->functional_area)){
+                   $career_info["functional_area"] = $data->functional_area;
+              }
+             }
+               if(isset($data->work_level)){
+                 if(!empty($data->work_level)){
+                   $career_info["work_level"] = $data->work_level;
+              }
+             }
+               if(isset($data->currently_work_here)){
+                 if(!empty($data->currently_work_here)){
+                   $career_info["currently_work_here"] = $data->currently_work_here;
+              }
+             }
                $msg = "Employee data inserted successfully";
                  if(isset($data->career_id)){
                    if(!empty($data->career_id)){
                      $career_info["career_id"] = $data->career_id;
                        $msg = "Employee data updated successfully";
-                }
-               }
-                 if(isset($data->currently_work_here)){
-                   if(!empty($data->currently_work_here)){
-                     $career_info["currently_work_here"] = $data->currently_work_here;
                 }
                }
                   // print_r($career_info); die;
@@ -738,7 +774,13 @@ if(isset($data->employee_id)){
     // Calculate offset for pagination
     $offset = ($page - 1) * $limit;
 
-    $result = $this->employee_model->getAllemployeeView($parameters,$filter, $search, $limit, $offset,$sort);
+    //Recommended
+    $recommended = [];
+    if(isset($data->job_keyskills)){
+    $recommended = array("job_skills"=>$data->job_keyskills);
+    }
+
+    $result = $this->employee_model->getAllemployeeView($parameters,$filter, $search, $limit, $offset, $sort, $recommended);
 
     if($result) {
               $this->response(array(
@@ -891,7 +933,8 @@ if(isset($data->employee_id)){
     // Get filter parameters
     $filter = array('experience'=>$data->filter_experience ?? null,
                'skill'=>$data->filter_skill ?? null,
-              'education'=>$data->filter_education ?? null
+              'education'=>$data->filter_education ?? null,
+              'lmia_status'=>$data->filter_lmia_status ?? null
     );
    if(isset($data->filter_by_time)){
      if($data->filter_by_time == "today"){
@@ -1141,6 +1184,261 @@ if(isset($data->employee_id)){
         }
 
     }
+    /*
+    ||------------------------------------------------------------------------------------
+    ||  upload documents of employee, creates seperate directory for each employee by name
+    ||  and upload document files.
+    ||------------------------------------------------------------------------------------
+  */
+    public function documentsUpload_put(){
+      $data = json_decode(file_get_contents("php://input"));
+     
+      $documents = [];
+      // $file_info = [];
+      $id = 0;
+      if(isset($data->employee_id) && isset($data->type) && isset($data->document_file)){
+          if(empty($data->employee_id) || empty($data->type) || empty($data->document_file)){
+                  $this->response(array(
+                    "status" => 0,
+                    "message" => "fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+                    $employee_id = $data->employee_id;
+                    $documents[$data->type] = $data->document_file;
+                    
+                    $response = $this->createDirectoryAndUploadDocs($employee_id, $documents);
+                    // print_r($response);die;
+                    if (is_array($response) && count($response) > 0) {
+                          $file_info = $response;
+                          $file_info['employee_id'] = $employee_id;
+                          if(isset($data->id)){
+                            if(!empty($data->id)){
+                              $id = $data->id;
+
+                            }
+                          }
+                          if(isset($data->is_varify)){
+                            if(!empty($data->is_varify)){
+                              $file_info['is_varify'] = $data->is_varify;
+
+                            }
+                          }
+                          // print_r($file_info);die;
+                          if($this->employee_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => "successfully"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+                        } 
+                    if($response == 1){
+                      // Unsupported file type
+                       $this->response(array(
+                          "status" => 0,
+                          "message" => "Unsupported file type !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+                    if($response == 2){
+                      // Invalid base64-encoded data
+                      $this->response(array(
+                          "status" => 0,
+                          "message" => "Invalid base64-encoded data !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }      
+    }
+    // Verify user documents
+    public function isVarify_put(){
+      $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && isset($data->is_varify)){
+          if(empty($data->id) || empty($data->is_varify)){
+            $this->response(array(
+                   "status" => 0,
+                   "message" => "fields must not be empty !"
+                   ) , REST_Controller::HTTP_OK);
+                   return;
+            }
+                     $id = $data->id;
+                     $file_info['is_varify'] = $data->is_varify;
+          if($this->employee_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => "successfully"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+  /*
+    ||------------------------------------------------------------------------------------
+    ||  check if directory exist with the given employee name if not than create directory
+    ||  and upload document file. 
+    ||------------------------------------------------------------------------------------
+  */
+    public function createDirectoryAndUploadDocs($id, $documents){
+      $dir_name = 'employee_'.$id;
+      $documents_url = [];
+      // print_r(FCPATH);die;
+      // echo'</n>';
+      $file_path = FCPATH.'uploads/employee_documents/'.$dir_name;        
+      // print_r($file_path);die;
+      // Checking whether if directory not exists than create directory
+      if (!file_exists($file_path)) {        
+          if(!mkdir($file_path, 0777, true)){
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+          }
+      }
+      if (file_exists($file_path)) {
+        // print_r($documents);die;
+        foreach($documents as $key=>$value){
+          $document_name = $key;
+          $base64_encoded_document = $value;
+          // echo($document_name." : ".$base64_encoded_document .PHP_EOL);
+                // Check if the image data is a base64-encoded string
+                // $pattern = '/data:\/jpeg;base64,([A-Za-z0-9+\/=]+)/';
+                if (preg_match('/^data:\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/^data:image\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type)) {
+                    $base64_encoded_document = substr($base64_encoded_document, strpos($base64_encoded_document, ',') + 1);
+                // '/^data:image\/(\w+);base64,/'
+                    $file_extension = strtolower($ext_type[1]);
+                // print_r($file_extension);die;
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'pdf'))) {
+                        $base64_decoded_document = base64_decode($base64_encoded_document);
+                    
+                        $file_name_for_upload = $document_name .'_'.$id. '.' . $file_extension;
+                        $file_path_for_upload = $file_path.'/'. $file_name_for_upload;
+                        // print_r($file_path_for_upload);die;
+                        file_put_contents($file_path_for_upload, $base64_decoded_document);
+                    
+                        $uploaded_document_url = base_url() . 'uploads/employee_documents/'.$dir_name.'/' . $file_name_for_upload;
+                        $documents_url["document_url"] = $uploaded_document_url;
+                        $documents_url["extension_type"] = $file_extension;
+                        $documents_url["type"] = $document_name;
+                    } else {
+                        // Unsupported file type
+                        unset($documents_url[$document_name]);
+                        return 1;
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($documents_url[$document_name]);
+                 return 2;
+                }
+      }
+        // print_r($documents_url);die;
+        $file_info = $documents_url;
+        return $file_info;
+      }
+    }
+    /*
+    ||------------------------------------------------------------------------------------
+    || get upload document file path and other info. 
+    ||------------------------------------------------------------------------------------
+  */
+     public function getDocumentsUploaded_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      $id = $data->id ?? null;
+      $employee_id = $data->employee_id ?? null;
+      $documents = $this->employee_model->get_documents_uploaded($id, $employee_id);
+      if($documents){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully",
+          "data" => $documents
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "No data found",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+  }
+  public function deleteDocumentsUploaded_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    if(isset($data->id)){
+          if(empty($data->id)){
+            $this->response(array(
+                  "status" => 0,
+                  "message" => "id must not be empty !"
+                ), REST_Controller::HTTP_OK);
+                 return;
+              }
+                     $id = $data->id;
+         
+    $documents = $this->employee_model->get_documents_uploaded($id);
+    if($documents){
+      // Explode the URL by slashes ('/') to get an array of its segments
+    $segments = explode('/', $documents['document_url']);
+
+    // Slice the desired portion (from the fouth until the last segment)
+    $sliced_portion = implode('/', array_slice($segments, 4));
+    $file_path = FCPATH . $sliced_portion;
+    // check if file exist, if yes than unlink(Delete) the file  
+    if (file_exists($file_path)) {
+        unlink($file_path);
+    } 
+    
+      if($this->employee_model->delete_document_uploaded($id)){
+        $this->response(array(
+          "status" => 1,
+          "message" => "document has been deleted"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed !"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+      }else{      
+       $this->response(array(
+          "status" => 0,
+          "message" => "No record found !"
+        ), REST_Controller::HTTP_OK);
+    }
+  }else{
+    $this->response(array(
+          "status" => 0,
+          "message" => "id must be provided !"
+        ), REST_Controller::HTTP_OK);
+         return;
+  }
+  }
 }
 
 

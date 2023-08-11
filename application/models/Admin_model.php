@@ -335,21 +335,6 @@ $id = $list['id'] ?? null;
                 $this->db->set('updated_at', 'NOW()', FALSE);
                 $res = $this->db->update('list');     
                 // print_r($this->db->last_query());die;
-                if($id == 8) // Updating category list
-                {
-                $category_type = $this->db->query("SELECT DISTINCT(category_type) FROM `job_category` WHERE is_deleted != 1")->result_array();
-                 $category_list = array();
-                 $key = 1;
-                foreach($category_type as $key=>$data){
-                    $category_list[$key] = $data['category_type'];
-                    $key ++;
-                  }
-                  $category_list_json = json_encode($category_list);
-                  $this->db->where('id',$id);
-                  $this->db->set('json', $category_list_json);
-                  $this->db->set('updated_at', 'NOW()', FALSE);
-                  $this->db->update('list');
-                }
                  return $res;
 
             }  
@@ -359,7 +344,7 @@ $id = $list['id'] ?? null;
     } 
 
 }
-public function getFilterList($list_id){
+public function getFilterList($list_id = null){
 
 if(!empty($list_id)){
 
@@ -380,10 +365,23 @@ foreach($res as $record) {
 
     $result[$key] = $itmarr;
 }
+
+$stringData = json_encode($result);
+      
+      // Write the string to the file
+      $filename = "filterList/filterList.json";
+      $file = fopen($filename, "w");
+      fwrite($file, $stringData);
+      fclose($file);
+      
+      // Force download the file
+      header("Content-Type: application/octet-stream");
+      header("Content-Transfer-Encoding: Binary");
+      header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
+      // readfile($filename);
+      // exit;
 return $result;
                 // print_r($this->db->last_query());
-
-
   }
 
 public function deleteFilterList($id){

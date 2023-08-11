@@ -5,6 +5,8 @@ Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
+require APPPATH . 'libraries/Format.php';
+
 
 class Employee_registration extends REST_Controller{
 
@@ -21,6 +23,9 @@ class Employee_registration extends REST_Controller{
     $this->load->helper('url');
   }
 
+  // public function index_get(){
+
+  // }
   public function signup_post(){
     
     $email = $this->security->xss_clean($this->input->post("email"));
@@ -96,17 +101,27 @@ if($resume) {
             $response = $this->employee_model->insert_employee($employee);
             // print_r($response);die;
             if($response){
-              // Sending email
               $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
               $unique_id .= mt_rand(1000, 9999);
+              // Sending email
+              // Employee -----------------------------------------------------
               $email_template_id = 1;
               $eamil_detail = array('to' => $response->email ?? NULL);
               $this->common_model->email($eamil_detail, $email_template_id, $unique_id);
+              // Admin --------------------------------------------------------
+              $email_template_id = 8;
+              $eamil_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+                                          'admin_name' => 'Aashi',
+                                          'user_email' => $response->email ?? NULL);
+              $this->common_model->email($eamil_detail_admin, $email_template_id, $unique_id);
                         // Code to send notification
-                        // $detail['from_id'] = $response->employee_id;
-                        // $detail['type'] = 'employee';
+                        $detail['from_id'] = 5;
+                        $detail['type'] = 'manager';
+                        $detail['subject'] = 'new_user_registered';
+                        $detail['action_id'] = $response->employee_id ?? NULL;
+                        $detail['message'] = 'A new user '.$response->email.' registered successfully';
                         // $detail['message'] = 'hey, '.$response->email.' welcome onboard';
-                        // $this->common_model->addNotification($detail);
+                        $this->common_model->addNotification($detail);
               $this->response(array(
                 "status" => 1,
                 "message" => "Employee has been registered"
@@ -130,6 +145,7 @@ if($resume) {
   }
   public function login_post()
     {
+      // print_r($_POST);die;
         $email = $this->security->xss_clean($this->input->post("email"));
         $password = $this->security->xss_clean($this->input->post("password"));
 
@@ -141,13 +157,14 @@ if($resume) {
             //  print_r($loginStatus);die;
             if ($loginStatus != false) {
                 $userId = array('employee_id' => $loginStatus->employee_id,
-                                 'user_type' => 'employee');
+                                'user_type' => 'employee');
                 $bearerToken = $this->authorization_token->generateToken($userId);
                  $this->response(array(
                     "status" => 1,
                     "message" => "Successfully Logged In",
                     'employee_id'=> $loginStatus->employee_id,
                     'name'=> $loginStatus->name,
+                    'profile_photo'=> $loginStatus->profile_photo,
                     'token' => $bearerToken,
                     ) , REST_Controller::HTTP_OK);
                     return;
@@ -187,8 +204,9 @@ if($resume) {
                             $unique_id .= mt_rand(1000, 9999);
                             $email_template_id = 6;
                             $email = array('to' => $loginStatus->email ?? NULL,
-                                          'token'=>$detail['token'],
-                                          'reset_link' => 'http://localhost:3000/resetpassword/user'
+                                          'name' => $loginStatus->name ?? NULL,
+                                          // 'token'=>$detail['token'],
+                                          'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 
@@ -256,6 +274,7 @@ if($resume) {
         }
 
     }
+<<<<<<< HEAD
   // public function imageMail_post(){
   //   $data = json_decode(file_get_contents("php://input"));
   //         $image_data = $data->profile_photo;
@@ -329,4 +348,69 @@ if($resume) {
                }
 }
 
+=======
+  public function signupLoginViaSocialMedia_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    $email = $data->email;
+    $existing_employee = $this->employee_model->get_employee_by_email($email);
+       if(!$existing_employee){
+          $employee = array('name' => $data->name,
+          'email' => $email);
+          if(isset($data->picture)){
+            if(!empty($data->picture)){
+              $employee['profile_photo'] = $data->picture;
+            }
+          }
+        }
+        // print_r(($existing_employee)->row());die;
+        if(isset($existing_employee)){
+          $employee_id = ($existing_employee)->row()->employee_id;
+          // print_r($employee_id);die;
+          if(!empty($employee_id)){
+            $employee['employee_id'] = $employee_id;
+           
+          }
+        }
+        if(isset($data->type)){
+          if(!empty($data->type)){
+            if($data->type === "Google"){
+              $employee['google'] = $data->token;
+            }
+            if($data->type === "Facebook"){
+              $employee['facebook'] = $data->token;
+            }
+            if($data->type === "Linkedin"){
+              $employee['linkedin'] = $data->token;
+            }
+          }
+        }
+        // print_r($employee);die;
+      $response = $this->employee_model->updatePersonal_details($employee);
+
+   
+    $credentials = array('email' => $email);
+    $loginStatus = $this->employee_model->checkLogin($credentials);
+    //  print_r($loginStatus);die;
+    if ($loginStatus != false) {
+        $userId = array('employee_id' => $loginStatus->employee_id,
+                        'user_type' => 'employee');
+        $bearerToken = $this->authorization_token->generateToken($userId);
+         $this->response(array(
+            "status" => 1,
+            "message" => "Successfully Logged In",
+            'employee_id'=> $loginStatus->employee_id,
+            'name'=> $loginStatus->name,
+            'profile_photo'=> $loginStatus->profile_photo,
+            'token' => $bearerToken,
+            ) , REST_Controller::HTTP_OK);
+            return;
+    } else {
+        $this->response(array(
+         "status" => 0,
+         "message" => "Invalid credentials !"
+         ), REST_Controller::HTTP_OK);
+         return;
+    }
+  }
+>>>>>>> 54ccfc8c83a89742678692963ee66b0c744a70c6
 }

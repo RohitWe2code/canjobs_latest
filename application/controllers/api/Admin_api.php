@@ -48,8 +48,6 @@ class Admin_api extends REST_Controller{
 
     $this->load->database();
 
-
-
     $this->load->model(array("admin_model"));
 
     $this->load->model(array("common_model"));
@@ -1118,12 +1116,24 @@ $response = $this->admin_model->addUpdateFilterList($list);
   if($response){
 
       if($response === "already exist"){
-        $msg = "item already exist !";
+        $this->response(array(
+
+
+
+          "status" => 1,
+    
+    
+    
+          "message" => "item already exist !"
+    
+    
+    
+        ), REST_Controller::HTTP_OK);
+        return;
       }
 
     // retruns true
-
-
+    $this->admin_model->getFilterList();
 
     $this->response(array(
 
@@ -1175,23 +1185,7 @@ $response = $this->admin_model->addUpdateFilterList($list);
       $list_id = $data->list_id ?? null;
       // $this->common_model->getJobCategory(); // updating categories from job_category table to list
       $res = $this->admin_model->getFilterList($list_id);
-      // print_r($res);die;
-      
-      $stringData = json_encode($res);
-      
-      // Write the string to the file
-      $filename = "filterList/filterList.json";
-      $file = fopen($filename, "w");
-      fwrite($file, $stringData);
-      fclose($file);
-      
-      // Force download the file
-      header("Content-Type: application/octet-stream");
-      header("Content-Transfer-Encoding: Binary");
-      header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
-      // readfile($filename);
-      // exit;
-     
+      // print_r($res);die;     
       if($res){
          $this->response(array(
         "status" => 1,

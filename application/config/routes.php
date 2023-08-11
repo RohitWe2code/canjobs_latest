@@ -330,6 +330,7 @@ $route['admin/getAllLastFollowup'] = 'api/admin_api/getAllLastFollowup';
 $route['admin/changePassword'] = 'api/admin_api/changePassword';
 $route['admin/forgetPassword'] = 'api/Admin_registration/forgetPassword';
 $route['admin/resetPassword'] = 'api/Admin_registration/resetPassword';
+$route['admin/getAllJobsViewAdmin'] = 'api/employer_api/getAllJobsViewAdmin';
 
 
 
@@ -347,7 +348,6 @@ $route['employee_signup'] = 'api/Employee_registration/signup';
 
 
 $route['employee_login'] = 'api/Employee_registration/login';
-
 
 
 $route['employeePersonal_detail'] = 'api/employee_api/employeePersonal_detail';
@@ -410,13 +410,18 @@ $route['getStateList'] = 'api/employee_api/getStateList';
 
 $route['getCityList'] = 'api/employee_api/getCityList';
 
-$route['employee/forgetPassword'] = 'api/Employee_registration/forgetPassword';
+$route['employee/ForgetPassword'] = 'api/Employee_registration/forgetPassword';
 
 $route['user/resetPassword'] = 'api/Employee_registration/resetPassword';
 
 $route['getProfileCompletePercent'] = 'api/employee_api/getProfileCompletePercent';
 $route['getJobsByEmployee'] = 'api/employee_api/getJobsByEmployee';
 $route['user/changePassword'] = 'api/employee_api/changePassword';
+$route['user/signupLoginViaSocialMedia'] = 'api/Employee_registration/signupLoginViaSocialMedia';
+$route['user/documentsUpload'] = 'api/employee_api/documentsUpload';
+$route['user/isVarify'] = 'api/employee_api/isVarify';
+$route['user/getDocumentsUploaded'] = 'api/employee_api/getDocumentsUploaded';
+$route['user/deleteDocumentsUploaded'] = 'api/employee_api/deleteDocumentsUploaded';
 
 
 
@@ -500,6 +505,8 @@ $route['company/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 
 $route['company/changePassword'] = 'api/employer_api/changePassword';
 
+$route['company/signupLoginViaSocialMedia'] = 'api/Employer_registration/signupLoginViaSocialMedia';
+
 //----------------------------------------------------------------------------------------
 // COMMON
 //----------------------------------------------------------------------------------------
@@ -509,9 +516,14 @@ $route['common/getJobs'] = 'api/Common_controller/getalljobs';
 $route['common/generateOtp'] = 'api/Common_controller/generateOtp';
 $route['common/sendEmail'] = 'api/Common_controller/sendEmail';
 $route['common/getNotifications'] = 'api/Common_controller/getNotifications';
+$route['common/isReadNotification'] = 'api/Common_controller/isReadNotification';
 $route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
 $route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';
+<<<<<<< HEAD
 
 
 //----------------------------------------------------
 $route['default_controller'] = 'googleauth';
+=======
+$route['common/testEmail'] = 'api/Common_controller/testEmail';
+>>>>>>> 54ccfc8c83a89742678692963ee66b0c744a70c6
