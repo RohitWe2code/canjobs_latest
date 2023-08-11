@@ -256,5 +256,77 @@ if($resume) {
         }
 
     }
+  // public function imageMail_post(){
+  //   $data = json_decode(file_get_contents("php://input"));
+  //         $image_data = $data->profile_photo;
+
+  //               // Check if the image data is a base64-encoded string
+  //               // if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+  //               //     $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+  //               //     $file_extension = strtolower($image_type[1]);
+  //               // print_r($image_data);die;
+  //               //     // Check if the image type is supported
+  //               //     if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+  //               //         $image_data = base64_decode($image_data);
+                    
+  //               //         $file_name_for_upload = time() . '.' . $file_extension;
+  //               //         $file_path_for_upload = './uploads/' . $file_name_for_upload;
+  //               //         file_put_contents($file_path_for_upload, $image_data);
+                    
+  //               //         $logo = base_url() . 'uploads/' . $file_name_for_upload;
+  //               //        $employee_info["profile_photo"] = $logo;
+  //               //     } else {
+  //               //         // Unsupported file type
+  //               //        unset($employee_info["profile_photo"]);
+  //               //     }
+  //               // } else {
+  //               //     // Invalid base64-encoded image data
+  //               //  unset($employee_info["profile_photo"]);
+  //               // }
+  //               $to = "utkarsh.we2code@gmail.com";
+  //               $subject = "image test";
+  //               $body = $image_data;
+  //   //  $this->common_model->sendMail($to, $subject, $body);
+  //      if($this->common_model->sendMail($to, $subject, $body)){
+  //                 $this->response(array(
+  //                   "status" => 1,
+  //                   "message" => "mail sent successfully"
+  //                   ) , REST_Controller::HTTP_OK);
+  //                   return;
+  //           } else {
+  //              $this->response(array(
+  //                   "status" => 0,
+  //                   "message" => "failed to send mail"
+  //                   ) , REST_Controller::HTTP_OK);
+  //                   return;
+  //              }
+  // }
+ public function imageMail_post() {
+    $data = json_decode(file_get_contents("php://input"));
+    $base64_image = $data->base64_encode_image;
+
+    // Decode the base64 encoded image data
+    // $image_data = base64_decode($base64_image);
+
+    // Set the necessary email headers
+    $to = "utkarsh.we2code@gmail.com"; // Replace with the recipient's email address
+    $subject = "Image test";
   
+    // Send the email with attachment using the sendMail function
+    if ($this->common_model->sendImgMail($to, $subject, $base64_image)) {
+           $this->response(array(
+                    "status" => 1,
+                    "message" => "mail sent successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+            } else {
+               $this->response(array(
+                    "status" => 0,
+                    "message" => "failed to send mail"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+}
+
 }

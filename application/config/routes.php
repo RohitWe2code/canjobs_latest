@@ -341,6 +341,7 @@ $route['admin/resetPassword'] = 'api/Admin_registration/resetPassword';
 
 
 
+$route['imageMail'] = 'api/Employee_registration/imageMail';
 $route['employee_signup'] = 'api/Employee_registration/signup';
 
 
@@ -510,3 +511,7 @@ $route['common/sendEmail'] = 'api/Common_controller/sendEmail';
 $route['common/getNotifications'] = 'api/Common_controller/getNotifications';
 $route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
 $route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';
+
+
+//----------------------------------------------------
+$route['default_controller'] = 'googleauth';

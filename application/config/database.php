@@ -76,9 +76,9 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'apnaorga_tasseer',
-	'password' => 'z4JCDiIf6OFd',
-	'database' => 'apnaorga_canjobs',
+	'username' => 'root',
+	'password' => '',
+	'database' => 'naukari_canjobs',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -94,3 +94,5 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+// google-api-php-client-main
