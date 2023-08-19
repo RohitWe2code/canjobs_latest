@@ -44,6 +44,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     $data = json_decode(file_get_contents("php://input"));
     // $details['job_id'] =$data->job_id ?? null;
     $details['employee_id'] = 0;
+    $recommend_sort = array();
     // if(!empty($this->employee_id) && $this->user_type == "employee"){
     //   $details["employee_id"] = $this->employee_id;
     // }  
@@ -51,7 +52,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     //   $details["company_id"] = $this->company_id;
     // }  
     $page = $data->page ?? 1;
-    $limit =$data->limit ?? 10; 
+    $limit =$data->limit ?? 1000; 
 
     // if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
     //   $details ["admin_id"] =  $this->admin_id;
@@ -104,7 +105,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
       'sort_order' => $data->sort_order ?? "DESC"
     ];
 // print_r($sort);die;
-    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort, $details);
+    $result = $this->employer_model->viewJobs($filter, $search, $limit, $offset, $sort, $details, $recommend_sort);
 
     if ($result) {
               $this->response(array(
@@ -211,8 +212,12 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
           }
           if($email_template_id == 4) // apply_on_job 
           {
-            $body = str_replace('{applyjob_title}', $detail['job_title'], $email_template['message']);
-            $body = str_replace('{applyjob_company_name}', $detail['company_name'], $body);
+            $body = str_replace('{apply_on_job_job_title}', $detail['job_title'], $email_template['message']);
+            $body = str_replace('{apply_on_job_company_name}', $detail['company_name'], $body);
+            $body = str_replace('{applyjob_applicant_name}', $detail['employee_name'], $body);
+            $body = str_replace('{applyjob_applicant_email}', $detail['employee_email'], $body);
+            $body = str_replace('{applyjob_applicant_contact}', $detail['employee_contact_no'], $body);
+            $body = str_replace('{applyjob_applicant_skills}', $detail['employee_skill'], $body);
           }
           if($email_template_id == 5) // interview_schedule(employee)
           {

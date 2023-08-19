@@ -39,6 +39,7 @@ class Employer_registration extends REST_Controller{
     $this->load->helper("security");
 
     $this->load->helper('url');
+    $this->admin_email = "aashi.we2code@gmail.com";
 
   }
 
@@ -145,7 +146,7 @@ class Employer_registration extends REST_Controller{
               $this->common_model->email($email_detail, $email_template_id, $unique_id);
               // Admin --------------------------------------------------------
               $email_template_id = 8;
-              $email_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+              $email_detail_admin = array('to' => $this->admin_email ?? NULL,
                                           'admin_name' => 'Aashi',
                                           'user_email' => $response->email ?? NULL);
               $this->common_model->email($email_detail_admin, $email_template_id, $unique_id);
@@ -296,7 +297,7 @@ class Employer_registration extends REST_Controller{
                             $email_template_id = 6;
                             $email = array('to' => $loginStatus->email ?? NULL,
                                            'name' => $loginStatus->contact_person_name ?? NULL,
-                                           'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
+                                           'reset_link' => 'https://canjobs.vercel.app/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 

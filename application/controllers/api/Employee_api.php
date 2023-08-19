@@ -23,6 +23,7 @@ class Employee_api extends REST_Controller{
     $headers = getallheaders(); 
 		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
     // $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    // print_r($this->decodedToken['data']);die;
     $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
     $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
     $this->company_id = $this->decodedToken['data']->company_id ?? null;
@@ -42,7 +43,7 @@ class Employee_api extends REST_Controller{
           }
         }
   
-  public function employeePersonal_detail_put(){
+public function employeePersonal_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
 
@@ -127,6 +128,11 @@ if(isset($data->employee_id)){
             $employee_info['work_permit_other_country'] = $data->work_permit_other_country;
           }
         }
+       if(isset($data->status)){
+          if(!empty($data->status)){
+            $employee_info['status'] = $data->status;
+          }
+        }
        if(isset($data->lmia_status)){
           if(!empty($data->lmia_status)){
             $employee_info['lmia_status'] = $data->lmia_status;
@@ -137,14 +143,19 @@ if(isset($data->employee_id)){
             $employee_info['expected_time_of_completion'] = $data->expected_time_of_completion;
           }
         }
-       if(isset($data->posted)){
-          if(!empty($data->posted)){
-            $employee_info['posted'] = $data->posted;
+       if(isset($data->is_featured)){
+          if($data->is_featured >= 0){
+            $employee_info['is_featured'] = $data->is_featured;
           }
         }
-       if(isset($data->posted_company_id)){
-          if(!empty($data->posted_company_id)){
-            $employee_info['posted_company_id'] = $data->posted_company_id;
+       if(isset($data->job_status)){
+          if(!empty($data->job_status)){
+            $employee_info['job_status'] = $data->job_status;
+          }
+        }
+       if(isset($data->posted_job_id)){
+          if(!empty($data->posted_job_id)){
+            $employee_info['posted_job_id'] = $data->posted_job_id;
           }
         }
        if(isset($data->date_of_posting)){
@@ -157,9 +168,10 @@ if(isset($data->employee_id)){
             $employee_info['designation'] = $data->designation;
           }
         }
+        //  echo("resume : $data->resume");
         if(isset($data->resume)){
           if(!empty($data->resume)){
-           
+            // echo("resume base 64: $data->resume");
                 // Decode the base64 encoded PDF data
                    $cv_data = base64_decode($data->resume);
                    // Set the file name
@@ -170,6 +182,7 @@ if(isset($data->employee_id)){
                    if(file_put_contents($file_path, $cv_data)) {
                        // File was successfully uploaded
                        $cv = base_url() . 'uploads/' . $file_name_for_upload;
+                        //  echo("resume base 64: $cv");
                    }
 
              $employee_info["resume"] = $cv;
@@ -253,6 +266,11 @@ if(isset($data->employee_id)){
           "experience" => $data->experience,
           "work_permit_canada" => $data->work_permit_canada
         );
+        if(isset($data->is_featured)){
+          if(!empty($data->is_featured)){
+                    $employee_info['is_featured'] = $data->is_featured;
+          }
+        }
         if(isset($data->description)){
           if(!empty($data->description)){
                     $employee_info['description'] = $data->description;
@@ -268,9 +286,14 @@ if(isset($data->employee_id)){
                     $employee_info['work_permit_other_country'] = $data->work_permit_other_country;
           }
         }
+        if(isset($data->status)){
+          if(!empty($data->status)){
+                    $employee_info['status'] = $data->status;
+          }
+        }
         if(isset($data->resume)){
           if(!empty($data->resume)){
-           
+          
                 // Decode the base64 encoded PDF data
                    $cv_data = base64_decode($data->resume);
                    // Set the file name
@@ -348,8 +371,7 @@ if(isset($data->employee_id)){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data); die;
       if(isset($data->employee_id) && isset($data->skill))
-      { 
-      
+      {      
         if(empty($data->employee_id) || empty($data->skill))
         {
             $this->response(array(
@@ -362,20 +384,28 @@ if(isset($data->employee_id)){
           "employee_id" => $data->employee_id,
           "skill" => $data->skill,
         );
-      //   print_r($employee_skill); die;
-        
-        if($this->employee_model->addEmployee_skill($employee_skill)){
-
+        $response = $this->employee_model->addEmployee_skill($employee_skill);
+          // var_dump($response); die;
+        if($response){
+            if($response === 1){
+              $this->response(array(
+              "status" => 0,
+              "message" => "already exist !"
+            ), REST_Controller::HTTP_OK);
+            return;
+            }
             $this->response(array(
               "status" => 1,
               "message" => "Employee data updated successfully"
             ), REST_Controller::HTTP_OK);
+            return;
         }else{
 
           $this->response(array(
             "status" => 0,
             "messsage" => "Failed to update Employee data"
           ), REST_Controller::HTTP_OK);
+          return;
         }
       
       }else{
@@ -455,11 +485,11 @@ if(isset($data->employee_id)){
   public function employeeCareer_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->start_date)  && isset($data->end_date))
+      if(isset($data->employee_id) && isset($data->company)  && isset($data->designation) && isset($data->start_date))
       { 
              $error_flag = 0;
 
-            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty($data->start_date) || empty($data->end_date)){
+            if(empty($data->employee_id) || empty($data->company) || empty($data->designation) || empty($data->start_date)){
                 $error_flag = 1;
             }
                if($error_flag){
@@ -475,7 +505,7 @@ if(isset($data->employee_id)){
                  "company" => $data->company,
                  "designation" => $data->designation,
                  "start_date" => $data->start_date,
-                 "end_date" => $data->end_date,
+                //  "end_date" => $data->end_date,
                );
                if(isset($data->company_location)){
                  if(!empty($data->company_location)){
@@ -498,8 +528,13 @@ if(isset($data->employee_id)){
               }
              }
                if(isset($data->currently_work_here)){
-                 if(!empty($data->currently_work_here)){
+                 if($data->currently_work_here >= 0){
                    $career_info["currently_work_here"] = $data->currently_work_here;
+              }
+             }
+               if(isset($data->end_date)){
+                 if(!empty($data->end_date)){
+                   $career_info["end_date"] = $data->end_date;
               }
              }
                $msg = "Employee data inserted successfully";
@@ -691,6 +726,7 @@ if(isset($data->employee_id)){
   }
   public function allEmployeeSkill_get(){
       $employee = $this->employee_model->getAllemployeeSkill();
+      // print_r($employee);die;
       if($employee){
 
         $this->response(array(
@@ -710,9 +746,13 @@ if(isset($data->employee_id)){
   public function allEmployeeView_post(){
     $data = json_decode(file_get_contents("php://input"));
     $parameters = array("select"=>"*");
-   if(isset($data->user_type) && $data->user_type == "company"){
-       $parameters["select"] = "`employee_id`, `name`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`,`profile_photo`,`education`, `specialization`, `skill`,`created_at`,`updated_at`,`is_deleted`"; 
+   if(isset($this->company_id)){
+    if($this->user_type == "company"){
+      $parameters["company_id"] = $this->company_id;
+      $parameters["select"] = "`employee_id`, `name`, `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`,`status`, `is_featured`, `profile_photo`,`education`, `specialization`, `skill`,`created_at`,`updated_at`,`is_deleted`"; 
     }
+  }
+  // print_r($parameters);die;
     if(isset($data->job_id)){
       $parameters["job_id"]=$data->job_id;
     }
@@ -734,8 +774,12 @@ if(isset($data->employee_id)){
     // Get filter parameters
     $filter = ['experience'=>$data->filter_experience ?? null,
                'skill'=>$data->filter_skill ?? null,
-              'education'=>$data->filter_education ?? null
-  ];
+              'education'=>$data->filter_education ?? null,
+              'interested_in'=>$data->interested_in ?? null,
+              'work_permit_canada'=>$data->work_permit_canada ?? null,
+              'status' => $data->filter_status ?? null
+            ];
+           
    if(isset($data->filter_by_time)){
       if($data->filter_by_time == "today"){
             $filter['start_date'] = date('Y-m-d');
@@ -781,7 +825,7 @@ if(isset($data->employee_id)){
     }
 
     $result = $this->employee_model->getAllemployeeView($parameters,$filter, $search, $limit, $offset, $sort, $recommended);
-
+// print_r($result);die;
     if($result) {
               $this->response(array(
                 "status" => 1,
@@ -911,9 +955,36 @@ if(isset($data->employee_id)){
   public function getJobResponse_post(){
     $data = json_decode(file_get_contents("php://input"));
    
-    $parameters = array("select"=>"*");
+    $parameters = array("select"=>"ae.*, ev.id AS visa_id, ev.status AS visa_status");
    if(isset($this->user_type) && $this->user_type == "company"){
-       $parameters["select"] = "`apply_id`, `job_id`, `employee_id`, `name`,  `description`, `date_of_birth`, `gender`, `marital_status`, `nationality`, `current_location`, `currently_located_country`, `language`, `religion`, `interested_in`, `experience`, `work_permit_canada`, `work_permit_other_country`, `resume`, `profile_photo`, `created_at`, `created_by_admin`, `updated_at`, `is_deleted`, `education`, `specialization`, `skill`, `id`, `lmia_status`, `expected_time_of_completion`"; 
+       $parameters["select"] = "`ae.apply_id`,
+                                `ae.job_id`,
+                                `ae.employee_id`,
+                                `ae.name`,
+                                `ae.description`,
+                                `ae.date_of_birth`,
+                                `ae.gender`,
+                                `ae.marital_status`,
+                                `ae.nationality`,
+                                `ae.current_location`,
+                                `ae.currently_located_country`,
+                                `ae.language`, `religion`,
+                                `ae.interested_in`,
+                                `ae.experience`,
+                                `ae.work_permit_canada`,
+                                `ae.work_permit_other_country`,
+                                `ae.resume`,
+                                `ae.profile_photo`,
+                                `ae.created_at`,
+                                `ae.created_by_admin`,
+                                `ae.updated_at`,
+                                `ae.is_deleted`,
+                                `ae.education`,
+                                `ae.specialization`,
+                                `ae.skill`,
+                                `ae.id`,
+                                `ae.lmia_status`,
+                                `ae.expected_time_of_completion`"; 
     }
     if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
       $parameters["admin_id"] =  $this->admin_id;
@@ -932,9 +1003,13 @@ if(isset($data->employee_id)){
 
     // Get filter parameters
     $filter = array('experience'=>$data->filter_experience ?? null,
-               'skill'=>$data->filter_skill ?? null,
-              'education'=>$data->filter_education ?? null,
-              'lmia_status'=>$data->filter_lmia_status ?? null
+                    'skill'=>$data->filter_skill ?? null,
+                    'education'=>$data->filter_education ?? null,
+                    'lmia_status'=>$data->filter_lmia_status ?? null,
+                    'employee_status'=>$data->filter_employee_status ?? null,
+                    'employee_id'=>$data->filter_employee_id ?? null,
+                    'is_reserve'=>$data->filter_is_reserve ?? null,
+                    'job_status'=>$data->filter_job_status ?? null
     );
    if(isset($data->filter_by_time)){
      if($data->filter_by_time == "today"){
@@ -1192,7 +1267,7 @@ if(isset($data->employee_id)){
   */
     public function documentsUpload_put(){
       $data = json_decode(file_get_contents("php://input"));
-     
+    //  print_r($data);die;
       $documents = [];
       // $file_info = [];
       $id = 0;
@@ -1212,23 +1287,24 @@ if(isset($data->employee_id)){
                     if (is_array($response) && count($response) > 0) {
                           $file_info = $response;
                           $file_info['employee_id'] = $employee_id;
+                           $msg = "inserted successfully";
                           if(isset($data->id)){
                             if(!empty($data->id)){
                               $id = $data->id;
-
+                              $msg = "updated successfully";
                             }
                           }
                           if(isset($data->is_varify)){
-                            if(!empty($data->is_varify)){
+                            
                               $file_info['is_varify'] = $data->is_varify;
 
-                            }
+                  
                           }
                           // print_r($file_info);die;
                           if($this->employee_model->documentsUpload($id, $file_info)){
                                     $this->response(array(
                                       "status" => 1,
-                                      "message" => "successfully"
+                                      "message" => $msg
                                       ) , REST_Controller::HTTP_OK);
                                       return;
                                     }else{
@@ -1328,13 +1404,13 @@ if(isset($data->employee_id)){
           // echo($document_name." : ".$base64_encoded_document .PHP_EOL);
                 // Check if the image data is a base64-encoded string
                 // $pattern = '/data:\/jpeg;base64,([A-Za-z0-9+\/=]+)/';
-                if (preg_match('/^data:\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/^data:image\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type)) {
+                if (preg_match('/^data:\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/^data:image\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/data:\/(.*);base64/', $base64_encoded_document, $ext_type)) {
                     $base64_encoded_document = substr($base64_encoded_document, strpos($base64_encoded_document, ',') + 1);
                 // '/^data:image\/(\w+);base64,/'
                     $file_extension = strtolower($ext_type[1]);
                 // print_r($file_extension);die;
                     // Check if the image type is supported
-                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'pdf'))) {
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'vnd.openxmlformats-officedocument.wordprocessingml.document'))) {
                         $base64_decoded_document = base64_decode($base64_encoded_document);
                     
                         $file_name_for_upload = $document_name .'_'.$id. '.' . $file_extension;
@@ -1369,9 +1445,21 @@ if(isset($data->employee_id)){
   */
      public function getDocumentsUploaded_post(){
       $data = json_decode(file_get_contents("php://input"));
+      
       $id = $data->id ?? null;
-      $employee_id = $data->employee_id ?? null;
-      $documents = $this->employee_model->get_documents_uploaded($id, $employee_id);
+      $details = [];
+      if(isset($data->employee_id)){
+        if(!empty($data->employee_id)){
+            $details['employee_id'] = $data->employee_id;
+        }
+      }
+      if(isset($data->type)){
+        if(!empty($data->type)){
+            $details['type'] = $data->type;
+        }
+      }
+      // print_r($details);die;
+      $documents = $this->employee_model->get_documents_uploaded($id, $details);
       if($documents){
         $this->response(array(
           "status" => 1,
@@ -1439,6 +1527,217 @@ if(isset($data->employee_id)){
          return;
   }
   }
+   public function addUpdateVisa_put(){
+    
+      $data = json_decode(file_get_contents("php://input"));
+      // print_r($data); die;
+      $detail = array();
+      $id = array();
+      $msg = "created successfully";
+      //  if(isset($data->employee_id) && isset($data->status)){
+      //     if(!empty($data->employee_id) || !empty($data->status)){
+      //     $detail["employee_id"]=$data->employee_id;
+      //     $detail["status"]=$data->status;
+      //   }
+       if(isset($data->employee_id)){
+        if(!empty($data->employee_id)){
+          $detail["employee_id"]=$data->employee_id;
+        }
+       }
+       if(isset($data->id)){
+        if(!empty($data->id)){
+          $id=$data->id;
+          $msg = "updated successfully";
+        }
+       }
+        if(isset($data->status)){
+           if(!empty($data->status)){
+           $detail["status"]=$data->status;
+         }
+       }
+        if(isset($data->country)){
+           if(!empty($data->country)){
+           $detail["country"]=$data->country;
+         }
+       }
+        if(isset($data->type)){
+           if(!empty($data->type)){
+           $detail["type"]=$data->type;
+         }
+       }     
+        $response = $this->employee_model->add_update_visa($id, $detail);
+        // print_r($response['response']);die;
+        if($response){
+          // $response_lmia_status = $response['response']->lmia_status;
+          // $company_id = $response['response']->company_id;
+          // // print_r($company_id);
+          // // print_r($response_lmia_status);die;
+          // if($response_lmia_status == 'Complete' || $response_lmia_status == 'Reject'){
+          //   // echo('if');
+          //   // print_r($response['status']);die;
+          //   if($this->common_model->checkEmployerEmailPermission($company_id)){
+          //     $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
+          //     $unique_id .= mt_rand(1000, 9999);
+          //     $email_template_id = 12;
+          //     $company_email = array('to'=>$response['response']->company_email,
+          //                            'employee_name' =>$response['response']->name,
+          //                            'company_name'=>$response['response']->company_name,
+          //                           //  'job_title'=>$response->job_title,
+          //                            // 'job_description'=>$response->job_description,
+          //                            // 'job_location'=>$response->location,
+          //                            'lmia_status'=>$response_lmia_status);
+          //     $this->common_model->email($company_email, $email_template_id, $unique_id);
+          //   }
+          //             $admin_notification['from_id'] = $company_id;
+          //             $admin_notification['type'] = 'company';
+          //             $admin_notification['subject'] = 'Lmia status changed';
+          //             $admin_notification['action_id'] = $response['response']->employee_id;
+          //             $admin_notification['message'] = 'Lmia status changed to '.$response_lmia_status.' for employee '.$response['response']->name;
+          //             $this->common_model->addNotification($admin_notification);
+          // }
+          // print_r('else');die;
+            $this->response(array(
+              "status" => 1,
+              "message" => $msg
+            ), REST_Controller::HTTP_OK);
+        }else{
+
+          $this->response(array(
+            "status" => 0,
+            "messsage" => "Failed !"
+          ), REST_Controller::HTTP_OK);
+        }
+      // }else{
+      //    $this->response(array(
+      //       "status" => 0,
+      //       "messsage" => "All fields required !"
+      //     ), REST_Controller::HTTP_OK);
+      // }
+   }
+   public function getVisa_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    // $details['job_id'] =$data->job_id ?? null;
+    $details['company_id'] = $data->company_id ?? 0;
+    if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
+      $details["admin_id"] =  $this->admin_id;
+      $details["admin_type"] = $this->user_type;
+    }
+    if(!empty($this->employee_id) && $this->user_type == "employee"){
+      $details["employee_id"] = $this->employee_id;
+    }  
+    // if(!empty($this->company_id) && $this->user_type == "company"){
+    //   $details["company_id"] = $this->company_id;
+    // }  
+    $page = $data->page ?? 1;
+    $limit =$data->limit ?? 10; 
+    
+    // Get search parameter
+    $search = isset($data->search) ? $data->search : '';
+
+    // Get filter parameters
+    $filter = [
+    "visa_status" => $data->filter_by_visa_status ?? null,
+    "visa_country" => $data->filter_by_visa_country ?? null,
+    "interested_in" => $data->filter_by_interested_in ?? null,
+    "employee_id" => $data->filter_by_employee_id ?? null,
+    // "keyskill" => $data->filter_keyskill ?? null,
+    // "location" => $data->filter_location ?? null,
+    // "company_name" => $data->company_name ?? null,
+    ];
+    if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
+      if($data->filter_by_time == "last_week"){
+            $filter['start_date'] = date('Y-m-d', strtotime('last week'));
+            $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
+
+      }
+     
+      if($data->filter_by_time == "last_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('last month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('last month'));
+            
+          }
+      if($data->filter_by_time == "current_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('this month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('this month'));
+            
+          }
+    }
+
+    
+    // Calculate offset for pagination
+    $offset = ($page - 1) * $limit;
+
+    // sorting 
+    $sort = [
+      'column_name' => $data->column_name ?? "created_at" ,
+      'sort_order' => $data->sort_order ?? "DESC"
+    ];
+    // print_r($sort);die;
+    $result = $this->employee_model->get_visa($filter, $search, $limit, $offset, $sort, $details);
+    // print_r($result);die;
+
+    if ($result) {
+              $this->response(array(
+                "status" => 1,
+                "message" => "successful",
+                "total_rows" => $result['total_rows'],
+                "data" => $result['data']
+              ), REST_Controller::HTTP_OK);
+
+          }else{
+
+
+
+            $this->response(array(
+
+              "status" => 0,
+
+              "messsage" => "No data found"
+
+            ), REST_Controller::HTTP_OK);
+
+          }
+   }
+   public function setEmployeeReserve_put(){
+        $data = json_decode(file_get_contents("php://input"));
+         if (isset($data->apply_id) && isset($data->is_reserve)){
+               if(empty($data->apply_id)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+               $details = array('apply_id'=>$data->apply_id,
+                                'is_reserve'=>$data->is_reserve);
+               
+               if($this->employee_model->set_employee_reserve($details)){
+                  $this->response(array(
+                    "status" => 1,
+                    "message" => "Successfully"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }else{
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+           } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+
+    }
 }
 
 

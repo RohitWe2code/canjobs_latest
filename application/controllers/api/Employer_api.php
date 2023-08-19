@@ -52,6 +52,8 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
     $this->company_id = $this->decodedToken['data']->company_id ?? null;
     $this->user_type = $this->decodedToken['data']->user_type ?? null;
     $this->admin_email = $this->decodedToken['data']->email ?? null;
+    $this->admin_email_static = 'aashi.we2code@gmail.com';
+    $this->admin_name_static = 'Aashi';
        if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
 
             $err = array(
@@ -895,9 +897,21 @@ if(empty($data->company_id)){
 
           }
           }
+          if(isset($data->lmia_status)){
+          if(!empty($data->lmia_status)){
+            $job_detail["lmia_status"] = $data->lmia_status;
+
+          }
+          }
           if(isset($data->role_category)){ // using No. of vacancies
           if(!empty($data->role_category)){
             $job_detail["role_category"] = $data->role_category;
+
+          }
+          }
+          if(isset($data->is_featured)){ // using No. of vacancies
+          if($data->is_featured >= 0){
+            $job_detail["is_featured"] = $data->is_featured;
 
           }
           }
@@ -1045,9 +1059,21 @@ if(empty($data->company_id)){
 
           }
           }
+         if(isset($data->lmia_status)){
+          if(!empty($data->lmia_status)){
+            $job_detail["lmia_status"] = $data->lmia_status;
+
+          }
+          }
           if(isset($data->role_category)){  // For number of vacancies
           if(!empty($data->role_category)){
             $job_detail["role_category"] = $data->role_category;
+
+          }
+          }
+          if(isset($data->is_featured)){  
+          if($data->is_featured >= 0){
+            $job_detail["is_featured"] = $data->is_featured;
 
           }
           }
@@ -1063,30 +1089,30 @@ if(empty($data->company_id)){
             // $email_template_id = 3;
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
-            if(isset($this->company_id)){
-              if(!empty($this->company_id)){
+            // if(isset($this->company_id)){
+            //   if(!empty($this->company_id)){
                 $admin_id = 5;
-            if($this->common_model->checkAdminEmailPermission($admin_id)){
+            // if($this->common_model->checkAdminEmailPermission($admin_id)){
           // Sending mail and notification to admin
           $email_template_id = 9;
-          $admin_email = array('to'=>'aashi.we2code@gmail.com',
+          $admin_email = array('to'=> $this->admin_email_static,
                                // 'to' => $this->admin_email,
-                               'admin_name'=>'aAshi',
+                               'admin_name'=> $this->admin_name_static,
                                'job_title'=>$response->job_title,
                                'company_name'=>$response->company_name,
                                'job_description'=>$response->job_description,
                                'job_location'=>$response->location,
                                'website_url'=>$response->apply_link);
           $this->common_model->email($admin_email, $email_template_id, $unique_id);
-            }
+            // }
                         $company_notification['from_id'] = '5';
                         $company_notification['type'] = 'manager';
                         $company_notification['subject'] = 'added_new_job';
                         $company_notification['action_id'] = $response->job_id;;
                         $company_notification['message'] = 'A new job with title-'.$response->job_title.' has been added successfully';
                         $this->common_model->addNotification($company_notification);
-          }
-        }
+        //   }
+        // }
           // Sending mail and notification to Company
           if(isset($this->admin_email)){
             if(!empty($this->admin_email)){
@@ -1099,7 +1125,7 @@ if(empty($data->company_id)){
                                   'job_description'=>$response->job_description,
                                   'job_location'=>$response->location,
                                   'website_url'=>$response->apply_link);
-                $this->common_model->email($company_email, $email_template_id, $unique_id);
+                // $this->common_model->email($company_email, $email_template_id, $unique_id);
               }
                         $admin_notification['from_id'] = $response->company_id;
                         $admin_notification['type'] = 'company';
@@ -1228,6 +1254,13 @@ if(empty($data->company_id)){
     // connect job = 2
     // save job = 3
     //-------------------------------------------------------------
+          if(isset($this->admin_id)){
+            if(!empty($this->admin_id)){
+                  $candidate_detail["apply_by_admin_id"] = $this->admin_id;
+            }
+            
+          }
+          // echo"admin cdtn---- failed";die;
           if($data->status == 1){
             $candidate_detail["is_viewed"] = $data->status ;
             $msg = "Job viewed successfully";
@@ -1264,39 +1297,46 @@ if(empty($data->company_id)){
             $email_template_id = 4;
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
             $unique_id .= mt_rand(1000, 9999);
-            if($this->common_model->checkEmployerEmailPermission($company_id)){
-                // Sending mail and notification to Company
-                $company_email = array('to' => $response->email ?? NULL,
-                                 'job_title'=>$response->job_title,
-                                 'company_name'=>$response->company_name,
-                                 'company_name'=>$response->company_name,
-                                 'company_name'=>$response->company_name,
-                                );
-                $this->common_model->email($company_email, $email_template_id, $unique_id);
-            }
-              $company_notification['from_id'] = $response->company_id;
-              $company_notification['type'] = 'company';
-              $company_notification['subject'] = 'applied_on_job';
-              $company_notification['action_id'] = $response->job_id;
-              $company_notification['message'] = 'A new user applied on job with title - '.$response->job_title;
-              $this->common_model->addNotification($company_notification);
+            // if($this->common_model->checkEmployerEmailPermission($company_id)){
+            //     // Sending mail and notification to Company
+            //     $company_email = array('to' => $response->email ?? NULL,
+            //                      'job_title'=>$response->job_title,
+            //                      'company_name'=>$response->company_name,
+            //                      'company_name'=>$response->company_name,
+            //                      'company_name'=>$response->company_name,
+            //                     );
+            //     // $this->common_model->email($company_email, $email_template_id, $unique_id);
+            // }
+              // $company_notification['from_id'] = $response->company_id;
+              // $company_notification['type'] = 'company';
+              // $company_notification['subject'] = 'applied_on_job';
+              // $company_notification['action_id'] = $response->job_id;
+              // $company_notification['message'] = 'A new user applied on job with title - '.$response->job_title;
+              // $this->common_model->addNotification($company_notification);
             // Sending mail and notification to Admin
-            if(isset($this->admin_email)){
-            if(!empty($this->admin_email)){
-               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
-              $admin_email = array('to' => $this->admin_email,
+            // if(isset($this->admin_email)){
+            // if(!empty($this->admin_email)){
+              //  if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+              $admin_email = array('to' => $this->admin_email_static,
+                                    // 'to' => $this->admin_email,
                                     'job_title'=>$response->job_title,
-                                    'company_name'=>$response->company_name);
+                                    'company_name'=>$response->company_name,
+                                    'employee_name'=>$response->name,
+                                    'employee_email'=>$response->email,
+                                    'employee_contact_no'=>$response->contact_no,
+                                    'employee_skill'=>$response->skill
+                                    );
+                                    // print_r($admin_email);die;
                                     $this->common_model->email($admin_email, $email_template_id, $unique_id);
-               }
-                        $admin_notification['from_id'] = $this->admin_id;
+              //  }
+                        $admin_notification['from_id'] = $this->admin_id ?? 0;
                         $admin_notification['type'] = $this->user_type;
                         $admin_notification['subject'] = 'applied_on_job';
                         $admin_notification['action_id'] = $response->job_id;;
                         $admin_notification['message'] = 'A new user applied on job with title - '.$response->job_title;
-                        $this->common_model->addNotification($admin_notification);
-            }
-          }
+                        // $this->common_model->addNotification($admin_notification);
+          //   }
+          // }
           }
             $this->response(array(
 
@@ -1357,7 +1397,10 @@ if(empty($data->company_id)){
     "job_type" => $data->filter_job_swap ?? null,
     "keyskill" => $data->filter_keyskill ?? null,
     "location" => $data->filter_location ?? null,
-    "company_name" => $data->company_name ?? null,
+    "company_name" => $data->filter_company_name ?? null,
+    "applied_by_self" => $data->filter_applied_by_self ?? null,
+    "applied_by_admin" => $data->filter_applied_by_admin ?? null,
+    "reserved_employee" => $data->filter_reserved_employee ?? null,
     ];
     if(isset($data->filter_by_time)){
       if($data->filter_by_time == "today"){
@@ -1691,9 +1734,10 @@ public function allEmployer_post(){
   }
 
    public function jobCategory_delete($job_category_id){
-
-      if($this->employer_model->deleteJobCategory($job_category_id)){
-
+      $id = array('item_id'=>2,
+                  'json_item_id'=>$job_category_id);
+        if($this->employer_model->deleteJobCategory($job_category_id)){
+        $this->admin_model->deleteFilterList($id);
         // retruns true
 
         $this->response(array(
@@ -1811,32 +1855,32 @@ public function addUpdateInterview_post(){
          
           $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
           $unique_id .= mt_rand(1000, 9999);
-          if($this->common_model->checkEmployeeEmailPermission($data->employee_id)){
+          // if($this->common_model->checkEmployeeEmailPermission($data->employee_id)){
             // Sending mail and notification to Employee
             $email_template_id = 5;
-             $company = array('to' => $response->email ?? NULL,
-                             'candidate_name'=>$response->name,
-                             'interview_date'=>$response->interview_date,
-                             'job_title'=>$response->job_title,
-                             'company_name'=>$response->company_name);
-             $this->common_model->email($company, $email_template_id, $unique_id);
-          }
+            //  $company = array('to' => $response->email ?? NULL,
+            //                  'candidate_name'=>$response->name,
+            //                  'interview_date'=>$response->interview_date,
+            //                  'job_title'=>$response->job_title,
+            //                  'company_name'=>$response->company_name);
+            //  $this->common_model->email($company, $email_template_id, $unique_id);
+          // }
                         $notification['from_id'] = $data->employee_id;
                         $notification['type'] = 'employee';
                         $notification['subject'] = 'interview_scheduled';
                         $notification['action_id'] = $response->job_id;
                         $notification['message'] = 'hello, '.$response->name.' you have interview scheduled on '.$response->interview_date.' for job with title - '.$response->job_title.' you have applied on, scheduled with '.$response->company_name;
                         $this->common_model->addNotification($notification);
-          if($this->common_model->checkEmployerEmailPermission($response->company_id)){
-            // Sending mail and notification to Company
-            $email_template_id = 10;
-             $company = array('to' => $response->company_email ?? NULL,
-                             'candidate_name'=>$response->name,
-                             'interview_date'=>$response->interview_date,
-                             'job_title'=>$response->job_title,
-                             'company_name'=>$response->company_name);
-             $this->common_model->email($company, $email_template_id, $unique_id);
-          }
+          // if($this->common_model->checkEmployerEmailPermission($response->company_id)){
+          //   // Sending mail and notification to Company
+          //   $email_template_id = 10;
+          //    $company = array('to' => $response->company_email ?? NULL,
+          //                    'candidate_name'=>$response->name,
+          //                    'interview_date'=>$response->interview_date,
+          //                    'job_title'=>$response->job_title,
+          //                    'company_name'=>$response->company_name);
+          //   //  $this->common_model->email($company, $email_template_id, $unique_id);
+          // }
                         $notification['from_id'] = $response->company_id;
                         $notification['type'] = 'company';
                         $notification['subject'] = 'interview_scheduled';
@@ -1844,26 +1888,26 @@ public function addUpdateInterview_post(){
                         $notification['message'] = 'hello, '.$response->company_name.' you have interview scheduled on '.$response->interview_date.' for job with title - '.$response->job_title.', scheduled with '.$response->name;
                         $this->common_model->addNotification($notification);
         // Sending mail and notification to Super-Admin
-        if(isset($this->admin_email)){
-            if(!empty($this->admin_email)){
-               if($this->common_model->checkAdminEmailPermission($this->admin_id)){
+        // if(isset($this->admin_email)){
+        //     if(!empty($this->admin_email)){
+        //        if($this->common_model->checkAdminEmailPermission($this->admin_id)){
                 $email_template_id = 11;
-              $admin_email = array('to'=>'aashi.we2code@gmail.com',
+              $admin_email = array('to'=> $this->admin_email_static,
                                   // 'to' => $this->admin_email,
                                     'candidate_name'=>$response->name,
                                     'interview_date'=>$response->interview_date,
                                     'job_title'=>$response->job_title,
                                     'company_name'=>$response->company_name);
                                     $this->common_model->email($admin_email, $email_template_id, $unique_id);
-               }
+              //  }
                         $admin_notification['from_id'] = $this->admin_id;
                         $admin_notification['type'] = $this->user_type;
                         $admin_notification['subject'] = 'interview_scheduled';
                         $admin_notification['action_id'] = $response->job_id;;
                         $admin_notification['message'] = 'A new interview scheduled of candidate '.$response->name.' on date '.$response->interview_date.' for job title '.$response->job_title.' posted by company '.$response->company_name;
-                        $this->common_model->addNotification($admin_notification);
-            }
-          }
+                        // $this->common_model->addNotification($admin_notification);
+          //   }
+          // }
             $this->response(array(
 
               "status" => 1,
@@ -2024,7 +2068,7 @@ public function addUpdateLmia_put(){
                                      // 'job_description'=>$response->job_description,
                                      // 'job_location'=>$response->location,
                                      'lmia_status'=>$response_lmia_status);
-              $this->common_model->email($company_email, $email_template_id, $unique_id);
+              // $this->common_model->email($company_email, $email_template_id, $unique_id);
             }
                       $admin_notification['from_id'] = $company_id;
                       $admin_notification['type'] = 'company';
@@ -2195,6 +2239,561 @@ public function changePassword_put(){
           }
 
    }
+    public function getLmia_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    // $details['job_id'] =$data->job_id ?? null;
+    $details['company_id'] = $data->company_id ?? 0;
+    // if(!empty($this->employee_id) && $this->user_type == "employee"){
+    //   $details["employee_id"] = $this->employee_id;
+    // }  
+    if(!empty($this->company_id) && $this->user_type == "company"){
+      $details["company_id"] = $this->company_id;
+    }  
+    $page = $data->page ?? 1;
+    $limit =$data->limit ?? 10; 
+
+    // if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
+    //   $details ["admin_id"] =  $this->admin_id;
+    //   $details["admin_type"] =  $this->user_type;
+    // }  
+
+    // Get search parameter
+    $search = isset($data->search) ? $data->search : '';
+
+    // Get filter parameters
+
+    $filter = [
+    "lmia_status" => $data->filter_by_lmia_status ?? null,
+    "job_id" => $data->filter_by_job_id ?? null,
+    // "keyskill" => $data->filter_keyskill ?? null,
+    // "location" => $data->filter_location ?? null,
+    // "company_name" => $data->company_name ?? null,
+    ];
+    if(isset($data->filter_by_time)){
+      if($data->filter_by_time == "today"){
+            $filter['start_date'] = date('Y-m-d');
+            $filter['end_date'] = date('Y-m-d', strtotime('tomorrow'));
+
+      }
+      if($data->filter_by_time == "last_week"){
+            $filter['start_date'] = date('Y-m-d', strtotime('last week'));
+            $filter['end_date'] = date('Y-m-d', strtotime('last week +7days'));
+
+      }
+     
+      if($data->filter_by_time == "last_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('last month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('last month'));
+            
+          }
+      if($data->filter_by_time == "current_month"){
+            $filter['start_date'] = date('Y-m-01', strtotime('this month'));
+            $filter['end_date'] =date('Y-m-t', strtotime('this month'));
+            
+          }
+    }
+
+    
+    // Calculate offset for pagination
+    $offset = ($page - 1) * $limit;
+
+    // sorting 
+    $sort = [
+      'column_name' => $data->column_name ?? "created_at" ,
+      'sort_order' => $data->sort_order ?? "DESC"
+    ];
+    // print_r($sort);
+    $result = $this->employer_model->get_lmia($filter, $search, $limit, $offset, $sort, $details);
+    // print_r($result);die;
+
+    if ($result) {
+              $this->response(array(
+                "status" => 1,
+                "message" => "successful",
+                "total_rows" => $result['total_rows'],
+                "data" => $result['data']
+              ), REST_Controller::HTTP_OK);
+
+          }else{
+
+
+
+            $this->response(array(
+
+              "status" => 0,
+
+              "messsage" => "No data found"
+
+            ), REST_Controller::HTTP_OK);
+
+          }
+   }
+     /*
+    ||------------------------------------------------------------------------------------
+    ||  upload response of employer, creates seperate directory for each employer by name
+    ||  and upload document files.
+    ||------------------------------------------------------------------------------------
+  */
+    public function documentsUpload_put(){
+      $data = json_decode(file_get_contents("php://input"));
+    //  print_r($data);die;
+      $documents = [];
+      // $file_info = [];
+      $id = 0;
+      if((isset($data->company_id) || isset($this->company_id)) && isset($data->type) && isset($data->document_file)){
+          if((empty($data->company_id) && empty($this->company_id)) || empty($data->type) || empty($data->document_file)){
+                  $this->response(array(
+                    "status" => 0,
+                    "message" => "fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+                  }
+                    $company_id = $data->company_id ?? $this->company_id ?? null;
+                    // print_r($company_id);die;
+                    $documents[$data->type] = $data->document_file;
+                    
+                    $response = $this->createDirectoryAndUploadDocs($company_id, $documents);
+                    // print_r($response);die;
+                    if (is_array($response) && count($response) > 0) {
+                          $file_info = $response;
+                          $file_info['company_id'] = $company_id;
+                           $msg = "inserted successfully";
+                          if(isset($data->id)){
+                            if(!empty($data->id)){
+                              $id = $data->id;
+                              $msg = "updated successfully";
+                            }
+                          }
+                          if(isset($data->is_varify)){
+                            
+                              $file_info['is_varify'] = $data->is_varify;
+
+                  
+                          }
+                          // print_r($file_info);die;
+                          if($this->employer_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => $msg
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+                        } 
+                    if($response == 1){
+                      // Unsupported file type
+                       $this->response(array(
+                          "status" => 0,
+                          "message" => "Unsupported file type !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+                    if($response == 2){
+                      // Invalid base64-encoded data
+                      $this->response(array(
+                          "status" => 0,
+                          "message" => "Invalid base64-encoded data !"
+                          ) , REST_Controller::HTTP_OK);
+                          return;
+                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }      
+    }
+    // Verify employer documents
+    public function isVarify_put(){
+      $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && isset($data->is_varify)){
+          if(empty($data->id) || empty($data->is_varify)){
+            $this->response(array(
+                   "status" => 0,
+                   "message" => "fields must not be empty !"
+                   ) , REST_Controller::HTTP_OK);
+                   return;
+            }
+                     $id = $data->id;
+                     $file_info['is_varify'] = $data->is_varify;
+          if($this->employer_model->documentsUpload($id, $file_info)){
+                                    $this->response(array(
+                                      "status" => 1,
+                                      "message" => "successfully"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }else{
+                                      $this->response(array(
+                                      "status" => 0,
+                                      "message" => "failed !"
+                                      ) , REST_Controller::HTTP_OK);
+                                      return;
+                                    }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+  /*
+    ||------------------------------------------------------------------------------------
+    ||  check if directory exist with the given employer name if not than create directory
+    ||  and upload document file. 
+    ||------------------------------------------------------------------------------------
+  */
+    public function createDirectoryAndUploadDocs($id, $documents){
+      $dir_name = 'employer_'.$id;
+      $documents_url = [];
+      // print_r(FCPATH);die;
+      // echo'</n>';
+      $file_path = FCPATH.'uploads/employer_documents/'.$dir_name;        
+      // print_r($file_path);die;
+      // Checking whether if directory not exists than create directory
+      if (!file_exists($file_path)) {        
+          if(!mkdir($file_path, 0777, true)){
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "failed !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+          }
+      }
+      if (file_exists($file_path)) {
+        // print_r($documents);die;
+        foreach($documents as $key=>$value){
+          $document_name = $key;
+          $base64_encoded_document = $value;
+          // echo($document_name." : ".$base64_encoded_document .PHP_EOL);
+                // Check if the image data is a base64-encoded string
+                // $pattern = '/data:\/jpeg;base64,([A-Za-z0-9+\/=]+)/';
+                if (preg_match('/^data:\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/^data:image\/(\w+);base64,([A-Za-z0-9+\/=]+)/', $base64_encoded_document, $ext_type) || preg_match('/data:\/(.*);base64/', $base64_encoded_document, $ext_type)) {
+                    $base64_encoded_document = substr($base64_encoded_document, strpos($base64_encoded_document, ',') + 1);
+                // '/^data:image\/(\w+);base64,/'
+                    $file_extension = strtolower($ext_type[1]);
+                // print_r($file_extension);die;
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'vnd.openxmlformats-officedocument.wordprocessingml.document'))) {
+                        $base64_decoded_document = base64_decode($base64_encoded_document);
+                    
+                        $file_name_for_upload = $document_name .'_'.$id. '.' . $file_extension;
+                        $file_path_for_upload = $file_path.'/'. $file_name_for_upload;
+                        // print_r($file_path_for_upload);die;
+                        file_put_contents($file_path_for_upload, $base64_decoded_document);
+                    
+                        $uploaded_document_url = base_url() . 'uploads/employer_documents/'.$dir_name.'/' . $file_name_for_upload;
+                        $documents_url["document_url"] = $uploaded_document_url;
+                        $documents_url["extension_type"] = $file_extension;
+                        $documents_url["type"] = $document_name;
+                    } else {
+                        // Unsupported file type
+                        unset($documents_url[$document_name]);
+                        return 1;
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($documents_url[$document_name]);
+                 return 2;
+                }
+      }
+        // print_r($documents_url);die;
+        $file_info = $documents_url;
+        return $file_info;
+      }
+    }
+    /*
+    ||------------------------------------------------------------------------------------
+    || get upload document file path and other info. 
+    ||------------------------------------------------------------------------------------
+  */
+     public function getDocumentsUploaded_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      
+      $id = $data->id ?? null;
+      $details = [];
+      if(isset($data->company_id)){
+        if(!empty($data->company_id)){
+            $details['company_id'] = $data->company_id;
+        }
+      }
+      if(isset($this->company_id)){
+        if(!empty($this->company_id)){
+            $details['company_id'] = isset($this->company_id);
+        }
+      }
+      if(isset($data->type)){
+        if(!empty($data->type)){
+            $details['type'] = $data->type;
+        }
+      }
+      // print_r($details);die;
+      $documents = $this->employer_model->get_documents_uploaded($id, $details);
+      if($documents){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully",
+          "data" => $documents
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "No data found",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+  }
+  public function deleteDocumentsUploaded_post(){
+    $data = json_decode(file_get_contents("php://input"));
+    if(isset($data->id)){
+          if(empty($data->id)){
+            $this->response(array(
+                  "status" => 0,
+                  "message" => "id must not be empty !"
+                ), REST_Controller::HTTP_OK);
+                 return;
+              }
+                     $id = $data->id;
+         
+    $documents = $this->employer_model->get_documents_uploaded($id);
+    if($documents){
+      // Explode the URL by slashes ('/') to get an array of its segments
+    $segments = explode('/', $documents['document_url']);
+
+    // Slice the desired portion (from the fouth until the last segment)
+    $sliced_portion = implode('/', array_slice($segments, 4));
+    $file_path = FCPATH . $sliced_portion;
+    // check if file exist, if yes than unlink(Delete) the file  
+    if (file_exists($file_path)) {
+        unlink($file_path);
+    } 
+    
+      if($this->employer_model->delete_document_uploaded($id)){
+        $this->response(array(
+          "status" => 1,
+          "message" => "document has been deleted"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed !"
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+      }else{      
+       $this->response(array(
+          "status" => 0,
+          "message" => "No record found !"
+        ), REST_Controller::HTTP_OK);
+    }
+  }else{
+    $this->response(array(
+          "status" => 0,
+          "message" => "id must be provided !"
+        ), REST_Controller::HTTP_OK);
+         return;
+  }
+  }
+   public function addUpdateLmiaSubstagesEmployee_put(){
+      $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->lmia_id) && isset($data->lmia_status) && isset($data->lmia_substage)){
+          if(empty($data->lmia_id) || empty($data->lmia_status) || empty($data->lmia_substage)){
+            $this->response(array(
+                   "status" => 0,
+                   "message" => "fields must not be empty !"
+                   ) , REST_Controller::HTTP_OK);
+                   return;
+            }
+            $id = $data->id ?? null;
+            $details = array('lmia_id'=>$data->lmia_id,
+                             'lmia_status'=>$data->lmia_status,
+                             'lmia_substage'=>$data->lmia_substage
+                            );
+            if(isset($data->is_active)){
+                  $details['is_active'] = $data->is_active;
+            }
+            if(isset($id)){
+              if(!empty($id)){
+                  $details['updated_by'] = $this->admin_id;
+              }
+            }else{
+            if(isset($this->admin_id)){
+              if(!empty($this->admin_id)){
+                  $details['created_by'] = $this->admin_id;
+              }
+            }
+          }
+            // print_r($details);die;
+          $response = $this->employer_model->add_update_lmia_substages_employee($id, $details); 
+          // print_r($response);die;          
+            if($response){
+            $this->response(array(
+               "status" => 1,
+               "message" => $response
+               ) , REST_Controller::HTTP_OK);
+               return;
+            }else{
+              $this->response(array(
+              "status" => 0,
+              "message" => "failed !"
+              ) , REST_Controller::HTTP_OK);
+              return;
+            }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+    public function getLmiaSubstagesEmployee_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      
+      // $details = [];
+      if(isset($data->lmia_id)){
+        if(empty($data->lmia_id)){
+          $this->response(array(
+            "status" => 0,
+            "message" => "fields must not be empty !",
+          ), REST_Controller::HTTP_OK);
+          return;
+        }
+        $lmia_id = $data->lmia_id ?? null;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "please provide lmia id !",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+      $filter = array(
+        'lmia_status' => $data->lmia_status ?? null
+      );
+    
+      // print_r($lmia_id);die;
+      $response = $this->employer_model->get_lmia_substages_employee($lmia_id, $filter);
+      // print_r($response);die;
+
+      if($response){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully",
+          "data" => $response
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "No data found",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+  }
+   public function addUpdateLmiaSubstagesJob_put(){
+      $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->job_id) && isset($data->lmia_status) && isset($data->lmia_substage)){
+          if(empty($data->job_id) || empty($data->lmia_status) || empty($data->lmia_substage)){
+            $this->response(array(
+                   "status" => 0,
+                   "message" => "fields must not be empty !"
+                   ) , REST_Controller::HTTP_OK);
+                   return;
+            }
+            $id = $data->id ?? null;
+            $details = array('job_id'=>$data->job_id,
+                             'lmia_status'=>$data->lmia_status,
+                             'lmia_substage'=>$data->lmia_substage
+                            );
+            if(isset($data->is_active)){             
+                  $details['is_active'] = $data->is_active;
+            }
+            if(isset($id)){
+              if(!empty($id)){
+                  $details['updated_by'] = $this->admin_id;
+              }
+            }else{
+            if(isset($this->admin_id)){
+              if(!empty($this->admin_id)){
+                  $details['created_by'] = $this->admin_id;
+              }
+            }
+          }
+            // print_r($details);die;
+          $response = $this->employer_model->add_update_lmia_substages_job($id, $details); 
+          // print_r($response);die;          
+            if($response){
+            $this->response(array(
+               "status" => 1,
+               "message" => $response
+               ) , REST_Controller::HTTP_OK);
+               return;
+            }else{
+              $this->response(array(
+              "status" => 0,
+              "message" => "failed !"
+              ) , REST_Controller::HTTP_OK);
+              return;
+            }
+        }else{
+           $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields required !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+    }
+    public function getLmiaSubstagesjob_post(){
+      $data = json_decode(file_get_contents("php://input"));
+      
+      // $details = [];
+      if(isset($data->job_id)){
+        if(empty($data->job_id)){
+          $this->response(array(
+            "status" => 0,
+            "message" => "fields must not be empty !",
+          ), REST_Controller::HTTP_OK);
+          return;
+        }
+        $job_id = $data->job_id ?? null;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "please provide job id !",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+      $filter = array(
+        'lmia_status' => $data->lmia_status ?? null
+      );
+    
+      // print_r($lmia_id);die;
+      $response = $this->employer_model->get_lmia_substages_job($job_id, $filter);
+      // print_r($response);die;
+
+      if($response){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully",
+          "data" => $response
+        ), REST_Controller::HTTP_OK);
+         return;
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "No data found",
+        ), REST_Controller::HTTP_OK);
+         return;
+      }
+  }
 }
 
  

@@ -21,8 +21,8 @@ class Employee_registration extends REST_Controller{
     $this->load->library('Authorization_Token');
     $this->load->helper("security");
     $this->load->helper('url');
+    $this->admin_email = "aashi.we2code@gmail.com";
   }
-
   // public function index_get(){
 
   // }
@@ -30,10 +30,12 @@ class Employee_registration extends REST_Controller{
     
     $email = $this->security->xss_clean($this->input->post("email"));
     $password = $this->security->xss_clean($this->input->post("password"));
-    $resume =$this->input->post("cv");
+    $resume =$this->input->post("resume");
     $otp =$this->input->post("otp");
+            // echo("resume outside: $resume <br>");
 
 if($resume) {
+              // echo("resume base 64: $resume <br>");
     // Decode the base64 encoded PDF data
     $cv_data = base64_decode($resume);
     // Set the file name
@@ -44,7 +46,8 @@ if($resume) {
     if(file_put_contents($file_path, $cv_data)) {
         // File was successfully uploaded
         $cv = base_url() . 'uploads/' . $file_name_for_upload;
-       
+                  //  echo("link for database : $resume");
+
     } else {
         // File upload failed
     }
@@ -110,7 +113,7 @@ if($resume) {
               $this->common_model->email($eamil_detail, $email_template_id, $unique_id);
               // Admin --------------------------------------------------------
               $email_template_id = 8;
-              $eamil_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+              $eamil_detail_admin = array('to' =>  $this->admin_email ?? NULL,
                                           'admin_name' => 'Aashi',
                                           'user_email' => $response->email ?? NULL);
               $this->common_model->email($eamil_detail_admin, $email_template_id, $unique_id);
@@ -164,7 +167,9 @@ if($resume) {
                     "message" => "Successfully Logged In",
                     'employee_id'=> $loginStatus->employee_id,
                     'name'=> $loginStatus->name,
+                    'email'=> $loginStatus->email,
                     'profile_photo'=> $loginStatus->profile_photo,
+                    'skill'=> $loginStatus->skill,
                     'token' => $bearerToken,
                     ) , REST_Controller::HTTP_OK);
                     return;
@@ -206,7 +211,7 @@ if($resume) {
                             $email = array('to' => $loginStatus->email ?? NULL,
                                           'name' => $loginStatus->name ?? NULL,
                                           // 'token'=>$detail['token'],
-                                          'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
+                                          'reset_link' => 'https://canjobs.vercel.app/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 
@@ -274,81 +279,6 @@ if($resume) {
         }
 
     }
-<<<<<<< HEAD
-  // public function imageMail_post(){
-  //   $data = json_decode(file_get_contents("php://input"));
-  //         $image_data = $data->profile_photo;
-
-  //               // Check if the image data is a base64-encoded string
-  //               // if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
-  //               //     $image_data = substr($image_data, strpos($image_data, ',') + 1);
-                
-  //               //     $file_extension = strtolower($image_type[1]);
-  //               // print_r($image_data);die;
-  //               //     // Check if the image type is supported
-  //               //     if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
-  //               //         $image_data = base64_decode($image_data);
-                    
-  //               //         $file_name_for_upload = time() . '.' . $file_extension;
-  //               //         $file_path_for_upload = './uploads/' . $file_name_for_upload;
-  //               //         file_put_contents($file_path_for_upload, $image_data);
-                    
-  //               //         $logo = base_url() . 'uploads/' . $file_name_for_upload;
-  //               //        $employee_info["profile_photo"] = $logo;
-  //               //     } else {
-  //               //         // Unsupported file type
-  //               //        unset($employee_info["profile_photo"]);
-  //               //     }
-  //               // } else {
-  //               //     // Invalid base64-encoded image data
-  //               //  unset($employee_info["profile_photo"]);
-  //               // }
-  //               $to = "utkarsh.we2code@gmail.com";
-  //               $subject = "image test";
-  //               $body = $image_data;
-  //   //  $this->common_model->sendMail($to, $subject, $body);
-  //      if($this->common_model->sendMail($to, $subject, $body)){
-  //                 $this->response(array(
-  //                   "status" => 1,
-  //                   "message" => "mail sent successfully"
-  //                   ) , REST_Controller::HTTP_OK);
-  //                   return;
-  //           } else {
-  //              $this->response(array(
-  //                   "status" => 0,
-  //                   "message" => "failed to send mail"
-  //                   ) , REST_Controller::HTTP_OK);
-  //                   return;
-  //              }
-  // }
- public function imageMail_post() {
-    $data = json_decode(file_get_contents("php://input"));
-    $base64_image = $data->base64_encode_image;
-
-    // Decode the base64 encoded image data
-    // $image_data = base64_decode($base64_image);
-
-    // Set the necessary email headers
-    $to = "utkarsh.we2code@gmail.com"; // Replace with the recipient's email address
-    $subject = "Image test";
-  
-    // Send the email with attachment using the sendMail function
-    if ($this->common_model->sendImgMail($to, $subject, $base64_image)) {
-           $this->response(array(
-                    "status" => 1,
-                    "message" => "mail sent successfully"
-                    ) , REST_Controller::HTTP_OK);
-                    return;
-            } else {
-               $this->response(array(
-                    "status" => 0,
-                    "message" => "failed to send mail"
-                    ) , REST_Controller::HTTP_OK);
-                    return;
-               }
-}
-
-=======
   public function signupLoginViaSocialMedia_post(){
     $data = json_decode(file_get_contents("php://input"));
     $email = $data->email;
@@ -412,5 +342,4 @@ if($resume) {
          return;
     }
   }
->>>>>>> 54ccfc8c83a89742678692963ee66b0c744a70c6
 }

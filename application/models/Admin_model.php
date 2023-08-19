@@ -385,10 +385,10 @@ return $result;
   }
 
 public function deleteFilterList($id){
-$json_item_id = $id['json_item_id'];
+$json_item_id = $id['json_item_id'] ?? null;
             $this->db->where('id', $id['item_id']);
             $query = $this->db->get('list');        
-
+            // print_r($query->result_array());die;
             if ($query->num_rows() > 0) {
                 $row = $query->row();
                 $data = json_decode($row->json, true);

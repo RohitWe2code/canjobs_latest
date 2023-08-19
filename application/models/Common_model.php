@@ -20,8 +20,8 @@ public function sendMail($to, $subject, $body){
             'protocol' => 'smtp',
             'smtp_host' => 'smtp.gmail.com',
             'smtp_port' => 587,
-            'smtp_user' => 'ashish.we2code@gmail.com',
-            'smtp_pass' => 'nczaguozpagczmjv',
+            'smtp_user' => 'rahul.verma.we2code@gmail.com',
+            'smtp_pass' => 'sfbmekwihdamgxia',
             'mailtype' => 'html',
             'smtp_crypto' => 'tls',
             'charset' => 'utf-8'
@@ -29,7 +29,7 @@ public function sendMail($to, $subject, $body){
 
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
-            $this->email->from('ashish.we2code@gmail.com', 'CanJobs');
+            $this->email->from('rahul.verma.we2code@gmail.com', 'CanJobs');
             $this->email->to($to);
             $this->email->subject($subject);         
             $this->email->message($body);
@@ -37,7 +37,7 @@ public function sendMail($to, $subject, $body){
     // print_r($this->email->print_debugger());die;
     }
 public function addNotification($notification){
-    // print_r($data);die;
+    // print_r($notification);die;
     $this->db->insert('notification', $notification);
 }
 public function isReadNotification($id){
@@ -184,79 +184,6 @@ public function checkAdminEmailPermission($admin_id){
         return false;
     }
 }
-// public function sendImgMail($to, $subject, $image_data){
-
-//   $html_template = '<!DOCTYPE html>
-// <html>
-// <head>
-//     <title>Email Template</title>
-// </head>
-// <body>
-//     <h1>Image Test</h1>
-//     <img src="'.$image_data.'" alt="Image">
-// </body>
-// </html>
-// ';
-      
-//             $this->load->library('email');
-//             $config = array(
-//             'protocol' => 'smtp',
-//             'smtp_host' => 'smtp.gmail.com',
-//             'smtp_port' => 587,
-//             'smtp_user' => 'ashish.we2code@gmail.com',
-//             'smtp_pass' => 'nczaguozpagczmjv',
-//             'mailtype' => 'html',
-//             'smtp_crypto' => 'tls',
-//             'charset' => 'utf-8'
-//             );
-
-//             $this->email->initialize($config);
-//             $this->email->set_newline("\r\n");
-//             $this->email->from('ashish.we2code@gmail.com', 'Your Name');
-//             $this->email->to($to);
-//             $this->email->subject($subject);         
-//             $this->email->msgHTML($html_template);
-//            return $email = $this->email->send(FALSE);
-//     print_r($this->email->print_debugger());die;
-//     }
-public function sendImgMail($to, $subject, $base64_image) {
-  // print_r($base64_image);die;
-    $html_template = '<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Email Template</title>
-        </head>
-        <body>
-            <h1>Image Test</h1>
-            <div>
-            <img src="data:image/jpeg;base64,'.$base64_image.'" />
-            </div>
-        </body>
-        </html>';
-  // print_r($html_template);die;
-
-    $this->load->library('email');
-    $config = array(
-        'protocol' => 'smtp',
-        'smtp_host' => 'smtp.gmail.com',
-        'smtp_port' => 587,
-        'smtp_user' => 'ashish.we2code@gmail.com', // Replace with your SMTP username
-        'smtp_pass' => 'nczaguozpagczmjv', // Replace with your SMTP password
-        'mailtype' => 'html',
-        'smtp_crypto' => 'tls',
-        'charset' => 'utf-8'
-    );
-
-    $this->email->initialize($config);
-    $this->email->set_newline("\r\n");
-    $this->email->from('ashish.we2code@gmail.com', 'Your Name'); // Replace with the sender's email address and name
-    $this->email->to($to);
-    $this->email->subject($subject);
-    $this->email->message($html_template);
-
-    return $this->email->send();
-}
-
 }
 
 

@@ -342,7 +342,6 @@ $route['admin/getAllJobsViewAdmin'] = 'api/employer_api/getAllJobsViewAdmin';
 
 
 
-$route['imageMail'] = 'api/Employee_registration/imageMail';
 $route['employee_signup'] = 'api/Employee_registration/signup';
 
 
@@ -422,7 +421,9 @@ $route['user/documentsUpload'] = 'api/employee_api/documentsUpload';
 $route['user/isVarify'] = 'api/employee_api/isVarify';
 $route['user/getDocumentsUploaded'] = 'api/employee_api/getDocumentsUploaded';
 $route['user/deleteDocumentsUploaded'] = 'api/employee_api/deleteDocumentsUploaded';
-
+$route['addUpdateVisa'] = 'api/employee_api/addUpdateVisa';
+$route['getVisa'] = 'api/employee_api/getVisa';
+$route['setEmployeeReserve'] = 'api/employee_api/setEmployeeReserve';
 
 
 
@@ -506,6 +507,17 @@ $route['company/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 $route['company/changePassword'] = 'api/employer_api/changePassword';
 
 $route['company/signupLoginViaSocialMedia'] = 'api/Employer_registration/signupLoginViaSocialMedia';
+$route['company/getLmia'] = 'api/employer_api/getLmia';
+// $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
+$route['company/documentsUpload'] = 'api/employer_api/documentsUpload';
+$route['company/isVarify'] = 'api/employer_api/isVarify';
+$route['company/getDocumentsUploaded'] = 'api/employer_api/getDocumentsUploaded';
+$route['addUpdateLmiaSubstagesEmployee'] = 'api/employer_api/addUpdateLmiaSubstagesEmployee';
+$route['getLmiaSubstagesEmployee'] = 'api/employer_api/getLmiaSubstagesEmployee';
+$route['addUpdateLmiaSubstagesJob'] = 'api/employer_api/addUpdateLmiaSubstagesJob';
+$route['getLmiaSubstagesjob'] = 'api/employer_api/getLmiaSubstagesjob';
+
+
 
 //----------------------------------------------------------------------------------------
 // COMMON
@@ -519,11 +531,4 @@ $route['common/getNotifications'] = 'api/Common_controller/getNotifications';
 $route['common/isReadNotification'] = 'api/Common_controller/isReadNotification';
 $route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
 $route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';
-<<<<<<< HEAD
-
-
-//----------------------------------------------------
-$route['default_controller'] = 'googleauth';
-=======
 $route['common/testEmail'] = 'api/Common_controller/testEmail';
->>>>>>> 54ccfc8c83a89742678692963ee66b0c744a70c6
