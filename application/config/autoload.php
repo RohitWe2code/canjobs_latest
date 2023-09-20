@@ -133,3 +133,13 @@ $autoload['language'] = array();
 |	$autoload['model'] = array('first_model' => 'first');
 */
 $autoload['model'] = array();
+
+/*
+| -------------------------------------------------------------------
+|  For google api services
+| -------------------------------------------------------------------
+*/
+$autoload['libraries'] = array('database', 'session');
+
+$autoload['helper'] = array('url');
+

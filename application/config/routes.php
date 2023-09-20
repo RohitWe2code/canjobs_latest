@@ -471,6 +471,17 @@ $route['company/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 $route['company/changePassword'] = 'api/employer_api/changePassword';
 
 $route['company/signupLoginViaSocialMedia'] = 'api/Employer_registration/signupLoginViaSocialMedia';
+$route['company/getLmia'] = 'api/employer_api/getLmia';
+// $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
+$route['company/documentsUpload'] = 'api/employer_api/documentsUpload';
+$route['company/isVarify'] = 'api/employer_api/isVarify';
+$route['company/getDocumentsUploaded'] = 'api/employer_api/getDocumentsUploaded';
+$route['addUpdateLmiaSubstagesEmployee'] = 'api/employer_api/addUpdateLmiaSubstagesEmployee';
+$route['getLmiaSubstagesEmployee'] = 'api/employer_api/getLmiaSubstagesEmployee';
+$route['addUpdateLmiaSubstagesJob'] = 'api/employer_api/addUpdateLmiaSubstagesJob';
+$route['getLmiaSubstagesjob'] = 'api/employer_api/getLmiaSubstagesjob';
+
+
 
 // $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
 $route['company/documentsUpload'] = 'api/employer_api/documentsUpload';

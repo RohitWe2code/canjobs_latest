@@ -178,6 +178,7 @@ if(isset($data->employee_id)){
                    $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
                    if(file_put_contents($file_path, $cv_data)) {
                        $cv = base_url() . 'uploads/' . $file_name_for_upload;
+                        //  echo("resume base 64: $cv");
                    }
              $employee_info["resume"] = $cv;
                   }else{
