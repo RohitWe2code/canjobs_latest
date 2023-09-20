@@ -20,8 +20,8 @@ public function sendMail($to, $subject, $body){
             'protocol' => 'smtp',
             'smtp_host' => 'smtp.gmail.com',
             'smtp_port' => 587,
-            'smtp_user' => 'ashish.we2code@gmail.com',
-            'smtp_pass' => 'nczaguozpagczmjv',
+            'smtp_user' => 'rahul.verma.we2code@gmail.com',
+            'smtp_pass' => 'sfbmekwihdamgxia',
             'mailtype' => 'html',
             'smtp_crypto' => 'tls',
             'charset' => 'utf-8'
@@ -29,7 +29,7 @@ public function sendMail($to, $subject, $body){
 
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
-            $this->email->from('ashish.we2code@gmail.com', 'CanJobs');
+            $this->email->from('rahul.verma.we2code@gmail.com', 'CanJobs');
             $this->email->to($to);
             $this->email->subject($subject);         
             $this->email->message($body);
@@ -37,7 +37,7 @@ public function sendMail($to, $subject, $body){
     // print_r($this->email->print_debugger());die;
     }
 public function addNotification($notification){
-    // print_r($data);die;
+    // print_r($notification);die;
     $this->db->insert('notification', $notification);
 }
 public function isReadNotification($id){
@@ -158,32 +158,58 @@ public function getEmailTemplate($id){
 
 }
 public function checkEmployeeEmailPermission($employee_id){
-  $query = "SELECT * FROM `employee_setting` WHERE employee_id = ".$employee_id." AND email_permission = 1";
+  $query = "SELECT email_permission FROM `employee_setting` WHERE employee_id = ".$employee_id;
   $res = $this->db->query($query);
    if ($res->num_rows() > 0) {
-        return true;
+      return $email_permission = json_decode($res->row_array()['email_permission']);
     } else {
         return false;
     }
 }
 public function checkEmployerEmailPermission($company_id){
-  $query = "SELECT * FROM `employer_setting` WHERE company_id = ".$company_id."  AND email_permission = 1";
+  $query = "SELECT email_permission, notification_permission FROM `employer_setting` WHERE company_id = ".$company_id;
   $res = $this->db->query($query);
-   if ($res->num_rows() > 0) {
-        return true;
+    // print_r(json_decode($res->row_array()['email_permission']));die;
+    // print_r($res->row_array());die;
+
+   if($res->num_rows() > 0){
+      return $email_permission = array('email_permission' =>json_decode($res->row_array()['email_permission']),
+                                        'notification_permission' =>json_decode($res->row_array()['notification_permission'])
+                                      );
     } else {
         return false;
     }
 }
 public function checkAdminEmailPermission($admin_id){
-  $query = "SELECT * FROM `admin` WHERE admin_id = ".$admin_id." AND is_deleted != 1 AND email_permission = 1";
+  $query = "SELECT email_permission FROM `admin` WHERE admin_id = ".$admin_id;
   $res = $this->db->query($query);
+  // print_r(json_decode($res['email_permission']));die;
    if ($res->num_rows() > 0) {
-        return true;
+      return $email_permission = json_decode($res->row_array()['email_permission']);
     } else {
-        return false;
+        return False;
     }
 }
+public function checkParentPermission(){
+  $query = "SELECT type, permission FROM `parent_setting`";
+  $res = $this->db->query($query);
+  // print_r($res);die;
+   if ($res->num_rows() > 0) {
+    $res = $res->result_array();
+     foreach ($res as $item) {
+          $data[$item['type']] = json_decode($item['permission'], true);
+     }
+
+      return $data;
+    } else {
+        return False;
+    }
+}
+    public function addActivityLog_post($detail, $title = NULL, $msg = NULL){
+          // print_r($detail);die;
+          $this->db->insert('activity_log', $detail);
+
+    }
 }
 
 

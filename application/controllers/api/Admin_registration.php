@@ -1,34 +1,13 @@
 <?php
-
 Header('Access-Control-Allow-Origin: *'); //for allow any domain, insecure
-
-
-
-Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
-
-
-
+// Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
 Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
-
-
-
+header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
 defined('BASEPATH') OR exit('No direct script access allowed');
-
-
-
 require APPPATH.'libraries/REST_Controller.php';
-
-
-
 class Admin_registration extends REST_Controller{
-
-
-
-  public function __construct(){
-
-
-
-    parent::__construct();
+      public function __construct(){
+        parent::__construct();
 
     //load database
 
@@ -47,20 +26,14 @@ class Admin_registration extends REST_Controller{
     $this->load->helper('url');
 
   }
-
-
-
-  public function login_post()
+    public function login_post()
 
     {
 
         $email = $this->security->xss_clean($this->input->post("email"));
 
         $password = $this->security->xss_clean($this->input->post("password"));
-
-
-
-        $this->form_validation->set_rules('email', 'Email', 'required');
+                $this->form_validation->set_rules('email', 'Email', 'required');
 
         $this->form_validation->set_rules('password', 'Password', 'required');
 

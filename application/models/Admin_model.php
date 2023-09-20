@@ -27,159 +27,89 @@ public function get_employee($search,$filter){
 
 
 public function get_admin_by_email($data){
-
   $email = $data->email;
-
   // print_r($email);die;
-
   $this->db->where('email', $email);
-
   $this->db->where('is_deleted = 0');
-
   if(!empty($data->admin_id)){
-
   $this->db->where('admin_id <>', $data->admin_id);
-
   }
-
   $query = $this->db->get('admin');
-
   // print_r($this->db->last_query());
-
-  
-
-
-
   if ($query->num_rows() > 0) {
-
       return $query;
-
-
-
   }
-
-
-
 }
 
 
 
 public function checkLogin($credentials)
-
-
-
 {
-
-
-
         $this->db->where($credentials);
         $this->db->where('is_deleted != 1');
-
-
-
         $query = $this->db->get('admin');
-
-
-
         if($query->num_rows()==1)
-
-
-
         {
-
-
-
             return $query->row();
-
-
-
         }
-
-
-
         else 
-
-
-
         {
-
-
-
             return false;
-
-
-
         }
-
-
-
 }
 
 
 
-public function addUpdateAdmin($admin){
-
-  // print_r($admin['id']);die;
-
-  if (!empty($admin['admin_id'])) {
-
+public function addUpdateAdmin($admin, $id = NULL){
+  // if (!empty($admin['admin_id'])) {
+  if (!empty($id)) {
     // Update operation
-
-                        $this->db->where('admin_id', $admin['admin_id']);
-
+                        // $this->db->where('admin_id', $admin['admin_id']);
+                        $this->db->where('admin_id', $id);
                         $this->db->set('updated_at', 'NOW()', FALSE);
-
                         $res = $this->db->update('admin', $admin);
-
-                        // print_r($this->db->last_query());
-
-                 
-
+                        // print_r($this->db->last_query());            
                         return $res;
-
-    } 
-
-    else {
-
+    }else{
     // Add operation
-
     $res = $this->db->insert('admin', $admin);
-
     // print_r($this->db->last_query());
-
     return $res;
-
-    }           
-
-
-
+    }      
 }
-
-
-
-public function addFollowup($followup_detail){
-
-
-
-           return $this->db->insert('follow_up', $followup_detail);            
-
-
-
+public function add_follow_up_employee($followup_detail){
+           return $this->db->insert('employee_follow_up', $followup_detail); 
 }
+public function add_follow_up_employer($followup_detail){
+           return $this->db->insert('employer_follow_up', $followup_detail);        
+}
+public function get_follow_up_employee($id, $filter, $sort){                                          
+                  $this->db->where('employee_id',$id['employee_id']);              
+                if (!empty($filter['next_followup_date'])) {
+                  $next_followup_date = $filter['next_followup_date'];
+                  $this->db->where('next_followup_date', $next_followup_date);
+                  }
+                if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
+                  $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+                  }                
+                return $res = $this->db->get('employee_follow_up')->result_array();
+                // print_r($this->db->last_query());
+                // return array('followup'=>$res);
+  }
 
-
-
-public function getFollowup($id){
-
-
-
-                $this->db->where('job_id',$id['job_id']);
-                $this->db->where('employee_id',$id['employee_id']);
-                $res = $this->db->get('follow_up',)->result_array();
-                return array('followup'=>$res);
-
-
-
+public function get_follow_up_employer($id, $filter, $sort){                                       
+                  $this->db->where('company_id',$id['company_id']);              
+                if (!empty($filter['next_followup_date'])) {
+                  $next_followup_date = $filter['next_followup_date'];
+                  $this->db->where('next_followup_date', $next_followup_date);
+                  }
+                if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
+                  $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+                  }
+                
+                return $res = $this->db->get('employer_follow_up')->result_array();
+                // print_r($this->db->last_query());
+                // return array('followup'=>$res);
   }
 
 public function getAllAdmin($details, $filter, $search, $limit, $offset, $sort){
@@ -207,6 +137,9 @@ public function getAllAdmin($details, $filter, $search, $limit, $offset, $sort){
               $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
 
               }
+              if(!empty($details['admin_id'])){                
+                $where .= " AND admin_type = 'executive' OR admin_id = ".$details['admin_id'];                
+              }
               //  if(!empty($details['admin_id'])){                
               //   $where .= " AND created_by_admin = ".$details['admin_id'];                
               // }
@@ -215,7 +148,7 @@ public function getAllAdmin($details, $filter, $search, $limit, $offset, $sort){
 
               $this->db->where($where);
 
-              $this->db->where('is_deleted !=', 1);
+              $this->db->where('is_deleted =', 0);
 
               $result = $this->db->get('admin',$limit, $offset)->result_array();
 
@@ -385,10 +318,10 @@ return $result;
   }
 
 public function deleteFilterList($id){
-$json_item_id = $id['json_item_id'];
+$json_item_id = $id['json_item_id'] ?? null;
             $this->db->where('id', $id['item_id']);
             $query = $this->db->get('list');        
-
+            // print_r($query->result_array());die;
             if ($query->num_rows() > 0) {
                 $row = $query->row();
                 $data = json_decode($row->json, true);
@@ -520,5 +453,181 @@ public function resetPassword($reset_details){
                       return $query;
 
                       
+}
+ public function add_update_miscellaneous_substage($id, $detail){
+// print_r($detail);die;
+  if(!empty($id)){
+     $this->db->where('id', $id);
+                      $this->db->set('updated_at', 'NOW()', FALSE);
+                      $query = $this->db->update('substages_miscellaneous', $detail);                    
+                      return $query;
+                      } 
+              else{
+                $misc_id = $detail['misc_id'];
+                $type = $detail['type'];
+                $status = $detail['status'];
+                $substage = $detail['substage'];
+                if($status === 'file decision'){
+                  $this->db->where('misc_id', $misc_id);
+                  $this->db->where('type', $type);
+                  $this->db->where('status', $status);
+                }else{
+                  $this->db->where('misc_id', $misc_id);
+                  $this->db->where('type', $type);
+                  $this->db->where('status', $status);
+                  $this->db->where('substage', $substage);
+                }
+                
+                $query = $this->db->get('substages_miscellaneous');  
+              if ($query->num_rows() > 0) {
+                $row_id = $query->row_array()['id'];
+                // print_r($row_id);die;
+                  $this->db->where('id', $row_id);
+                  $this->db->set('updated_at', 'NOW()', FALSE);
+                  $query = $this->db->update('substages_miscellaneous', $detail);                    
+                  return $query;
+              }else{
+                // print_r("insert");die;
+                $res = $this->db->insert('substages_miscellaneous',$detail);
+                return $res;
+              }
+              }
+}
+public function get_miscellaneous_substage($id, $filter, $sort){
+                
+                if (!empty($id)) {            
+                  $this->db->where('id',$id);
+                  }
+                if (!empty($filter['misc_id'])) {
+                  $misc_id = $filter['misc_id'];
+                  $this->db->where('misc_id', $misc_id);
+                  }
+                if (!empty($filter['type'])) {
+                  $type = $filter['type'];
+                  $this->db->where('type', $type);
+                  }
+                if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
+                  $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+                  }
+                
+                $result = $this->db->get('substages_miscellaneous')->result_array();
+                $total_rows = count($result);
+                return array('total_rows' => $total_rows, 'data' => $result);
+                // print_r($this->db->last_query());
+  }
+  public function delete_miscellaneous_substage(){
+                $this->db->where("id", $id);
+                return $this->db->delete("substages_miscellaneous");
+  }
+public function get_activity_log($id, $filter, $sort, $limit, $offset){
+                
+                if (!empty($id)) {            
+                  $this->db->where('id',$id);
+                  }
+                if (!empty($filter['misc_id'])) {
+                  $misc_id = $filter['misc_id'];
+                  $this->db->where('misc_id', $misc_id);
+                  }
+                if (!empty($filter['type'])) {
+                  $type = $filter['type'];
+                  $this->db->where('type', $type);
+                  }
+                if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
+                  $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
+                  }
+                $this->db->select("*,
+                                  CASE
+                                    WHEN activity_log.user_type IN ('super-admin', 'manager', 'admin') THEN(SELECT name FROM admin WHERE admin_id = activity_log.`user_id` )
+                                    WHEN activity_log.user_type = 'employee' THEN(SELECT name FROM employee WHERE employee_id = activity_log.user_id)
+                                    WHEN activity_log.user_type = 'employer' THEN(SELECT company_name FROM employer WHERE company_id = activity_log.user_id)
+                                  END AS created_by,
+                                  CASE
+                                    WHEN activity_log.action_type = 'employee' THEN(SELECT name FROM employee WHERE employee_id = activity_log.action_id )
+                                  END AS employee_name,
+                                   CASE
+                                    WHEN activity_log.action_type = 'employer' THEN(SELECT company_name FROM employer WHERE company_id = activity_log.action_id )
+                                  END AS employer_name,
+                                  CASE
+                                      WHEN activity_log.action_type = 'jobs' THEN(SELECT job_title FROM jobs WHERE job_id = activity_log.action_id )
+                                  END AS job_title,
+                                  CASE
+                                      WHEN activity_log.action_type = 'apply_on_job' THEN(SELECT job_title FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+                                  END AS applied_job,
+                                  CASE
+                                      WHEN activity_log.action_type = 'apply_on_job' THEN(SELECT name FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+                                  END AS applied_employee_name,
+                                  CASE
+                                      WHEN activity_log.action_type = 'lmia' THEN(SELECT job_title FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+                                  END AS lmia_job_title,
+                                  CASE
+                                      WHEN activity_log.action_type = 'lmia' THEN(SELECT name FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+                                  END AS lmia_employee_name");
+                $this->db->limit($limit, $offset);            
+                $result = $this->db->get('activity_log')->result_array();
+                // print_r($this->db->last_query());
+                $total_rows = count($result);
+                return array('total_rows' => $total_rows, 'data' => $result);
+
+/*
+||---------------------------------------------------------------------------------------------------------------------------------
+||        SQL QUERY
+||---------------------------------------------------------------------------------------------------------------------
+    SELECT *,
+    CASE
+      WHEN activity_log.user_type IN ('super-admin', 'manager', 'admin') THEN(SELECT name FROM admin WHERE admin_id = activity_log.`user_id` )
+      WHEN activity_log.user_type = 'employee' THEN(SELECT name FROM employee WHERE employee_id = activity_log.user_id)
+      WHEN activity_log.user_type = 'employer' THEN(SELECT company_name FROM employer WHERE company_id = activity_log.user_id)
+    END AS created_by,
+    CASE
+      WHEN activity_log.action_type = 'employee' THEN(SELECT name FROM employee WHERE employee_id = activity_log.action_id )
+    END AS employee_name,
+     CASE
+      WHEN activity_log.action_type = 'employer' THEN(SELECT company_name FROM employer WHERE company_id = activity_log.action_id )
+    END AS employer_name,
+    CASE
+        WHEN activity_log.action_type = 'jobs' THEN(SELECT job_title FROM jobs WHERE job_id = activity_log.action_id )
+    END AS job_title,
+    CASE
+        WHEN activity_log.action_type = 'apply_on_job' THEN(SELECT job_title FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+    END AS applied_job,
+    CASE
+        WHEN activity_log.action_type = 'apply_on_job' THEN(SELECT name FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+    END AS applied_employee_name,
+    CASE
+        WHEN activity_log.action_type = 'lmia' THEN(SELECT job_title FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+    END AS lmia_job_title,
+    CASE
+        WHEN activity_log.action_type = 'lmia' THEN(SELECT name FROM view_applied_employee WHERE apply_id = activity_log.action_id )
+    END AS lmia_employee_name
+    FROM `activity_log`
+||---------------------------------------------------------------------------------------------------------------------
+ */
+  }
+   public function assign_job_to_manager($job_id, $manager_id){
+        $this->db->where('job_id', $job_id);
+        $this->db->set('manager_id', $manager_id);
+        $this->db->set('updated_at', 'NOW()', FALSE);
+        return $this->db->update('jobs');
+    }
+public function update_admin_setting($admin_id, $details){
+      $this->db->where('admin_id',$admin_id);
+      $query = $this->db->get('admin_setting');
+       if ($query->num_rows() > 0) {
+                $row_id = $query->row_array()['admin_id'];
+                // print_r($row_id);die; 
+                $this->db->where('admin_id', $row_id);
+                $this->db->set('updated_at', 'NOW()', FALSE);
+                return $this->db->update('admin_setting', $details);
+                // $msg = "updated successfully";                  
+                //   return $msg;
+        }else{
+          $details['admin_id'] = $admin_id;
+          return $this->db->insert('admin_setting', $details);
+        }
+}
+public function get_Admin_setting($admin_id){
+  $this->db->where('admin_id', $admin_id);
+  $this->db->select('admin_id, name, admin_type, is_active, is_deleted, email_permission');
+  return $this->db->get('admin_setting')->row_array();
 }
 }

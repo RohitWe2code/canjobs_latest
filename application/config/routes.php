@@ -212,36 +212,11 @@ $route['404_override'] = '';
 
 $route['translate_uri_dashes'] = FALSE;
 
-
-
-
-
-
-
-// $route['register'] = 'api/Authorisation/register';
-
-
-
-// $route['login'] = 'api/Authorisation/login';
-
-
-
-// $route['getProfile'] = 'api/naukari/getProfile';
-
-
-
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------------------------
-// ADMIN
-//-------------------------------------------------------------------------------------
-
+/*
+||-------------------------------------------------------------------------------------
+|| ADMIN
+||-------------------------------------------------------------------------------------
+*/
 
 
 $route['admin_login'] = 'api/Admin_registration/login';
@@ -276,25 +251,19 @@ $route['admin/getAllEmployer'] = 'api/employer_api/allEmployer';
 
 
 
-$route['admin/addFollowup'] = 'api/admin_api/followUp';
+$route['admin/addFollowUpEmployee'] = 'api/admin_api/addFollowUpEmployee';
 
-
+$route['admin/addFollowUpEmployer'] = 'api/admin_api/addFollowUpEmployer';
 
 $route['admin/addAdmin'] = 'api/admin_api/addAdmin';
 
+$route['admin/getFollowUpEmployee'] = 'api/admin_api/getFollowUpEmployee';
 
-
-$route['admin/getFollowup'] = 'api/admin_api/getfollowup';
-
-
+$route['admin/getFollowUpEmployer'] = 'api/admin_api/getFollowUpEmployer';
 
 $route['admin/getallEmployeeView'] = 'api/employee_api/allEmployeeView';
 
-
-
 $route['admin/addCategory'] = 'api/employer_api/addCategory';
-
-
 
 $route['admin/getAllAdmin'] = 'api/admin_api/allAdmin';
 
@@ -308,7 +277,7 @@ $route['admin/deleteAdmin'] = 'api/admin_api/deleteAdmin';
 
 $route['admin/getFollowupView'] = 'api/admin_api/viewFollowup';
 
-$route['admin/jobDetail'] = 'api/employer_api/getAllJobsView';
+
 
 $route['admin/addUpdatefilterList'] = 'api/admin_api/addUpdatefilterList';
 
@@ -320,8 +289,6 @@ $route['admin/getInterview'] = 'api/employer_api/getInterview';
 
 $route['admin/deleteFilterListItem'] = 'api/admin_api/deleteFilterListItem';
 
-$route['admin/addUpdateLmia'] = 'api/employer_api/addUpdateLmia';
-
 $route['admin/getToken'] = 'api/admin_api/getToken';
 
 $route['admin/getSummaryCounts'] = 'api/admin_api/getSummaryCounts';
@@ -330,15 +297,15 @@ $route['admin/getAllLastFollowup'] = 'api/admin_api/getAllLastFollowup';
 $route['admin/changePassword'] = 'api/admin_api/changePassword';
 $route['admin/forgetPassword'] = 'api/Admin_registration/forgetPassword';
 $route['admin/resetPassword'] = 'api/Admin_registration/resetPassword';
+$route['admin/updateAdminSetting'] = 'api/admin_api/updateAdminSetting';
+$route['admin/getAdminSetting'] = 'api/admin_api/getAdminSetting';
 
 
-
-
-
-//----------------------------------------------------------------------------------------
-// EMPLOYEE
-//----------------------------------------------------------------------------------------
-
+/*
+||----------------------------------------------------------------------------------------
+|| EMPLOYEE
+||----------------------------------------------------------------------------------------
+*/
 
 
 $route['employee_signup'] = 'api/Employee_registration/signup';
@@ -346,7 +313,6 @@ $route['employee_signup'] = 'api/Employee_registration/signup';
 
 
 $route['employee_login'] = 'api/Employee_registration/login';
-
 
 
 $route['employeePersonal_detail'] = 'api/employee_api/employeePersonal_detail';
@@ -401,7 +367,7 @@ $route['deleteEmployeeSkill'] = 'api/employee_api/deleteEmployeeSkill';
 
 
 
-$route['getJobResponse'] = 'api/employee_api/getJobResponse';
+
 
 $route['getCountryList'] = 'api/employee_api/countryList';
 
@@ -409,22 +375,32 @@ $route['getStateList'] = 'api/employee_api/getStateList';
 
 $route['getCityList'] = 'api/employee_api/getCityList';
 
-$route['employee/forgetPassword'] = 'api/Employee_registration/forgetPassword';
+$route['employee/ForgetPassword'] = 'api/Employee_registration/forgetPassword';
 
 $route['user/resetPassword'] = 'api/Employee_registration/resetPassword';
 
 $route['getProfileCompletePercent'] = 'api/employee_api/getProfileCompletePercent';
-$route['getJobsByEmployee'] = 'api/employee_api/getJobsByEmployee';
+
 $route['user/changePassword'] = 'api/employee_api/changePassword';
 $route['user/signupLoginViaSocialMedia'] = 'api/Employee_registration/signupLoginViaSocialMedia';
+$route['user/documentsUpload'] = 'api/employee_api/documentsUpload';
+$route['user/isVarify'] = 'api/employee_api/isVarify';
+$route['user/getDocumentsUploaded'] = 'api/employee_api/getDocumentsUploaded';
+$route['user/deleteDocumentsUploaded'] = 'api/employee_api/deleteDocumentsUploaded';
+$route['addUpdateVisa'] = 'api/employee_api/addUpdateVisa';
+$route['getVisa'] = 'api/employee_api/getVisa';
+$route['setEmployeeReserve'] = 'api/employee_api/setEmployeeReserve';
+$route['removeEmployeeReserve'] = 'api/employee_api/removeEmployeeReserve';
+$route['employee/updateEmployeeSetting'] = 'api/employee_api/updateEmployeeSetting';
+$route['employee/getEmployeeSetting'] = 'api/employee_api/getEmployeeSetting';
 
 
 
-
-//----------------------------------------------------------------------------------------
-// EMPLOYER
-//----------------------------------------------------------------------------------------
-
+/*
+||----------------------------------------------------------------------------------------
+|| EMPLOYER
+||----------------------------------------------------------------------------------------
+*/
 
 
 $route['employer'] = 'api/employer_api/index';
@@ -451,11 +427,6 @@ $route['company_kyc_detail'] = 'api/employer_api/company_kyc_detail';
 
 
 
-$route['addJobs'] = 'api/employer_api/addJobs';
-
-
-
-$route['applyJob'] = 'api/employer_api/apply_job';
 
 
 
@@ -463,7 +434,7 @@ $route['getAppliedCandidateList'] = 'api/employer_api/applied_candidateList';
 
 
 
-$route['getAllJobs'] = 'api/employer_api/getAllJobsView';
+
 
 
 
@@ -475,7 +446,7 @@ $route['deletejobCategory/(:num)'] = 'api/employer_api/jobCategory/$1';
 
 
 
-$route['deletejob/(:num)'] = 'api/employer_api/job/$1';
+
 
 
 
@@ -487,7 +458,7 @@ $route['getEmployer'] = 'api/employer_api/getEmployer';
 
 
 
-$route['getJob'] = 'api/employer_api/getjob';
+
 
 $route['company/forgetPassword'] = 'api/Employer_registration/forgetPassword';
 
@@ -501,16 +472,103 @@ $route['company/changePassword'] = 'api/employer_api/changePassword';
 
 $route['company/signupLoginViaSocialMedia'] = 'api/Employer_registration/signupLoginViaSocialMedia';
 
-//----------------------------------------------------------------------------------------
-// COMMON
-//----------------------------------------------------------------------------------------
+// $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
+$route['company/documentsUpload'] = 'api/employer_api/documentsUpload';
+$route['company/isVarify'] = 'api/employer_api/isVarify';
+$route['company/getDocumentsUploaded'] = 'api/employer_api/getDocumentsUploaded';
+$route['employer/updateEmployerSetting'] = 'api/employer_api/updateEmployerSetting';
+$route['employer/getEmployerSetting'] = 'api/employer_api/getEmployerSetting';
+
+
+
+
+
+
+/*
+||----------------------------------------------------------------------------------------
+|| COMMON
+||----------------------------------------------------------------------------------------
+*/
 
 $route['common/getJobs'] = 'api/Common_controller/getalljobs';
-
+$route['common/getTestApi'] = 'api/Common_controller/getTestApi';
 $route['common/generateOtp'] = 'api/Common_controller/generateOtp';
-$route['common/sendEmail'] = 'api/Common_controller/sendEmail';
 $route['common/getNotifications'] = 'api/Common_controller/getNotifications';
 $route['common/isReadNotification'] = 'api/Common_controller/isReadNotification';
-$route['common/addUpdateEmailTemplate'] = 'api/Common_controller/addUpdateEmailTemplate';
-$route['common/getEmailTemplate'] = 'api/Common_controller/getEmailTemplate';
-$route['common/testEmail'] = 'api/Common_controller/testEmail';
+$route['common/addUpdateMiscellaneousSubstage'] = 'api/admin_api/addUpdateMiscellaneousSubstage';
+$route['common/getMiscellaneousSubstage'] = 'api/admin_api/getMiscellaneousSubstage';
+$route['common/deleteMiscellaneousSubstage'] = 'api/admin_api/deleteMiscellaneousSubstage';
+$route['common/addActivityLog'] = 'api/Common_controller/addActivityLog';
+$route['getActivityLog'] = 'api/admin_api/getActivityLog';
+$route['common/testApi'] = 'api/Common_controller/testApi';
+
+/*
+||----------------------------------------------------------------------------------------
+|| Payment
+||----------------------------------------------------------------------------------------
+*/
+$route['addRazorPayReciept'] = 'api/Payment_gateway_controller/addRazorPayReciept';
+$route['getPaymentReciept'] = 'api/Payment_gateway_controller/getPaymentReciept';
+
+/*
+||----------------------------------------------------------------------------------------
+|| Email
+||----------------------------------------------------------------------------------------
+*/
+$route['common/sendEmail'] = 'api/Email_controller/sendEmail';
+$route['common/addUpdateEmailTemplate'] = 'api/Email_controller/addUpdateEmailTemplate';
+$route['common/getEmailTemplate'] = 'api/Email_controller/getEmailTemplate';
+$route['common/emailTemplateTest'] = 'api/Email_controller/emailTemplateTest'; //testEmail
+$route['sendEmailTest'] = 'api/Email_controller/sendEmailTest';
+
+/*
+||----------------------------------------------------------------------------------------
+|| Lmia
+||----------------------------------------------------------------------------------------
+*/
+$route['admin/addUpdateLmia'] = 'api/Lmia_controller/addUpdateLmia';
+$route['company/getLmia'] = 'api/Lmia_controller/getLmia';
+$route['addUpdateLmiaSubstagesEmployee'] = 'api/Lmia_controller/addUpdateLmiaSubstagesEmployee';
+$route['getLmiaSubstagesEmployee'] = 'api/Lmia_controller/getLmiaSubstagesEmployee';
+$route['deleteLmiaSubstageEmployee'] = 'api/Lmia_controller/deleteLmiaSubstageEmployee';
+$route['addUpdateLmiaSubstagesJob'] = 'api/Lmia_controller/addUpdateLmiaSubstagesJob';
+$route['getLmiaSubstagesjob'] = 'api/Lmia_controller/getLmiaSubstagesjob';
+$route['deleteLmiaSubstageJob'] = 'api/Lmia_controller/deleteLmiaSubstageJob';
+/*
+||----------------------------------------------------------------------------------------
+|| job
+||----------------------------------------------------------------------------------------
+*/
+$route['addJobs'] = 'api/employer_api/addJobs';
+$route['getJob'] = 'api/employer_api/getjob';
+$route['deletejob/(:num)'] = 'api/employer_api/job/$1';
+$route['applyJob'] = 'api/employer_api/apply_job';
+$route['deleteApplyJob'] = 'api/employer_api/deleteApplyJob';
+$route['admin/jobDetail'] = 'api/employer_api/getAllJobsView';
+$route['admin/getAllJobsViewAdmin'] = 'api/employer_api/getAllJobsViewAdmin';
+$route['getJobResponse'] = 'api/employee_api/getJobResponse';
+$route['getJobsByEmployee'] = 'api/employee_api/getJobsByEmployee';
+$route['getAllJobs'] = 'api/employer_api/getAllJobsView';
+$route['admin/assignJobToManager'] = 'api/admin_api/assignJobToManager';
+/*
+||----------------------------------------------------------------------------------------
+|| Manager
+||----------------------------------------------------------------------------------------
+*/
+$route['manager/addUpadateTeam'] = 'api/manager_controller/addUpadateTeam';
+$route['manager/getTeam'] = 'api/manager_controller/getTeam';
+$route['manager/deleteTeamMember'] = 'api/manager_controller/deleteTeamMember';
+/*
+||----------------------------------------------------------------------------------------
+|| Setting
+||----------------------------------------------------------------------------------------
+*/
+$route['setting/updateParentSetting'] = 'api/setting_controller/updateParentSetting';
+$route['setting/getParentSetting'] = 'api/setting_controller/getParentSetting';
+/*
+||----------------------------------------------------------------------------------------
+|| Agent
+||----------------------------------------------------------------------------------------
+*/
+$route['agent/addUpadateAgent'] = 'api/agent_controller/addUpadateAgent';
+$route['agent/getAgent'] = 'api/agent_controller/getAgent';

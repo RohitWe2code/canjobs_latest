@@ -5,6 +5,8 @@ Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
+require APPPATH . 'libraries/Format.php';
+
 
 class Employee_registration extends REST_Controller{
 
@@ -19,27 +21,28 @@ class Employee_registration extends REST_Controller{
     $this->load->library('Authorization_Token');
     $this->load->helper("security");
     $this->load->helper('url');
+    $this->admin_email = "aashi.we2code@gmail.com";
   }
+  // public function index_get(){
 
+  // }
   public function signup_post(){
     
     $email = $this->security->xss_clean($this->input->post("email"));
     $password = $this->security->xss_clean($this->input->post("password"));
-    $resume =$this->input->post("cv");
+    $resume =$this->input->post("resume");
     $otp =$this->input->post("otp");
+            // echo("resume outside: $resume <br>");
 
 if($resume) {
-    // Decode the base64 encoded PDF data
+              // echo("resume base 64: $resume <br>");die;
     $cv_data = base64_decode($resume);
-    // Set the file name
     $file_name_for_upload = time().'.pdf';
-    // Set the file path
     $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
-    // Write the file to the server
     if(file_put_contents($file_path, $cv_data)) {
-        // File was successfully uploaded
         $cv = base_url() . 'uploads/' . $file_name_for_upload;
-       
+                  //  echo("link for database : $resume");
+
     } else {
         // File upload failed
     }
@@ -105,7 +108,7 @@ if($resume) {
               $this->common_model->email($eamil_detail, $email_template_id, $unique_id);
               // Admin --------------------------------------------------------
               $email_template_id = 8;
-              $eamil_detail_admin = array('to' => 'aashi.we2code@gmail.com' ?? NULL,
+              $eamil_detail_admin = array('to' =>  $this->admin_email ?? NULL,
                                           'admin_name' => 'Aashi',
                                           'user_email' => $response->email ?? NULL);
               $this->common_model->email($eamil_detail_admin, $email_template_id, $unique_id);
@@ -140,6 +143,7 @@ if($resume) {
   }
   public function login_post()
     {
+      // print_r($_POST);die;
         $email = $this->security->xss_clean($this->input->post("email"));
         $password = $this->security->xss_clean($this->input->post("password"));
 
@@ -158,7 +162,9 @@ if($resume) {
                     "message" => "Successfully Logged In",
                     'employee_id'=> $loginStatus->employee_id,
                     'name'=> $loginStatus->name,
+                    'email'=> $loginStatus->email,
                     'profile_photo'=> $loginStatus->profile_photo,
+                    'skill'=> $loginStatus->skill,
                     'token' => $bearerToken,
                     ) , REST_Controller::HTTP_OK);
                     return;
@@ -200,7 +206,7 @@ if($resume) {
                             $email = array('to' => $loginStatus->email ?? NULL,
                                           'name' => $loginStatus->name ?? NULL,
                                           // 'token'=>$detail['token'],
-                                          'reset_link' => 'http://localhost:3000/resetpassword/user:'.$detail['token']
+                                          'reset_link' => 'https://canjobs.vercel.app/resetpassword/user:'.$detail['token']
                                          );
                             $this->common_model->email($email, $email_template_id, $unique_id);
 

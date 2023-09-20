@@ -207,7 +207,8 @@ class CI_DB_mysqli_driver extends CI_DB {
 				);
 			}
 		}
-
+// echo"username : $this->username,</br> password : $this->password,</br> database : $this->database,</br> port : $port";
+// print_r($hostname);die;
 		if ($this->_mysqli->real_connect($hostname, $this->username, $this->password, $this->database, $port, $socket, $client_flags))
 		{
 			// Prior to version 5.7.3, MySQL silently downgrades to an unencrypted connection if SSL setup fails
