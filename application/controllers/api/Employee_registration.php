@@ -31,6 +31,7 @@ class Employee_registration extends REST_Controller{
     $email = $this->security->xss_clean($this->input->post("email"));
     $password = $this->security->xss_clean($this->input->post("password"));
     $resume =$this->input->post("resume");
+    $reffer_by =$this->input->post("reffer_by");
     $otp =$this->input->post("otp");
             // echo("resume outside: $resume <br>");
 
@@ -51,6 +52,7 @@ if($resume) {
     // form validation for inputs
     $this->form_validation->set_rules("email", "Email", "required|valid_email");
     $this->form_validation->set_rules("password", "password", "required");
+    $this->form_validation->set_rules("reffer_by", "reffer_by", "required");
     $this->form_validation->set_rules("otp", "otp", "required");
 
     // checking form submittion have any error or not
@@ -88,6 +90,7 @@ if($resume) {
          
           "email" => $email,
           "password" => md5($password),
+          "reffer_by" =>$reffer_by,
         
         );
          if(isset($cv)){

@@ -283,9 +283,7 @@ $route['admin/addUpdatefilterList'] = 'api/admin_api/addUpdatefilterList';
 
 $route['admin/getFilterList'] = 'api/admin_api/getFilterList';
 
-$route['admin/addUpdateInterview'] = 'api/employer_api/addUpdateInterview';
 
-$route['admin/getInterview'] = 'api/employer_api/getInterview';
 
 $route['admin/deleteFilterListItem'] = 'api/admin_api/deleteFilterListItem';
 
@@ -471,17 +469,6 @@ $route['company/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 $route['company/changePassword'] = 'api/employer_api/changePassword';
 
 $route['company/signupLoginViaSocialMedia'] = 'api/Employer_registration/signupLoginViaSocialMedia';
-$route['company/getLmia'] = 'api/employer_api/getLmia';
-// $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
-$route['company/documentsUpload'] = 'api/employer_api/documentsUpload';
-$route['company/isVarify'] = 'api/employer_api/isVarify';
-$route['company/getDocumentsUploaded'] = 'api/employer_api/getDocumentsUploaded';
-$route['addUpdateLmiaSubstagesEmployee'] = 'api/employer_api/addUpdateLmiaSubstagesEmployee';
-$route['getLmiaSubstagesEmployee'] = 'api/employer_api/getLmiaSubstagesEmployee';
-$route['addUpdateLmiaSubstagesJob'] = 'api/employer_api/addUpdateLmiaSubstagesJob';
-$route['getLmiaSubstagesjob'] = 'api/employer_api/getLmiaSubstagesjob';
-
-
 
 // $route['company/addUpdateVisa'] = 'api/employer_api/addUpdateVisa';
 $route['company/documentsUpload'] = 'api/employer_api/documentsUpload';
@@ -518,8 +505,10 @@ $route['common/testApi'] = 'api/Common_controller/testApi';
 || Payment
 ||----------------------------------------------------------------------------------------
 */
-$route['addRazorPayReciept'] = 'api/Payment_gateway_controller/addRazorPayReciept';
-$route['getPaymentReciept'] = 'api/Payment_gateway_controller/getPaymentReciept';
+$route['payment/creatRazorpayOrder'] = 'api/Payment_gateway_controller/creatRazorpayOrder';
+// $route['payment/addRazorPayReciept'] = 'api/Common_controller/addRazorPayReciept';
+$route['payment/addRazorPayReciept'] = 'api/Payment_gateway_controller/addRazorPayReciept';
+$route['payment/getPaymentReciept'] = 'api/Payment_gateway_controller/getPaymentReciept';
 
 /*
 ||----------------------------------------------------------------------------------------
@@ -545,6 +534,14 @@ $route['deleteLmiaSubstageEmployee'] = 'api/Lmia_controller/deleteLmiaSubstageEm
 $route['addUpdateLmiaSubstagesJob'] = 'api/Lmia_controller/addUpdateLmiaSubstagesJob';
 $route['getLmiaSubstagesjob'] = 'api/Lmia_controller/getLmiaSubstagesjob';
 $route['deleteLmiaSubstageJob'] = 'api/Lmia_controller/deleteLmiaSubstageJob';
+/*
+||----------------------------------------------------------------------------------------
+|| Interview
+||----------------------------------------------------------------------------------------
+*/
+$route['admin/addUpdateInterview'] = 'api/employer_api/addUpdateInterview';
+
+$route['admin/getInterview'] = 'api/employer_api/getInterview';
 /*
 ||----------------------------------------------------------------------------------------
 || job
@@ -583,3 +580,4 @@ $route['setting/getParentSetting'] = 'api/setting_controller/getParentSetting';
 */
 $route['agent/addUpadateAgent'] = 'api/agent_controller/addUpadateAgent';
 $route['agent/getAgent'] = 'api/agent_controller/getAgent';
+$route['agent/deleteAgent'] = 'api/agent_controller/deleteAgent';

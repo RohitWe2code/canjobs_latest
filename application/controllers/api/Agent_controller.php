@@ -34,6 +34,92 @@ public function addUpadateAgent_put(){
 
      $data = json_decode(file_get_contents("php://input"));
     //  print_r($data);die;
+    $msg = "created successfully";
+    $id = '';
+    if(isset($data->id) && !empty($data->id)){
+      /*
+    ||-------------------------------------------------------------------------------------------------
+    ||  Update
+    ||-------------------------------------------------------------------------------------------------
+     */
+        $msg = "updated successfully";
+        $id = $data->id;
+        if(isset($data->name)){
+          if(!empty($data->name)){
+            $agent_details['name'] = $data->name;
+          }
+        }
+        if(isset($data->email)){
+          if(!empty($data->email)){
+            $agent_details['email'] = $data->email;
+          }
+        }
+        if(isset($data->contact_no)){
+          if(!empty($data->contact_no)){
+            $agent_details['contact_no'] = $data->contact_no;
+          }
+        }
+        if(isset($data->address)){
+          if(!empty($data->address)){
+            $agent_details['address'] = $data->address;
+          }
+        }
+        if(isset($data->city)){
+          if(!empty($data->city)){
+            $agent_details['city'] = $data->city;
+          }
+        }
+        if(isset($data->state)){
+          if(!empty($data->state)){
+            $agent_details['state'] = $data->state;
+          }
+        }
+        if(isset($data->country)){
+          if(!empty($data->country)){
+            $agent_details['country'] = $data->country;
+          }
+        }
+        if(isset($data->type)){
+          if(!empty($data->type)){
+            $agent_details['type'] = $data->type;
+          }
+        }
+        if(isset($data->profile_image)){
+          if(!empty($data->profile_image)){
+                     $image_data = $data->profile_image;
+
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                       $agent_details["profile_image"] = $logo;
+                    } else {
+                        // Unsupported file type
+                       unset($agent_details["profile_image"]);
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($agent_details["profile_image"]);
+                }
+              }
+            }
+      }else{
+        /*
+    ||-------------------------------------------------------------------------------------------------
+    ||  Create
+    ||-------------------------------------------------------------------------------------------------
+     */
       if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->address) && isset($data->city) && isset($data->state) && isset($data->country)){  
         if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->address) || empty($data->city) || empty($data->state) || empty($data->country)){
             $this->response(array(
@@ -63,12 +149,42 @@ public function addUpadateAgent_put(){
             $agent_details['type'] = $data->type;
           }
         }
-        $id = '';
-        // print_r($id);die;
+        if(isset($data->profile_image)){
+          if(!empty($data->profile_image)){
+                     $image_data = $data->profile_image;
+
+                // Check if the image data is a base64-encoded string
+                if (preg_match('/^data:image\/(\w+);base64,/', $image_data, $image_type)) {
+                    $image_data = substr($image_data, strpos($image_data, ',') + 1);
+                
+                    $file_extension = strtolower($image_type[1]);
+                
+                    // Check if the image type is supported
+                    if (in_array($file_extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                        $image_data = base64_decode($image_data);
+                    
+                        $file_name_for_upload = time() . '.' . $file_extension;
+                        $file_path_for_upload = './uploads/' . $file_name_for_upload;
+                        file_put_contents($file_path_for_upload, $image_data);
+                    
+                        $logo = base_url() . 'uploads/' . $file_name_for_upload;
+                       $agent_details["profile_image"] = $logo;
+                    } else {
+                        // Unsupported file type
+                       unset($agent_details["profile_image"]);
+                    }
+                } else {
+                    // Invalid base64-encoded image data
+                 unset($agent_details["profile_image"]);
+                }
+          }
+        }
+      }
+        // print_r($msg);die;
      if($this->agent_model->add_update_agent($id, $agent_details)){
             $this->response(array(
               "status" => 1,
-              "message" => "successfully"
+              "message" => $msg
             ), REST_Controller::HTTP_OK);
         }else{
           $this->response(array(
@@ -112,13 +228,15 @@ public function getAgent_post(){
     $page =  $data->page ?? 1;
     $limit = $data->limit ?? 10; 
     $offset = ($page - 1) * $limit;
+
+    $search = $data->search ?? '';
     // $filter = array('executive'=> $data->filter_executive ?? null);
-    // $sort = [
-    //   'column_name' => $data->column_name ?? 'next_followup_date',
-    //   'sort_order' => $data->sort_order ?? 'DESC'
-    // ];
+    $sort = [
+      'column_name' => $data->column_name ?? 'created_at',
+      'sort_order' => $data->sort_order ?? 'DESC'
+    ];
     // print_r($id);die;
-      $response = $this->agent_model->get_agent($id, $offset, $limit);
+      $response = $this->agent_model->get_agent($id, $search, $sort, $offset, $limit);
       if($response){
         $this->response(array(
           "status" => 1,
@@ -141,13 +259,13 @@ public function getAgent_post(){
           return;
     } 
 }
-public function deleteTeamMember_put(){
+public function deleteAgent_post(){
   if(isset($this->admin_id) && ($this->user_type === 'super-admin' || $this->user_type === 'admin' || $this->user_type === 'manager')){
 
      $data = json_decode(file_get_contents("php://input"));
     //  print_r($data);die;
-      if(isset($data->executive_id)){  
-        if(empty($data->executive_id)){
+      if(isset($data->id)){  
+        if(empty($data->id)){
             $this->response(array(
             "status" => 0,
             "message" => "fields must not be empty !"
@@ -161,9 +279,9 @@ public function deleteTeamMember_put(){
         ), REST_Controller::HTTP_OK);
         return;
       }
-        $id = $data->executive_id ;
+        $id = $data->id ;
         // print_r($id);die;
-     if($this->manager_model->delete_team_member($id)){
+     if($this->agent_model->delete_agent($id)){
             $this->response(array(
               "status" => 1,
               "message" => "successfully"

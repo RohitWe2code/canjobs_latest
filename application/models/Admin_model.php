@@ -627,7 +627,7 @@ public function update_admin_setting($admin_id, $details){
 }
 public function get_Admin_setting($admin_id){
   $this->db->where('admin_id', $admin_id);
-  $this->db->select('admin_id, name, admin_type, is_active, is_deleted, email_permission');
+  // $this->db->select('admin_id, name, admin_type, is_active, is_deleted, email_permission');
   return $this->db->get('admin_setting')->row_array();
 }
 }

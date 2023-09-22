@@ -18,8 +18,10 @@ class Setting_model extends CI_Model
         }
     }
     public function get_parent_setting($details){
-    $this->db->where('type', $details['type']);
+      if(!empty($details['type'])){
+        $this->db->where('type', $details['type']);
+      }
     // $this->db->select('admin_id, name, admin_type, is_active, is_deleted, email_permission');
-    return $this->db->get('parent_setting')->row_array();
+    return $this->db->get('parent_setting')->result_array();
     }
 }

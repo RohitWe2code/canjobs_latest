@@ -181,11 +181,14 @@ public function checkEmployerEmailPermission($company_id){
     }
 }
 public function checkAdminEmailPermission($admin_id){
-  $query = "SELECT email_permission FROM `admin` WHERE admin_id = ".$admin_id;
+  $query = "SELECT email_permission, notification_permission FROM `admin_setting` WHERE admin_id = ".$admin_id;
   $res = $this->db->query($query);
   // print_r(json_decode($res['email_permission']));die;
    if ($res->num_rows() > 0) {
-      return $email_permission = json_decode($res->row_array()['email_permission']);
+      return $email_permission = array(
+                                        'email_permission'=> json_decode($res->row_array()['email_permission']),
+                                        'notification_permission'=> json_decode($res->row_array()['notification_permission'])
+                                    );
     } else {
         return False;
     }

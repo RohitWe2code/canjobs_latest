@@ -195,19 +195,6 @@ if(isset($job_detail['job_id'])){
                                     // print_r($job_detail);die;
                                   $this->db->set('updated_at', 'NOW()', FALSE);
 
-                                  if(!empty($job_detail['keyskill'])){
-                                        $existingKeySkills = $row->keyskill;
-                                      if(strcmp($existingKeySkills, $job_detail['keyskill'])){
-                                        // Append the new key skills to the existing value
-                                        $newKeySkills = $existingKeySkills . ', ' . $job_detail['keyskill'];
-                                        
-                                        // Update the job_detail array with the new key skills
-                                        $job_detail['keyskill'] = $newKeySkills;
-                                        //  print_r("new skills added : ".$job_detail['keyskill']);die;
-                                      }
-                                      // print_r("no new skill");die;
-                                  }
-
                                   $res = $this->db->update('jobs', $job_detail);
 
                                   // print_r($this->db->last_query());
@@ -906,6 +893,7 @@ $rows = $this->db->query($que)->result_array();
     $total_rows =count($rows);
     return array('total_rows' => $total_rows, 'data' => $result);
 }
+
 public function documentsUpload($id, $file_info){
   // print_r($file_info);die;
             if (!empty($id)) {

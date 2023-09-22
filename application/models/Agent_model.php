@@ -3,7 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Agent_model extends CI_Model
 {
     public function add_update_agent($id, $agent_details){
-
+        if(!empty($id)){
+            $this->db->where('id', $id);
+            $this->db->set('updated_at', 'NOW()', FALSE);
+            $insert = $this->db->update('agent', $agent_details);
+            $this->writeJsonFile();
+            return $insert;
+        }
         // $this->db->where('admin_id', $id);
         // $this->db->set('updated_at', 'NOW()', FALSE);
         $insert = $this->db->insert('agent', $agent_details);
@@ -15,27 +21,50 @@ class Agent_model extends CI_Model
             // print_r($insert);die;
             $this->db->where('id', $lastInsertedId);
             $this->db->set('u_id', $u_id['u_id']);
-            return $this->db->update('agent');
+            $update = $this->db->update('agent');
+            $this->writeJsonFile();
+            return $update;
         }
     }
-    public function get_agent($id, $offset, $limit){
-        // $where = " admin_type = 'executive' AND (parent_id = 0 OR parent_id = $manager_id) ";
-        // $this->db->where('parent_id', $manager_id);
+    public function get_agent($id, $search, $sort, $offset, $limit){
+        
         $where = " 1 = 1 ";
         if(!empty($id)){
             $where .= " AND id = ".$id;
         }
+        if(!empty($search)){
+            $where .= " AND ((name LIKE '%$search%') OR (u_id LIKE '%$search%')) ";
+        }
+        
         $this->db->where($where);
         $this->db->where(' is_deleted = 0 ');
+        $this->db->order_by($sort['column_name'], $sort['sort_order']);
         $this->db->limit( $limit, $offset);
         $result = $this->db->get('agent')->result_array();
+        // print_r($this->db->last_query());die;
         $total_rows = $this->db->where($where)->where('is_deleted = 0 ')->from('agent')->count_all_results();
         return array('total_rows' => $total_rows, 'data' => $result);
     }
-     public function delete_team_member($id){
-        $this->db->where('admin_id', $id);
-        $this->db->set('parent_id', 0);
+     public function delete_agent($id){
+        $this->db->where('id', $id);
+        $this->db->set('is_deleted', 1);
         $this->db->set('updated_at', 'NOW()', FALSE);
-        return $this->db->update('admin');
+        return $this->db->update('agent');
+    }
+    public function writeJsonFile(){
+        $this->db->select('id, u_id, name');
+        $this->db->where('is_deleted = 0 ');
+        $array_list = $this->db->get('agent')->result_array();
+        $json_list = json_encode($array_list);
+        // print_r($json_list);die;
+        $filename = "filterList/agentList.json";
+        $file = fopen($filename, "w");
+        fwrite($file, $json_list);
+        fclose($file);
+        
+        // Force download the file
+        // header("Content-Type: application/octet-stream");
+        // header("Content-Transfer-Encoding: Binary");
+        // header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
     }
 }

@@ -724,12 +724,6 @@ if(empty($data->company_id)){
             $job_detail["lmia_status"] = $data->lmia_status;
           }
           }
-         if(isset($data->lmia_status)){
-          if(!empty($data->lmia_status)){
-            $job_detail["lmia_status"] = $data->lmia_status;
-
-          }
-          }
           if(isset($data->role_category)){  // For number of vacancies
           if(!empty($data->role_category)){
             $job_detail["role_category"] = $data->role_category;
@@ -738,12 +732,6 @@ if(empty($data->company_id)){
           if(isset($data->is_featured)){  
           if($data->is_featured >= 0){
             $job_detail["is_featured"] = $data->is_featured;
-          }
-          }
-          if(isset($data->is_featured)){  
-          if($data->is_featured >= 0){
-            $job_detail["is_featured"] = $data->is_featured;
-
           }
           }
           if(!empty($this->admin_id) && $this->user_type != "employee" && $this->user_type != "employer"){

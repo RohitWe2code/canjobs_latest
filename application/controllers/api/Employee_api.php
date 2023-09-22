@@ -45,7 +45,9 @@ class Employee_api extends My_REST_Controller{
 public function employeePersonal_detail_put(){
       $data = json_decode(file_get_contents("php://input"));
       // print_r($data);
-      ////// Update employee personal detail ///////////
+/* 
+|| -------- Update employee personal detail ----------
+*/
 if(isset($data->employee_id)){
   $employee_info = array();
    if(!empty($data->employee_id)){
@@ -166,6 +168,11 @@ if(isset($data->employee_id)){
             $employee_info['designation'] = $data->designation;
           }
         }
+       if(isset($data->reffer_by)){
+          if(!empty($data->reffer_by)){
+            $employee_info['reffer_by'] = $data->reffer_by;
+          }
+        }
         //  echo("resume : $data->resume");
         if(isset($data->resume)){
           if(!empty($data->resume)){
@@ -178,7 +185,6 @@ if(isset($data->employee_id)){
                    $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
                    if(file_put_contents($file_path, $cv_data)) {
                        $cv = base_url() . 'uploads/' . $file_name_for_upload;
-                        //  echo("resume base 64: $cv");
                    }
              $employee_info["resume"] = $cv;
                   }else{
@@ -239,12 +245,14 @@ if(isset($data->employee_id)){
           ), REST_Controller::HTTP_OK);
         }
     }else{
-      ////////  Insert employee personal detail /////////////
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada))
+      /*
+      || ----------  Insert employee personal detail -----------
+      */
+      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->reffer_by))
       { 
          $error_flag = 0;
       
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada))
+        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->reffer_by))
         {
             $error_flag = 1;
         }
@@ -269,7 +277,8 @@ if(isset($data->employee_id)){
           "language" => $data->language,
           "interested_in" => $data->interested_in,
           "experience" => $data->experience,
-          "work_permit_canada" => $data->work_permit_canada
+          "work_permit_canada" => $data->work_permit_canada,
+          "reffer_by" => $data->reffer_by
         );
         if(isset($data->is_featured)){
           if(!empty($data->is_featured)){

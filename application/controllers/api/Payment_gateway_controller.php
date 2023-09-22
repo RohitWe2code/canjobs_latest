@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // require APPPATH.'libraries/REST_Controller.php';
 require APPPATH.'controllers/api/My_REST_Controller.php';
+require APPPATH.'libraries/razorpay-php-master/Razorpay.php';
+use Razorpay\Api\Api;
+use Razorpay\Api\Errors\SignatureVerificationError;
 
 class Payment_gateway_controller extends My_REST_Controller{
   public function __construct(){
@@ -21,83 +24,128 @@ class Payment_gateway_controller extends My_REST_Controller{
     $this->load->helper("security");
     $this->load->helper('url');
 
-    // $headers = $this->input->request_headers(); 
-		// $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-    // // print_r($this->decodedToken);die;   
-    //    if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
-    //         $err = array(
-    //             'status'=>false,
-    //             'message'=>'Unauthorised Token',
-    //             'data'=>[]
-    //         );
-    //         echo json_encode($err);
-    //         exit;
-    //       }
-    //       $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
-    //       $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
-    //       $this->company_id = $this->decodedToken['data']->company_id ?? null;
-    //       $this->user_type = $this->decodedToken['data']->user_type ?? null;
+    $headers = $this->input->request_headers(); 
+		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    // print_r($this->decodedToken);die;   
+       if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
+            $err = array(
+                'status'=>false,
+                'message'=>'Unauthorised Token',
+                'data'=>[]
+            );
+            echo json_encode($err);
+            exit;
+          }
+          $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
+          $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
+          $this->company_id = $this->decodedToken['data']->company_id ?? null;
+          $this->user_type = $this->decodedToken['data']->user_type ?? null;
     //       $this->admin_email = $this->decodedToken['data']->email ?? null;
     //       $this->admin_email_static = 'aashi.we2code@gmail.com';
     //       $this->admin_name_static = 'Aashi';
         }
-    public function addRazorPayReciept_post(){
-      $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->user_id) && isset($data->user_role) && isset($data->payment_id) && isset($data->status)){
-          if(empty($data->user_id) || empty($data->user_role) || empty($data->payment_id) || empty($data->status)){
-            $this->response(array(
-                   "status" => 0,
-                   "message" => "fields must not be empty !"
-                   ) , REST_Controller::HTTP_OK);
-                   return;
-            }
-            // $id = $data->id ?? null;
-            $details = array('user_id'=>$data->user_id,
-                             'user_role'=>$data->user_role,
-                             'payment_id'=>$data->payment_id,
-                             'payment_mode'=>"razorpay",
-                             'status'=>$data->status
-                            );
-            // if(isset($data->is_active)){             
-            //       $details['is_active'] = $data->is_active;
-            // }
-            
-            // print_r($details);die;
-          $response = $this->payment_gateway_model->add_razor_pay_reciept($details); 
-          // print_r($response);die;          
-            if($response){
-            $this->response(array(
-               "status" => 1,
-               "message" => $response
-               ) , REST_Controller::HTTP_OK);
-               // activity log
-                // $insert_id = $this->db->insert_id();
-                // if($insert_id){
-                // $para['status'] = 28; // "job lmia substage inserted"
-                // $para['action_id'] = $data->job_id ?? NULL;
-                // $para['action_type'] = 'jobs';
-                // }else{
-                //     $para['status'] = 29; // "job lmia substage updated"
-                //     $para['action_id'] = $data->job_id ?? NULL;
-                //     $para['action_type'] = 'jobs';
-                // }
-                // if(isset($para)){
-                // $this->_log_request($para);
-                // }
-               return;
-            }else{
+    public function creatRazorpayOrder_post(){
+            $data = json_decode(file_get_contents("php://input"));
+            $price = $data->price;
+            $currency = $data->currency;
+            $keyId = $this->config->item('keyId');
+            $keySecret = $this->config->item('keySecret');
+        
+            $api = new Api($keyId, $keySecret);
+
+            //
+            // We create an razorpay order using orders api
+            // Docs: https://docs.razorpay.com/docs/orders
+           
+            $orderData = [
+                // 'receipt'         => 3456,
+                'amount'          => $price * 100, // 2000 rupees in paise
+                'currency'        => $currency,
+                // 'payment_capture' => 1 // auto capture
+            ];
+
+            $razorpayOrder = $api->order->create($orderData);
+            // print_r($razorpayOrder);die;
+            $order_detail = array(
+              'id' => $razorpayOrder['id'],
+              'entity' => $razorpayOrder['entity'],
+              'amount' => $razorpayOrder['amount'],
+              'amount_paid' => $razorpayOrder['amount_paid'],
+              'amount_due' => $razorpayOrder['amount_due'],
+              'currency' => $razorpayOrder['currency'],
+            );
+            //  print_r(json_encode($order));die;
+             if ($razorpayOrder) {
               $this->response(array(
-              "status" => 0,
-              "message" => "failed !"
-              ) , REST_Controller::HTTP_OK);
+                "status" => 1,
+                "message" => "successful",
+                "data" => $order_detail
+              ), REST_Controller::HTTP_OK);
               return;
+          }else{
+            $this->response(array(
+              "status" => 0,
+              "messsage" => "No data found"
+            ), REST_Controller::HTTP_OK);
+            return;
+          }
+    }
+    public function addRazorPayReciept_post(){
+        $data = json_decode(file_get_contents("php://input"));
+        // print_r($data);die;
+        if (!empty($data->razorpayPaymentId)){
+            $keyId = $this->config->item('keyId');
+            $keySecret = $this->config->item('keySecret');
+            $api = new Api($keyId, $keySecret);
+            try
+            {
+                $attributes = array(
+                    'razorpay_order_id' => $data->razorpay0rderId,
+                    'razorpay_payment_id' => $data->razorpayPaymentId,
+                    'razorpay_signature' => $data->razorpaysighature
+                );
+
+                $api->utility->verifyPaymentSignature($attributes);
             }
-        }else{
-           $this->response(array(
-                    "status" => 0,
-                    "message" => "all fields required !"
-                    ) , REST_Controller::HTTP_OK);
-                    return;
+            catch(SignatureVerificationError $e)
+            {
+              $this->response(array(
+                            "status" => 0,
+                            "message" => $e->getMessage()
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+            }
+          $amount = $data->amount/100;
+          $payment_detail  = array(
+            'user_id' => $this->admin_id ?? $this->employee_id ?? $this->company_id ,
+            'user_role' => $this->user_type,
+            'order_id' => $data->razorpay0rderId,
+            'payment_id' => $data->razorpayPaymentId,
+            'payment_mode' => 'razorpay',
+            'amount' => $amount,
+            'status' => 'success',
+          );
+          $response = $this->payment_gateway_model->add_razor_pay_reciept($payment_detail); 
+                      //  print_r($response);die;
+                      if($response){
+                          $this->response(array(
+                            "status" => 1,
+                            "message" => "payment successful payment id : $data->razorpayPaymentId"
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+                          }else{
+                            $this->response(array(
+                            "status" => 0,
+                            "message" => "failed !"
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+                          }    
+                      }else{
+                      $this->response(array(
+                        "status" => 0,
+                        "message" => "payment failed !"
+                        ) , REST_Controller::HTTP_OK);
+                        return;
         }
     }
     public function getPaymentReciept_post(){
