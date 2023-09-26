@@ -15,24 +15,29 @@ class Employee_registration extends REST_Controller{
     parent::__construct();
     //load database
     $this->load->database();
-    $this->load->model(array("employee_model"));
-    $this->load->model(array("common_model"));
-    $this->load->library(array("form_validation"));
-    $this->load->library('Authorization_Token');
-    $this->load->helper("security");
-    $this->load->helper('url');
+    $this->load->model(array("employee_model","common_model"));
+    $this->load->library(array("Authorization_Token","form_validation"));
+    $this->load->helper(array("security","url"));
+    // $this->load->model(array("common_model"));
+    // $this->load->library('Authorization_Token');
+    // $this->load->helper('url');
     $this->admin_email = "aashi.we2code@gmail.com";
   }
   // public function index_get(){
 
   // }
   public function signup_post(){
-    
+    // print_r($this->input->post());
     $email = $this->security->xss_clean($this->input->post("email"));
     $password = $this->security->xss_clean($this->input->post("password"));
     $resume =$this->input->post("resume");
     $reffer_by =$this->input->post("reffer_by");
     $otp =$this->input->post("otp");
+    $permission = $this->input->post("permission");
+    // print_r($permission);
+    // echo"</br>";
+    $permission = json_decode($permission);
+    // print_r($pr);die;
             // echo("resume outside: $resume <br>");
 
 if($resume) {
@@ -54,6 +59,7 @@ if($resume) {
     $this->form_validation->set_rules("password", "password", "required");
     $this->form_validation->set_rules("reffer_by", "reffer_by", "required");
     $this->form_validation->set_rules("otp", "otp", "required");
+    $this->form_validation->set_rules("permission", "permission", "required");
 
     // checking form submittion have any error or not
     if($this->form_validation->run() === FALSE){
@@ -100,6 +106,16 @@ if($resume) {
             }
             }
             $response = $this->employee_model->insert_employee($employee);
+              if($response){
+                // Creating default email and notification permission
+                $employee_permission = array(
+                  'employee_id'=>$response->employee_id,
+                  'email_permission'=> json_encode($permission->email_permission),
+                  'notification_permission'=> json_encode($permission->notification_permission)
+                );
+                $this->db->insert('employee_setting', $employee_permission);
+
+              }
             // print_r($response);die;
             if($response){
               $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;

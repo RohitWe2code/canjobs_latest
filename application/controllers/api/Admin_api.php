@@ -249,7 +249,76 @@ class Admin_api extends REST_Controller{
         }
         // print_r($followup_detail);die;
      if($this->admin_model->add_follow_up_employee($followup_detail)){
-            $this->response(array(
+ /* 
+ // ----------------------------------------------------------------------------------------------
+  // ------------ Sending Email and Notification -------------
+
+            // Checking admin permission to send email and notification
+            $admin_permission = $this->common_model->checkParentPermission();
+            // Checking individual admin email and notification permission 
+            // $permission = $this->common_model->checkAdminEmailPermission($admin_id); 
+            
+            // ----- Sending mail and notification : admin -----
+            if(isset($admin_permission['email_employee']['job']) && $admin_permission['email_employee']['job'] == 1){
+                // if(isset($permission['email_permission']->job) && $permission['email_permission']->job == 1){
+                    $email_template_id = 9;
+                    $admin_email = array('to'=> $this->admin_email_static,
+                                        // 'to' => $this->admin_email,
+                                        'admin_name'=> $this->admin_name_static,
+                                        'job_title'=>$response->job_title,
+                                        'company_name'=>$response->company_name,
+                                        'job_description'=>$response->job_description,
+                                        'job_location'=>$response->location,
+                                        'website_url'=>$response->apply_link);
+                    $this->common_model->email($admin_email, $email_template_id, $unique_id);
+                // }
+            }
+            // Checking admin permission to send notification : employee
+            if(isset($admin_permission['email_employee']['job']) && $admin_permission['email_employee']['job'] ==1){
+                  $company_notification['from_id'] = '5';
+                  $company_notification['type'] = 'manager';
+                  $company_notification['subject'] = 'added_new_job';
+                  $company_notification['action_id'] = $response->job_id;;
+                  $company_notification['message'] = 'A new job with title-'.$response->job_title.' has been addedsuccessfully';
+                  $this->common_model->addNotification($company_notification);
+            }
+
+            // ----- Sending mail and notification : Company ------
+            if(isset($this->admin_email)){
+              if(!empty($this->admin_email)){
+                // Checking permission to send email : Employer
+                $permission = $this->common_model->checkEmployerEmailPermission($company_id);            
+              // Checking admin permission to send email to company
+                  if(isset($admin_permission['email_employer']['job']) && $admin_permission['email_employer']['job'] == 1){
+                    if(isset($permission['email_permission']->job) && $permission['email_permission']->job == 1){
+                    $email_template_id = 3;
+                    $company_email = array('to'=>$response->email,
+                                      // 'to' => $this->admin_email,
+                                      'job_title'=>$response->job_title,
+                                      'company_name'=>$response->company_name,
+                                      'job_description'=>$response->job_description,
+                                      'job_location'=>$response->location,
+                                      'website_url'=>$response->apply_link);
+                    $this->common_model->email($company_email, $email_template_id, $unique_id);
+                    }
+                  }
+                  // Checking employer permission to send notification
+                  if(isset($admin_permission['notification_employer']['job']) && $admin_permission['notification_employer']['job'] == 1){
+                    if(isset($permission['notification_permission']->job) && $permission['notification_permission']->job == 1){
+                        $admin_notification['from_id'] = $response->company_id;
+                        $admin_notification['type'] = 'company';
+                        $admin_notification['subject'] = 'added_new_job';
+                        $admin_notification['action_id'] = $response->job_id;;
+                        $admin_notification['message'] = 'A new job with title-'.$response->job_title.' has beenadded successfully';
+                        $this->common_model->addNotification($admin_notification);
+                    }
+                  }
+          }
+          }
+ 
+ // ------------------------------------------------------------------------------------------------
+ */  
+ $this->response(array(
               "status" => 1,
               "message" => "follow up updated successfully"
             ), REST_Controller::HTTP_OK);
@@ -432,14 +501,14 @@ public function viewFollowup_post(){
 
 public function getFollowUpEmployee_post(){
     $data = json_decode(file_get_contents("php://input"));
-    $id = array();
+    $id = '';
     if(isset($data->employee_id)){
-      $id['employee_id'] = $data->employee_id;
+      $id = $data->employee_id;
     }
    
     $filter = array('next_followup_date'=> $data->next_followup_date ?? null);
     $sort = [
-      'column_name' => $data->column_name ?? 'next_followup_date',
+      'column_name' => $data->column_name ?? 'created_at',
       'sort_order' => $data->sort_order ?? 'DESC'
     ];
     // print_r($id);die;
@@ -457,15 +526,16 @@ public function getFollowUpEmployee_post(){
         ), REST_Controller::HTTP_OK);
       }
   }
+
   public function getFollowUpEmployer_post(){
     $data = json_decode(file_get_contents("php://input"));
-    $id = array();
+    $id = '';
     if(isset($data->company_id)){
-      $id['company_id'] = $data->company_id;
+      $id = $data->company_id;
     }
     $filter = array('next_followup_date'=> $data->next_followup_date ?? null);
      $sort = [
-      'column_name' => $data->column_name ?? 'next_followup_date',
+      'column_name' => $data->column_name ?? 'created_at',
       'sort_order' => $data->sort_order ?? 'DESC'
     ];
     // print_r($id);die;

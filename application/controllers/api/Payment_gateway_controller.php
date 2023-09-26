@@ -148,6 +148,59 @@ class Payment_gateway_controller extends My_REST_Controller{
                         return;
         }
     }
+    public function addPaymentReciept_put(){
+        if(isset($this->admin_id) && ($this->user_type === 'super-admin' || $this->user_type === 'admin')){
+        }else{
+         $this->response(array(
+                "status" => 0,
+                "message" => "Not valid admin !"
+                ) , REST_Controller::HTTP_OK);
+                return;
+        }
+        $data = json_decode(file_get_contents("php://input"));
+        // print_r($data);die;
+        
+         if (isset($data->payment_id) && isset($data->payment_mode) && isset($data->amount)){
+               if(empty($data->payment_id) || empty($data->payment_mode) || empty($data->amount)){
+                     $this->response(array(
+                    "status" => 0,
+                    "message" => "Fields must not be empty !"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+               }
+              } else {
+              $this->response(array(
+                    "status" => 0,
+                    "message" => "all fields are required!"
+                    ) , REST_Controller::HTTP_OK);
+                    return;
+        }
+        // print_r($this->user_type);die;
+          $payment_detail  = array(
+            'user_id' => $this->admin_id,
+            'user_role' => $this->user_type,
+            // 'order_id' => $data->razorpay0rderId,
+            'payment_id' => $data->payment_id,
+            'payment_mode' => $data->payment_mode,
+            'amount' => $data->amount,
+            'status' => 'success',
+          );
+          $response = $this->payment_gateway_model->add_razor_pay_reciept($payment_detail); 
+                      //  print_r($response);die;
+                      if($response){
+                          $this->response(array(
+                            "status" => 1,
+                            "message" => "payment successful payment id : $data->payment_id"
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+                          }else{
+                            $this->response(array(
+                            "status" => 0,
+                            "message" => "failed !"
+                            ) , REST_Controller::HTTP_OK);
+                            return;
+                          }    
+    }
     public function getPaymentReciept_post(){
       $data = json_decode(file_get_contents("php://input"));
       
@@ -172,7 +225,7 @@ class Payment_gateway_controller extends My_REST_Controller{
          return;
       }
       $filter = array(
-        'lmia_status' => $data->lmia_status ?? null
+        'payment_mode' => $data->payment_mode ?? null
       );
     
       // print_r($lmia_id);die;

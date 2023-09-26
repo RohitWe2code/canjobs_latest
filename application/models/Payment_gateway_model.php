@@ -46,6 +46,8 @@ public function get_payment_reciept($id, $filter){
 //     }
   $this->db->where('user_id', $id['user_id']);
   $this->db->where('user_role', $id['user_role']);
+  $this->db->order_by('id', 'DESC');
+  // $this->db->limit(10, 5);
   $result = $this->db->get('payment_reciept')->result_array(); 
      
   $total_rows = count($result);

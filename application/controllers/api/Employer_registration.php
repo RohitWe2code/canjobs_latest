@@ -28,17 +28,17 @@ class Employer_registration extends REST_Controller{
 
     $this->load->database();
 
-    $this->load->model(array("employer_model"));
+    $this->load->model(array("employer_model","common_model"));
 
-    $this->load->model(array("common_model"));
+    // $this->load->model(array("common_model"));
 
-    $this->load->library(array("form_validation"));
+    $this->load->library(array("Authorization_Token","form_validation"));
 
-    $this->load->library('Authorization_Token');
+    // $this->load->library('Authorization_Token');
 
-    $this->load->helper("security");
+    $this->load->helper(array("security","url"));
 
-    $this->load->helper('url');
+    // $this->load->helper('url');
     $this->admin_email = "aashi.we2code@gmail.com";
 
   }
@@ -51,7 +51,9 @@ class Employer_registration extends REST_Controller{
     $contact_no = $this->security->xss_clean($this->input->post("contact_no"));
 
     $password = $this->security->xss_clean($this->input->post("password"));  
-    $otp =$this->input->post("otp");  
+    $otp =$this->input->post("otp"); 
+    $permission = $this->input->post("permission");
+    $permission = json_decode($permission); 
 
     // form validation for inputs
 
@@ -62,6 +64,7 @@ class Employer_registration extends REST_Controller{
     $this->form_validation->set_rules("password", "password", "required");
 
     $this->form_validation->set_rules("otp", "otp", "required");
+    $this->form_validation->set_rules("permission", "permission", "required");
 
 
 
@@ -79,7 +82,7 @@ class Employer_registration extends REST_Controller{
 
         "message" => "All fields are required!"
 
-      ) , REST_Controller::HTTP_NOT_FOUND);
+      ) , REST_Controller::HTTP_OK);
 
       return;
 
@@ -132,6 +135,15 @@ class Employer_registration extends REST_Controller{
         
         $response = $this->employer_model->insert_employer($employer);
         // print_r($response);die;
+            if($response){
+              // Creating default email and notification permission
+                    $employer_permission = array(
+                      'company_id'=>$response->company_id,
+                      'email_permission'=> json_encode($permission->email_permission),
+                      'notification_permission'=> json_encode($permission->notification_permission)
+                    );
+                    $this->db->insert('employer_setting', $employer_permission);
+            }
         if($response){
           // Sending email
             $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;

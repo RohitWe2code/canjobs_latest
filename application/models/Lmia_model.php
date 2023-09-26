@@ -11,18 +11,22 @@ public function addUpdateLmia($detail){
 
   //  $id = $detail['id'] ?? null;
             $apply_id = $detail['apply_id'] ?? NULL;
-            // $employee_id = $detail['employee_id'] ?? NULL;
             $this->db->where('apply_id', $apply_id);
+            // $employee_id = $detail['employee_id'] ?? NULL;
             // $this->db->where('employee_id', $employee_id);
             $query = $this->db->get('lmia');        
 
             if ($query->num_rows() > 0) {
-                $row = $query->row();  
-                if($row->lmia_status == $detail['lmia_status']){     // If new status and old status are same than return
+                $row = $query->row();
+                // print_r($row);die;
+                if(($row->lmia_status == $detail['lmia_status']) && ($row->is_active == 1)){ 
+                  // If new status and old status are same than return
                   return array('msg' => "Please provide different status, already exist");
                 }
                 $this->db->where('id', $row->id);
-        
+                if(isset($detail['is_active'])){}else{
+                  $this->db->set('is_active', 1);
+                }
                 $this->db->set('updated_at', 'NOW()', FALSE);
         
                 $res = $this->db->update('lmia', $detail);

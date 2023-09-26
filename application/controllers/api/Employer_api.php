@@ -1756,90 +1756,7 @@ if(isset($data->filter_by_time)){
         ), REST_Controller::HTTP_OK);
       }
   }
-// public function addUpdateLmia_put(){
-    
-//       $data = json_decode(file_get_contents("php://input"));
-//       // print_r($data); die;
-//       $detail = array();
-//        if(isset($data->job_id) && isset($data->employee_id)){
-//           if(!empty($data->job_id) || !empty($data->employee_id)){
-//           $detail["job_id"]=$data->job_id;
-//           $detail["employee_id"]=$data->employee_id;
-//         }
-//         if(isset($data->lmia_status)){
-//            if(!empty($data->lmia_status)){
-//            $detail["lmia_status"]=$data->lmia_status;
-//          }
-//        }
-//         if(isset($data->completion_time)){
-//            if(!empty($data->completion_time)){
-//            $detail["expected_time_of_completion"]=$data->completion_time;
-//          }
-//        }     
-//         $response = $this->employer_model->addUpdateLmia($detail);
-//         // print_r($response['response']);die;
-//         if($response){
-//           $response_lmia_status = $response['response']->lmia_status ?? null;
-//           $company_id = $response['response']->company_id ?? null;
-//           // print_r($company_id);
-//           // print_r($response_lmia_status);die;
-//           if($response_lmia_status == 'Complete' || $response_lmia_status == 'Reject'){
-//             // echo('if');
-//             // print_r($response['status']);die;
-//             if($this->common_model->checkEmployerEmailPermission($company_id)){
-//               $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
-//               $unique_id .= mt_rand(1000, 9999);
-//               $email_template_id = 12;
-//               $company_email = array('to'=>$response['response']->company_email,
-//                                      'employee_name' =>$response['response']->name,
-//                                      'company_name'=>$response['response']->company_name,
-//                                     //  'job_title'=>$response->job_title,
-//                                      // 'job_description'=>$response->job_description,
-//                                      // 'job_location'=>$response->location,
-//                                      'lmia_status'=>$response_lmia_status);
-//               // $this->common_model->email($company_email, $email_template_id, $unique_id);
-//             }
-//                       $admin_notification['from_id'] = $company_id;
-//                       $admin_notification['type'] = 'company';
-//                       $admin_notification['subject'] = 'Lmia status changed';
-//                       $admin_notification['action_id'] = $response['response']->employee_id;
-//                       $admin_notification['message'] = 'Lmia status changed to '.$response_lmia_status.' for employee '.$response['response']->name;
-//                       $this->common_model->addNotification($admin_notification);
-//           }
-//           // print_r('else');die;
-//             $this->response(array(
-//               "status" => 1,
-//               "message" => $response['msg']
-//             ), REST_Controller::HTTP_OK);
 
-//             // Activity log
-//             if($response['msg'] === 'Data updated successfully'){
-//              $para['status'] = 22; // "lmia updated"
-//                     $para['action_id'] =  $response['response']->id ?? NULL;
-//                     $para['action_type'] = 'lmia';
-//             }else if($response['msg'] === 'Data added successfully'){
-//               $para['status'] = 23; // "lmia inserted"
-//                     $para['action_id'] =  $response['response']->id ?? NULL;
-//                     $para['action_type'] = 'lmia';
-//             }
-//         if(isset($para)){
-//           $this->_log_request($para);
-//         }
-//         return;
-//         }else{
-
-//           $this->response(array(
-//             "status" => 0,
-//             "messsage" => "Failed !"
-//           ), REST_Controller::HTTP_OK);
-//         }
-//       }else{
-//          $this->response(array(
-//             "status" => 0,
-//             "messsage" => "All fields required !"
-//           ), REST_Controller::HTTP_OK);
-//       }
-//    }
 public function changePassword_put(){
         
         // print_r($this->uri->segment(2));die;
@@ -2640,6 +2557,12 @@ public function changePassword_put(){
                if(!empty($data->email_permission)){
 
                 $details['email_permission'] = json_encode($data->email_permission);
+               }
+               }
+               if(isset($data->notification_permission)){
+               if(!empty($data->notification_permission)){
+
+                $details['notification_permission'] = json_encode($data->notification_permission);
                }
                }
               //  print_r($details);

@@ -252,14 +252,14 @@ $route['admin/getAllEmployer'] = 'api/employer_api/allEmployer';
 
 
 $route['admin/addFollowUpEmployee'] = 'api/admin_api/addFollowUpEmployee';
+$route['admin/getFollowUpEmployee'] = 'api/admin_api/getFollowUpEmployee';
 
 $route['admin/addFollowUpEmployer'] = 'api/admin_api/addFollowUpEmployer';
+$route['admin/getFollowUpEmployer'] = 'api/admin_api/getFollowUpEmployer';
 
 $route['admin/addAdmin'] = 'api/admin_api/addAdmin';
 
-$route['admin/getFollowUpEmployee'] = 'api/admin_api/getFollowUpEmployee';
 
-$route['admin/getFollowUpEmployer'] = 'api/admin_api/getFollowUpEmployer';
 
 $route['admin/getallEmployeeView'] = 'api/employee_api/allEmployeeView';
 
@@ -385,10 +385,6 @@ $route['user/documentsUpload'] = 'api/employee_api/documentsUpload';
 $route['user/isVarify'] = 'api/employee_api/isVarify';
 $route['user/getDocumentsUploaded'] = 'api/employee_api/getDocumentsUploaded';
 $route['user/deleteDocumentsUploaded'] = 'api/employee_api/deleteDocumentsUploaded';
-$route['addUpdateVisa'] = 'api/employee_api/addUpdateVisa';
-$route['getVisa'] = 'api/employee_api/getVisa';
-$route['setEmployeeReserve'] = 'api/employee_api/setEmployeeReserve';
-$route['removeEmployeeReserve'] = 'api/employee_api/removeEmployeeReserve';
 $route['employee/updateEmployeeSetting'] = 'api/employee_api/updateEmployeeSetting';
 $route['employee/getEmployeeSetting'] = 'api/employee_api/getEmployeeSetting';
 
@@ -506,9 +502,9 @@ $route['common/testApi'] = 'api/Common_controller/testApi';
 ||----------------------------------------------------------------------------------------
 */
 $route['payment/creatRazorpayOrder'] = 'api/Payment_gateway_controller/creatRazorpayOrder';
-// $route['payment/addRazorPayReciept'] = 'api/Common_controller/addRazorPayReciept';
 $route['payment/addRazorPayReciept'] = 'api/Payment_gateway_controller/addRazorPayReciept';
 $route['payment/getPaymentReciept'] = 'api/Payment_gateway_controller/getPaymentReciept';
+$route['payment/addPaymentReciept'] = 'api/Payment_gateway_controller/addPaymentReciept';
 
 /*
 ||----------------------------------------------------------------------------------------
@@ -534,6 +530,13 @@ $route['deleteLmiaSubstageEmployee'] = 'api/Lmia_controller/deleteLmiaSubstageEm
 $route['addUpdateLmiaSubstagesJob'] = 'api/Lmia_controller/addUpdateLmiaSubstagesJob';
 $route['getLmiaSubstagesjob'] = 'api/Lmia_controller/getLmiaSubstagesjob';
 $route['deleteLmiaSubstageJob'] = 'api/Lmia_controller/deleteLmiaSubstageJob';
+/*
+||----------------------------------------------------------------------------------------
+|| Visa
+||----------------------------------------------------------------------------------------
+*/
+$route['addUpdateVisa'] = 'api/employee_api/addUpdateVisa';
+$route['getVisa'] = 'api/employee_api/getVisa';
 /*
 ||----------------------------------------------------------------------------------------
 || Interview
@@ -581,3 +584,10 @@ $route['setting/getParentSetting'] = 'api/setting_controller/getParentSetting';
 $route['agent/addUpadateAgent'] = 'api/agent_controller/addUpadateAgent';
 $route['agent/getAgent'] = 'api/agent_controller/getAgent';
 $route['agent/deleteAgent'] = 'api/agent_controller/deleteAgent';
+/*
+||----------------------------------------------------------------------------------------
+|| Reserve
+||----------------------------------------------------------------------------------------
+*/
+$route['setEmployeeReserve'] = 'api/employee_api/setEmployeeReserve';
+$route['removeEmployeeReserve'] = 'api/employee_api/removeEmployeeReserve';

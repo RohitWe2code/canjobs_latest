@@ -12,14 +12,11 @@ class Lmia_controller extends My_REST_Controller{
   public function __construct(){
 
     parent::__construct();
-    //load database
+
     $this->load->database();
     $this->load->model(array("employer_model","lmia_model","common_model"));
     $this->load->library(array("Authorization_Token","email"));
-    // $this->load->library('Authorization_Token');
-    // $this->load->library('email');
     $this->load->helper(array("security"));
-    // $this->load->helper('url');
  
     $headers = getallheaders(); 
 	$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
@@ -58,6 +55,11 @@ class Lmia_controller extends My_REST_Controller{
            if(!empty($data->completion_time)){
            $detail["expected_time_of_completion"]=$data->completion_time;
          }
+       }     
+        if(isset($data->is_active)){
+          if(($data->is_active == 0) || ($data->is_active == 1)){
+           $detail["is_active"]=$data->is_active;
+          }
        }     
         $response = $this->lmia_model->addUpdateLmia($detail);
         // print_r($response['response']);die;

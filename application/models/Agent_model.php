@@ -10,9 +10,13 @@ class Agent_model extends CI_Model
             $this->writeJsonFile();
             return $insert;
         }
-        // $this->db->where('admin_id', $id);
-        // $this->db->set('updated_at', 'NOW()', FALSE);
+    
         $insert = $this->db->insert('agent', $agent_details);
+        $error = $this->db->error();
+             if ($error['code'] == 1062) {
+                // DATABASE ERROR : Handle the duplicate entry error.
+                return $message = "Duplicate entry. Email already exists";
+                } 
         if($insert){
             $lastInsertedId = $this->db->insert_id();
             $this->db->select("CONCAT(UPPER(SUBSTRING(name,1,1)),'-',id) AS u_id");

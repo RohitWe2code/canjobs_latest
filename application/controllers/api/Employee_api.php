@@ -795,7 +795,9 @@ if(isset($data->employee_id)){
   }
   public function allEmployeeView_post(){
     $data = json_decode(file_get_contents("php://input"));
-    $parameters = array("select"=>"*");
+    $parameters = array("select"=> "*,
+                                    (SELECT u_id FROM agent WHERE id = reffer_by) AS agent_u_id,
+	                                  (SELECT name FROM agent WHERE id = reffer_by) AS agent_name");
    if(isset($this->company_id)){
     if($this->user_type == "company"){
       $parameters["company_id"] = $this->company_id;
@@ -827,7 +829,8 @@ if(isset($data->employee_id)){
               'education'=>$data->filter_education ?? null,
               'interested_in'=>$data->interested_in ?? null,
               'work_permit_canada'=>$data->work_permit_canada ?? null,
-              'status' => $data->filter_status ?? null
+              'status' => $data->filter_status ?? null,
+              'reffer_by' => $data->agent_id ?? null
             ];
            
    if(isset($data->filter_by_time)){
@@ -1870,6 +1873,12 @@ if(isset($data->employee_id)){
                if(!empty($data->email_permission)){
 
                 $details['email_permission'] = json_encode($data->email_permission);
+               }
+               }
+               if(isset($data->notification_permission)){
+               if(!empty($data->notification_permission)){
+
+                $details['notification_permission'] = json_encode($data->notification_permission);
                }
                }
                $response = $this->employee_model->update_employee_setting($employee_id, $details);

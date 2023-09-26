@@ -120,8 +120,10 @@ public function addUpadateAgent_put(){
     ||  Create
     ||-------------------------------------------------------------------------------------------------
      */
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->address) && isset($data->city) && isset($data->state) && isset($data->country)){  
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->address) || empty($data->city) || empty($data->state) || empty($data->country)){
+      if(isset($data->name)){  
+        if(empty($data->name)){
+      // if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->address) && isset($data->city) && isset($data->state) && isset($data->country)){  
+      //   if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->address) || empty($data->city) || empty($data->state) || empty($data->country)){
             $this->response(array(
             "status" => 0,
             "message" => "fields must not be empty !"
@@ -137,13 +139,43 @@ public function addUpadateAgent_put(){
       }
         $agent_details = array(
             'name' => $data->name,
-            'email' => $data->email,
-            'contact_no' => $data->contact_no,
-            'address' => $data->address,
-            'city' => $data->city,
-            'state' => $data->state,
-            'country' => $data->country,
+            // 'email' => $data->email,
+            // 'contact_no' => $data->contact_no,
+            // 'address' => $data->address,
+            // 'city' => $data->city,
+            // 'state' => $data->state,
+            // 'country' => $data->country,
         );
+        if(isset($data->email)){
+          if(!empty($data->email)){
+            $agent_details['email'] = $data->email;
+          }
+        }
+        if(isset($data->contact_no)){
+          if(!empty($data->contact_no)){
+            $agent_details['contact_no'] = $data->contact_no;
+          }
+        }
+        if(isset($data->address)){
+          if(!empty($data->address)){
+            $agent_details['address'] = $data->address;
+          }
+        }
+        if(isset($data->city)){
+          if(!empty($data->city)){
+            $agent_details['city'] = $data->city;
+          }
+        }
+        if(isset($data->state)){
+          if(!empty($data->state)){
+            $agent_details['state'] = $data->state;
+          }
+        }
+        if(isset($data->country)){
+          if(!empty($data->country)){
+            $agent_details['country'] = $data->country;
+          }
+        }
         if(isset($data->type)){
           if(!empty($data->type)){
             $agent_details['type'] = $data->type;
@@ -181,16 +213,29 @@ public function addUpadateAgent_put(){
         }
       }
         // print_r($msg);die;
-     if($this->agent_model->add_update_agent($id, $agent_details)){
+        
+        $response = $this->agent_model->add_update_agent($id, $agent_details);
+        
+        // print_r($response);die;
+     if($response){
+        if($response === "Duplicate entry. Email already exists"){
+          $this->response(array(
+              "status" => 1,
+              "message" => $response
+            ), REST_Controller::HTTP_OK);
+            return;
+        }
             $this->response(array(
               "status" => 1,
               "message" => $msg
             ), REST_Controller::HTTP_OK);
+            return;
         }else{
           $this->response(array(
             "status" => 0,
             "messsage" => "Failed"
           ), REST_Controller::HTTP_OK);
+          return;
         } 
      }else{
      $this->response(array(

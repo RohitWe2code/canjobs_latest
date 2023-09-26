@@ -83,22 +83,33 @@ public function add_follow_up_employee($followup_detail){
 public function add_follow_up_employer($followup_detail){
            return $this->db->insert('employer_follow_up', $followup_detail);        
 }
-public function get_follow_up_employee($id, $filter, $sort){                                          
-                  $this->db->where('employee_id',$id['employee_id']);              
+public function get_follow_up_employee($id, $filter, $sort){  
+                if(empty($id)){                                        
+                  $this->db->where('id IN (SELECT MAX(id) FROM employee_follow_up GROUP BY employee_id)'); 
+                }else{
+                  $this->db->where('employee_id', $id); 
+                }             
                 if (!empty($filter['next_followup_date'])) {
                   $next_followup_date = $filter['next_followup_date'];
                   $this->db->where('next_followup_date', $next_followup_date);
                   }
                 if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
                   $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
-                  }                
+                  } 
+                $this->db->select(" *,
+	                                  (SELECT name FROM employee WHERE employee_id = employee_follow_up.employee_id) AS employee_name,
+                                    (SELECT profile_photo FROM employee WHERE employee_id = employee_follow_up.employee_id) AS employee_profile_image");               
                 return $res = $this->db->get('employee_follow_up')->result_array();
                 // print_r($this->db->last_query());
                 // return array('followup'=>$res);
   }
 
-public function get_follow_up_employer($id, $filter, $sort){                                       
-                  $this->db->where('company_id',$id['company_id']);              
+public function get_follow_up_employer($id, $filter, $sort){ 
+                if(empty($id)){                                        
+                  $this->db->where('id IN (SELECT MAX(id) FROM employer_follow_up GROUP BY company_id)'); 
+                }else{
+                  $this->db->where('company_id', $id); 
+                }                                        
                 if (!empty($filter['next_followup_date'])) {
                   $next_followup_date = $filter['next_followup_date'];
                   $this->db->where('next_followup_date', $next_followup_date);
@@ -415,8 +426,11 @@ $json_item_id = $id['json_item_id'] ?? null;
 
               $query = "SELECT vae.apply_id,vae.name,vae.job_title,vae.company_id,vae.company_name,fu.*
                         FROM follow_up AS fu
-                        INNER JOIN view_applied_employee AS vae ON vae.employee_id = fu.employee_id AND vae.job_id = fu.job_id
-                        WHERE fu.id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id, job_id) AND vae.is_deleted != 1 AND vae.is_viewed != 1 ".$where." ORDER BY ".$sort['column_name'] ." ". $sort['sort_order'];
+                        INNER JOIN view_applied_employee AS vae ON vae.employee_id = fu.employee_id 
+                        AND vae.job_id = fu.job_id
+                        WHERE fu.id IN (SELECT MAX(id) FROM follow_up GROUP BY employee_id, job_id) 
+                        AND vae.is_deleted != 1 
+                        AND vae.is_viewed != 1 ".$where." ORDER BY ".$sort['column_name'] ." ". $sort['sort_order'];
 
               $res = $this->db->query($query)->result_array();
 
