@@ -1183,8 +1183,10 @@ if(empty($data->company_id)){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? "created_at" ,
-      'sort_order' => $data->sort_order ?? "DESC"
+      // 'column_name' => $data->column_name ?? "created_at" ,
+      // 'sort_order' => $data->sort_order ?? "DESC"
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "updated_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
     //recommended
     $recommend_sort = '';
@@ -1339,7 +1341,7 @@ public function allEmployer_post(){
                           // print_r($user_detail);die;
     // Get pagination parameters
     $page = isset($data->page) ? $data->page : 1;
-    $limit = isset($data->limit) ? $data->limit : 10; 
+    $limit = isset($data->limit) ? $data->limit : 100; 
 
     // Get search parameter
     $search = isset($data->search) ? $data->search : '';
@@ -1383,8 +1385,11 @@ public function allEmployer_post(){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? null ,
-      'sort_order' => $data->sort_order ?? null
+      // 'column_name' => $data->column_name ?? "updated_at" ,
+      // 'sort_order' => $data->sort_order ?? $data->sort_order == "" ?? "DESC"
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "updated_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
+
     ];
 
     $result = $this->employer_model->getAllEmployer($user_detail, $filter, $search, $limit, $offset, $sort);
@@ -1873,8 +1878,10 @@ public function changePassword_put(){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? "created_at" ,
-      'sort_order' => $data->sort_order ?? "DESC"
+      // 'column_name' => $data->column_name ?? "created_at" ,
+      // 'sort_order' => $data->sort_order ?? "DESC"
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "updated_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
     $result = $this->employer_model->viewJobsAdmin($filter, $search, $limit, $offset, $sort, $details);
     // print_r($result);die;

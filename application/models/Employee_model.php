@@ -102,7 +102,7 @@ public function checkLogin($credentials)
                 return false;
             }
 }
-public function updatePersonal_details($employee_info){
+public function updatePersonal_details($employee_info, $permission=NULL){
   // print_r($employee_info);die;
             if (isset($employee_info['employee_id'])) {
                       // Update operation
@@ -114,6 +114,17 @@ public function updatePersonal_details($employee_info){
             }else{
                   // print_r("insert");die;
                  $res = $this->db->insert('employee',$employee_info);
+                 $last_insert_id = $this->db->insert_id();
+                  if($res && !empty($last_insert_id)){
+                      // Creating default email and notification permission
+                      $employee_permission = array(
+                        'employee_id'=>$last_insert_id,
+                        'email_permission'=> json_encode($permission->email_permission),
+                        'notification_permission'=> json_encode($permission->notification_permission)
+                      );
+                      $this->db->insert('employee_setting', $employee_permission);
+
+              }
                 return $res;
               }       
 }
@@ -249,14 +260,10 @@ public function getAllEmployeeEducation(){
                   $where .= " AND interested_in LIKE '%$interested_in%'";
               }
               if (isset($filter['status']) && ($filter['status'] >= 0)) {
-                $status = $this->db->escape_like_str($filter['status']);
-                $where .= " AND status = '$status'";
+                  $status = $this->db->escape_like_str($filter['status']);
+                  $where .= " AND status = '$status'";
               }else if(isset($filter['status']) && ($filter['status'] == -1)){
-                $where .= " AND status  <= 1 ";
-              }
-              if (!empty($filter['reffer_by'])) {
-                  $reffer_by = $this->db->escape_like_str($filter['reffer_by']);
-                  $where .= " AND reffer_by LIKE '$reffer_by'";
+                $where .= " AND status != 0";
               }
               if(!empty($filter['start_date']) || !empty($filter['end_date'])){
                   $where .= " AND DATE(created_at) BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
@@ -627,38 +634,37 @@ END AS updated_by_name
   public function add_update_visa($id, $detail){
 
   if(!empty($id)){
-    $this->db->where('id', $id);
-    $this->db->set('updated_at', 'NOW()', FALSE);
-    $query = $this->db->update('employee_visa', $detail);                    
-    return $res = array("msg" => "visa updated successfully",
+     $this->db->where('id', $id);
+                      $this->db->set('updated_at', 'NOW()', FALSE);
+                      $query = $this->db->update('employee_visa', $detail);                    
+                      return $res = array("msg" => "visa updated successfully",
                                           "result" => $query);
-  }else{
-      $employee_id = $detail['employee_id'];
-      $status = $detail['status'] ?? NULL;
-      $newCountry = $detail['country'] ?? NULL;
-      // $type = $file_info['type'];
-      // $document_url = $detail['document_url'];
-      $this->db->where('employee_id', $employee_id);
-      $this->db->where('status', $status);
-      // $this->db->where('country', $newCountry);
-      $query = $this->db->get('employee_visa');
-      // if (($query->num_rows() > 0) && ($query->row_array()['country'] == $newCountry)) {
-      if (($query->num_rows() > 0)) {
-         $row_id = $query->row_array()['id'];
-         // print_r($row_id);die;
-           $this->db->where('id', $row_id);
-           $this->db->set('is_active', 1);
-           $this->db->set('updated_at', 'NOW()', FALSE);
-           $query = $this->db->update('employee_visa', $detail);                    
-           return $res = array("msg" => "visa inserted successfully",
-                                   "result" => $query);
-      }else{
-         // print_r("insert");die;
-         $query = $this->db->insert('employee_visa',$detail);
-         return $res = array("msg" => "visa inserted successfully",
-                                   "result" => $query);              
-            }
-    }
+                      } 
+              else{
+                  $employee_id = $detail['employee_id'];
+                  $status = $detail['status'] ?? NULL;
+                  $newCountry = $detail['country'] ?? NULL;
+                // $type = $file_info['type'];
+                // $document_url = $detail['document_url'];
+                $this->db->where('employee_id', $employee_id);
+                $this->db->where('status', $status);
+                $query = $this->db->get('employee_visa');
+              if (($query->num_rows() > 0) && ($query->row_array()['country'] == $newCountry)) {
+                $row_id = $query->row_array()['id'];
+                // print_r($row_id);die;
+                  $this->db->where('id', $row_id);
+                  $this->db->set('updated_at', 'NOW()', FALSE);
+                  $query = $this->db->update('employee_visa', $detail);                    
+                  return $res = array("msg" => "visa updated successfully",
+                                          "result" => $query);
+              }else{
+                // print_r("insert");die;
+                $query = $this->db->insert('employee_visa',$detail);
+                return $res = array("msg" => "visa inserted successfully",
+                                          "result" => $query);              }
+                //  $res = $this->db->insert('employee_visa',$detail);
+                // return $res;
+              }
 }
 public function get_visa($filter, $search, $limit, $offset, $sort, $details){
  
@@ -728,36 +734,12 @@ public function get_visa($filter, $search, $limit, $offset, $sort, $details){
     // if(!empty($details['company_id'])){                  
     //     $where .= " AND company_id = ".$details['company_id'];
     // }
-    $q = "SELECT 
-          em.*, ev.id AS visa_id,
-          ev.employee_id AS visa_employee_id,
-          ev.status AS visa_status,
-          ev.country AS visa_country,
-          ev.is_active AS visa_active,
-          ev.created_at AS visa_created_at,
-          ev.updated_at AS visa_updated_at
-          FROM employee em 
-          LEFT JOIN employee_visa ev ON em.employee_id = ev.employee_id 
-          WHERE em.is_deleted = 0 AND ev.is_active = 1
-          AND em.employee_id IN (SELECT employee_id FROM apply_on_job WHERE apply_on_job.is_reserve = 1 AND apply_on_job.is_viewed != 1 GROUP BY employee_id HAVING COUNT(*) > 0)
-			  ".$where." ".$order." LIMIT ".$limit." OFFSET ".$offset;
-
+    $q = "SELECT em.*, ev.id AS visa_id, ev.employee_id AS visa_employee_id, ev.status AS visa_status, ev.country AS visa_country, ev.created_at AS visa_created_at, ev.updated_at AS visa_updated_at FROM employee em LEFT JOIN employee_visa ev ON em.employee_id = ev.employee_id WHERE em.is_deleted = 0 AND em.employee_id IN (SELECT employee_id FROM apply_on_job WHERE apply_on_job.is_reserve = 1 AND apply_on_job.is_viewed != 1 GROUP BY employee_id HAVING COUNT(*) > 0)
+			".$where." ".$order." LIMIT ".$limit." OFFSET ".$offset;
     $result = $this->db->query($q)->result_array();
 //----------------------------------------------------------------------------------------------------------------
-    $que = "SELECT em.*, 
-            ev.id AS visa_id, 
-            ev.employee_id AS visa_employee_id, 
-            ev.status AS visa_status, 
-            ev.country AS visa_country,
-            ev.is_active AS visa_active,
-            ev.created_at AS visa_created_at, 
-            ev.updated_at AS visa_updated_at 
-            FROM employee em 
-            LEFT JOIN employee_visa ev ON em.employee_id = ev.employee_id 
-            WHERE em.is_deleted = 0 AND ev.is_active = 1
-            AND em.employee_id IN (SELECT employee_id FROM apply_on_job WHERE apply_on_job.is_reserve = 1 AND apply_on_job.is_viewed != 1 GROUP BY employee_id HAVING COUNT(*) > 0)
-			    ".$where;
-
+    $que = "SELECT em.*, ev.id AS visa_id, ev.employee_id AS visa_employee_id, ev.status AS visa_status, ev.country AS visa_country, ev.created_at AS visa_created_at, ev.updated_at AS visa_updated_at FROM employee em LEFT JOIN employee_visa ev ON em.employee_id = ev.employee_id WHERE em.is_deleted = 0 AND em.employee_id IN (SELECT employee_id FROM apply_on_job WHERE apply_on_job.is_reserve = 1 AND apply_on_job.is_viewed != 1 GROUP BY employee_id HAVING COUNT(*) > 0)
+			".$where;
     $rows = $this->db->query($que)->result_array();
     // print_r($this->db->last_query());
     $total_rows = count($rows);

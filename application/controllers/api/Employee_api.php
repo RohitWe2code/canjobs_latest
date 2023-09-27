@@ -248,11 +248,11 @@ if(isset($data->employee_id)){
       /*
       || ----------  Insert employee personal detail -----------
       */
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->reffer_by))
+      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->reffer_by) && isset($data->permission))
       { 
          $error_flag = 0;
       
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->reffer_by))
+        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->reffer_by) || empty($data->permission))
         {
             $error_flag = 1;
         }
@@ -263,6 +263,9 @@ if(isset($data->employee_id)){
           ) , REST_Controller::HTTP_OK);
          return;
         }
+        
+        // print_r($data->permission->notification_permission);die;
+        $permission = json_decode($data->permission);
         $employee_info = array(
           
           "name" => $data->name,
@@ -358,7 +361,7 @@ if(isset($data->employee_id)){
 
                 }
         // print_r($employee_info); die;
-        if($this->employee_model->updatePersonal_details($employee_info)){
+        if($this->employee_model->updatePersonal_details($employee_info, $permission)){
            $this->response(array(
               "status" => 1,
               "message" => "Employee data inserted successfully"
@@ -864,8 +867,10 @@ if(isset($data->employee_id)){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? 'created_at',
-      'sort_order' => $data->sort_order ?? 'DESC'
+      // 'column_name' => $data->column_name ?? 'created_at',
+      // 'sort_order' => $data->sort_order ?? 'DESC'
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "updated_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
 
     // Calculate offset for pagination

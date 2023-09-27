@@ -68,7 +68,7 @@ public function checkLogin($credentials)
         }
 
 }
-public function addUpdateCompanyDetails($company_info){
+public function addUpdateCompanyDetails($company_info, $permission = NULL){
 
       if (isset( $company_info['company_id'])) {
 
@@ -83,8 +83,19 @@ public function addUpdateCompanyDetails($company_info){
               } 
               else{
                 // Insert operation
-                return $this->db->insert('employer', $company_info);
-                
+                $res = $this->db->insert('employer', $company_info);
+                $last_insert_id = $this->db->insert_id();
+                  if($res && !empty($last_insert_id)){
+                      // Creating default email and notification permission
+                      $employer_permission = array(
+                        'company_id'=>$last_insert_id,
+                        'email_permission'=> json_encode($permission->email_permission),
+                        'notification_permission'=> json_encode($permission->notification_permission)
+                      );
+                      $this->db->insert('employer_setting', $employer_permission);
+
+              }
+                return $res;
               }
 
                
