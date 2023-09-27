@@ -263,7 +263,7 @@ public function getAllEmployeeEducation(){
                   $status = $this->db->escape_like_str($filter['status']);
                   $where .= " AND status = '$status'";
               }else if(isset($filter['status']) && ($filter['status'] == -1)){
-                $where .= " AND status != 0";
+                $where .= " AND status <= 1 ";
               }
               if(!empty($filter['start_date']) || !empty($filter['end_date'])){
                   $where .= " AND DATE(created_at) BETWEEN '".$filter['start_date']."' AND '".$filter['end_date']."' ";
