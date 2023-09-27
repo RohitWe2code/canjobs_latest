@@ -1,7 +1,7 @@
 <?php
 // echo"This is test mail file----- chk";die;
 // API URL
-$apiUrl = 'http://65.0.20.158/canjobs/common/sendEmail';
+$apiUrl = 'http://51.20.6.80/canjobs/common/sendEmail';
 
 // Create cURL request
 $ch = curl_init($apiUrl);
