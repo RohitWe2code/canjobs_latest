@@ -1334,10 +1334,10 @@ public function allEmployer_post(){
   $data = json_decode(file_get_contents("php://input"));
    $user_detail = array();
     // print_r($data);die;
-    if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
-    $user_detail = array("admin_id" =>  $this->admin_id,
-                          "admin_type" =>  $this->user_type);
-    }
+    // if(!empty($this->admin_id) && $this->user_type != "super-admin" && $this->user_type != "admin"){
+    // $user_detail = array("admin_id" =>  $this->admin_id,
+    //                       "admin_type" =>  $this->user_type);
+    // }
                           // print_r($user_detail);die;
     // Get pagination parameters
     $page = isset($data->page) ? $data->page : 1;

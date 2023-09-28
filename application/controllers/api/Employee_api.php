@@ -1013,7 +1013,7 @@ if(isset($data->employee_id)){
   public function getJobResponse_post(){
     $data = json_decode(file_get_contents("php://input"));
    
-    $parameters = array("select"=>"ae.*, ev.id AS visa_id, ev.status AS visa_status, ev.is_active as visa_active");
+    $parameters = array("select"=>"ae.*, ev.id AS visa_id, ev.status AS visa_status, ev.country AS visa_country, ev.is_active as visa_active");
    if(isset($this->user_type) && $this->user_type == "company"){
        $parameters["select"] = "`ae.apply_id`,
                                 `ae.job_id`,

@@ -68,7 +68,7 @@ public function checkLogin($credentials)
         }
 
 }
-public function addUpdateCompanyDetails($company_info, $permission = NULL){
+public function addUpdateCompanyDetails($company_info){
 
       if (isset( $company_info['company_id'])) {
 
@@ -83,19 +83,8 @@ public function addUpdateCompanyDetails($company_info, $permission = NULL){
               } 
               else{
                 // Insert operation
-                $res = $this->db->insert('employer', $company_info);
-                $last_insert_id = $this->db->insert_id();
-                  if($res && !empty($last_insert_id)){
-                      // Creating default email and notification permission
-                      $employer_permission = array(
-                        'company_id'=>$last_insert_id,
-                        'email_permission'=> json_encode($permission->email_permission),
-                        'notification_permission'=> json_encode($permission->notification_permission)
-                      );
-                      $this->db->insert('employer_setting', $employer_permission);
-
-              }
-                return $res;
+                return $this->db->insert('employer', $company_info);
+                
               }
 
                
@@ -574,10 +563,10 @@ public function getAllEmployer($user_type, $filter, $search, $limit, $offset, $s
                 if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
                   $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
                 }
-                if(!empty($user_type['admin_id'])){
+              //   if(!empty($user_type['admin_id'])){
                   
-                  $where .= " AND created_by_admin =".$user_type['admin_id']." ";
-              }
+              //     $where .= " AND created_by_admin =".$user_type['admin_id']." ";
+              // }
 
                  
 //         $sql = "SELECT c.*, (
