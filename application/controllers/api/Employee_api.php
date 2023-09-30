@@ -12,18 +12,13 @@ class Employee_api extends My_REST_Controller{
   public function __construct(){
 
     parent::__construct();
-    //load database
     $this->load->database();
     $this->load->model(array("employee_model","common_model"));
     $this->load->library(array("form_validation","Authorization_Token","email"));
-    // $this->load->library('Authorization_Token');
     $this->load->helper(array("security","url"));
-    // $this->load->helper('url');
-    // $this->load->library('email');
-    // $this->load->model(array("common_model"));
-
  
     $headers = getallheaders(); 
+    if(isset($headers['Authorization']) && !empty($headers['Authorization'])){
 		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
     // print_r($this->decodedToken['data']);die;
        if (!$this->decodedToken || $this->decodedToken['status'] != "1") {   
@@ -35,6 +30,14 @@ class Employee_api extends My_REST_Controller{
             echo json_encode($err);
             exit;
           }
+        }else{
+           $err = array(
+                'status'=>false,
+                'message'=>'No Token Found',
+            );
+            echo json_encode($err);
+            exit;
+        }
         // $this->dataa = json_decode(file_get_contents("php://input"));
         $this->admin_id = $this->decodedToken['data']->admin_id ?? null;
         $this->employee_id = $this->decodedToken['data']->employee_id ?? null;
@@ -1013,7 +1016,7 @@ if(isset($data->employee_id)){
   public function getJobResponse_post(){
     $data = json_decode(file_get_contents("php://input"));
    
-    $parameters = array("select"=>"ae.*, ev.id AS visa_id, ev.status AS visa_status, ev.country AS visa_country, ev.is_active as visa_active");
+    $parameters = array("select"=>"ae.*, ev.id AS visa_id, ev.status AS visa_status, ev.is_active as visa_active");
    if(isset($this->user_type) && $this->user_type == "company"){
        $parameters["select"] = "`ae.apply_id`,
                                 `ae.job_id`,

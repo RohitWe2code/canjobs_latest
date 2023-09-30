@@ -34,43 +34,24 @@ class Employee_registration extends REST_Controller{
     $reffer_by =$this->input->post("reffer_by");
     $otp =$this->input->post("otp");
     $permission = $this->input->post("permission");
-    // print_r($permission);
-    // echo"</br>";
     $permission = json_decode($permission);
-    // print_r($pr);die;
-            // echo("resume outside: $resume <br>");
-
-if($resume) {
-              // echo("resume base 64: $resume <br>");die;
-    $cv_data = base64_decode($resume);
-    $file_name_for_upload = time().'.pdf';
-    $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
-    if(file_put_contents($file_path, $cv_data)) {
-        $cv = base_url() . 'uploads/' . $file_name_for_upload;
-                  //  echo("link for database : $resume");
-
-    } else {
-        // File upload failed
-    }
-} 
     
-    // form validation for inputs
+// form validation for inputs
     $this->form_validation->set_rules("email", "Email", "required|valid_email");
     $this->form_validation->set_rules("password", "password", "required");
-    $this->form_validation->set_rules("reffer_by", "reffer_by", "required");
+    // $this->form_validation->set_rules("reffer_by", "reffer_by", "required");
     $this->form_validation->set_rules("otp", "otp", "required");
     $this->form_validation->set_rules("permission", "permission", "required");
 
-    // checking form submittion have any error or not
+// checking form submittion have any error or not
     if($this->form_validation->run() === FALSE){
-
-      // we have some errors
       $this->response(array(
         "status" => 0,
         "message" => "All fields are required!"
       ) , REST_Controller::HTTP_OK);
       return;
-  }   
+  }
+// Checking if email exist   
      $existing_email = $email;
      $existing_employee = $this->employee_model->get_employee_by_email($existing_email);
         if($existing_employee){
@@ -81,7 +62,7 @@ if($resume) {
         return;
         }
      
-// print_r($validate_otp);die;
+// Validate otp
       if(!empty($email) && !empty($password) && !empty($otp)){
         $validate_otp = $this->common_model->validate_otp($email,$otp);
         if(!$validate_otp){
@@ -91,20 +72,27 @@ if($resume) {
         ), REST_Controller::HTTP_OK);
         return;
         }
-        // all values are available
-        $employee = array(
-         
+// all values are available
+        $employee = array(         
           "email" => $email,
-          "password" => md5($password),
-          "reffer_by" =>$reffer_by,
-        
+          "password" => md5($password)       
         );
-         if(isset($cv)){
-          if(!empty($cv))
+          if(!empty($reffer_by))
             {
-               $employee["resume"] = $cv;
+               $employee["reffer_by"] = $reffer_by;
             }
-            }
+            if(!empty($resume)) {
+              // echo("resume base 64: $resume <br>");die;
+              $cv_data = base64_decode($resume);
+              $file_name_for_upload = time().'.pdf';
+              $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
+              if(file_put_contents($file_path, $cv_data)) {
+                  $cv = base_url() . 'uploads/' . $file_name_for_upload;
+                  $employee["resume"] = $cv;
+              } else {
+                  // File upload failed
+              }
+            } 
             $response = $this->employee_model->insert_employee($employee);
               if($response){
                 // Creating default email and notification permission
