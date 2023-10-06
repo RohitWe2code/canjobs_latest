@@ -251,11 +251,11 @@ if(isset($data->employee_id)){
       /*
       || ----------  Insert employee personal detail -----------
       */
-      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->nationality) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->reffer_by) && isset($data->permission))
+      if(isset($data->name) && isset($data->email) && isset($data->contact_no) && isset($data->date_of_birth)  && isset($data->gender) && isset($data->marital_status) && isset($data->current_location) && isset($data->language) && isset($data->interested_in) && isset($data->experience)  && isset($data->work_permit_canada) && isset($data->reffer_by) && isset($data->permission))
       { 
          $error_flag = 0;
       
-        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->nationality) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->reffer_by) || empty($data->permission))
+        if(empty($data->name) || empty($data->email) || empty($data->contact_no) || empty($data->date_of_birth) || empty($data->gender) || empty($data->marital_status) || empty($data->current_location) || empty($data->language) || empty($data->interested_in) || empty($data->experience) || empty($data->work_permit_canada) || empty($data->reffer_by) || empty($data->permission))
         {
             $error_flag = 1;
         }
@@ -277,7 +277,6 @@ if(isset($data->employee_id)){
           "date_of_birth" => $data->date_of_birth, //yy-mm-dd
           "gender" => $data->gender,
           "marital_status" => $data->marital_status,
-          "nationality" => $data->nationality,
           "current_location" => $data->current_location,
           "currently_located_country" => $data->currently_located_country,
           "language" => $data->language,
@@ -309,6 +308,12 @@ if(isset($data->employee_id)){
         if(isset($data->status)){
           if(!empty($data->status)){
                     $employee_info['status'] = $data->status;
+          }
+        }
+        if(isset($data->nationality)){
+          if(!empty($data->nationality)){
+            // "nationality" => $data->nationality,
+                    $employee_info['nationality'] = $data->nationality;
           }
         }
         if(isset($data->resume)){
@@ -1752,8 +1757,8 @@ if(isset($data->employee_id)){
 
     // sorting 
     $sort = [
-      'column_name' => $data->column_name ?? "created_at" ,
-      'sort_order' => $data->sort_order ?? "DESC"
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "updated_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
     // print_r($sort);die;
     $result = $this->employee_model->get_visa($filter, $search, $limit, $offset, $sort, $details);
@@ -1784,7 +1789,36 @@ if(isset($data->employee_id)){
 
           }
    }
-   
+   public function deleteVisa_post(){
+    $data = json_decode(file_get_contents("php://input"));
+     if(isset($data->id)){
+          if(empty($data->id)){
+            $this->response(array(
+                  "status" => 0,
+                  "message" => "id must not be empty !"
+                ), REST_Controller::HTTP_OK);
+                 return;
+              }
+          }else{
+            $this->response(array(
+                  "status" => 0,
+                  "message" => "id must be provided !"
+                ), REST_Controller::HTTP_OK);
+                return;
+          }
+      $id = $data->id;
+      if($this->employee_model->delete_visa($id)){
+        $this->response(array(
+          "status" => 1,
+          "message" => "Successfully deleted"
+        ), REST_Controller::HTTP_OK);
+      }else{
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed !"
+        ), REST_Controller::HTTP_OK);
+      }
+  }
    public function setEmployeeReserve_put(){
         $data = json_decode(file_get_contents("php://input"));
          if (isset($data->apply_id) && isset($data->employee_id) && isset($data->is_reserve)){

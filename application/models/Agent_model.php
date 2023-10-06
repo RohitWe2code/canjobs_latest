@@ -2,6 +2,36 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Agent_model extends CI_Model
 {
+    public function agent_email_exist($email){
+            $this->db->where('email', $email);
+            $this->db->where('is_deleted = 0');
+            $query = $this->db->get('agent');
+            if ($query->num_rows() > 0) {
+                return $query;
+            }
+    }
+    public function insert_agent($agent_details){
+        $insert = $this->db->insert('agent', $agent_details);
+        $lastInsertedId = $this->db->insert_id();
+        if($insert && $lastInsertedId){
+            // Creating user id of agent
+            return $this->createAgentUid($lastInsertedId);
+        }
+        return $insert;
+    }
+    public function validate_agent($credentials)
+    {
+            $this->db->where($credentials);
+            $this->db->where('is_deleted = 0');
+            $query = $this->db->get('agent');
+            if($query->num_rows()==1)
+            {
+                return $query->row();
+            }
+            else{
+                return false;
+            }
+    }
     public function add_update_agent($id, $agent_details){
         if(!empty($id)){
             $this->db->where('id', $id);
@@ -12,23 +42,17 @@ class Agent_model extends CI_Model
         }
     
         $insert = $this->db->insert('agent', $agent_details);
+        $lastInsertedId = $this->db->insert_id();
         $error = $this->db->error();
              if ($error['code'] == 1062) {
                 // DATABASE ERROR : Handle the duplicate entry error.
                 return $message = "Duplicate entry. Email already exists";
                 } 
-        if($insert){
-            $lastInsertedId = $this->db->insert_id();
-            $this->db->select("CONCAT(UPPER(SUBSTRING(name,1,1)),'-',id) AS u_id");
-            $this->db->where('id', $lastInsertedId);
-            $u_id = $this->db->get('agent')->row_array();
-            // print_r($insert);die;
-            $this->db->where('id', $lastInsertedId);
-            $this->db->set('u_id', $u_id['u_id']);
-            $update = $this->db->update('agent');
-            $this->writeJsonFile();
-            return $update;
+        if($insert && $lastInsertedId){
+            // Creating user id of agent
+            return $this->createAgentUid($lastInsertedId);
         }
+        return $insert;
     }
     public function get_agent($id, $search, $sort, $offset, $limit){
         
@@ -54,6 +78,19 @@ class Agent_model extends CI_Model
         $this->db->set('is_deleted', 1);
         $this->db->set('updated_at', 'NOW()', FALSE);
         return $this->db->update('agent');
+    }
+    public function createAgentUid($lastInsertedId){
+        $this->db->select("
+                            CONCAT(UPPER(SUBSTRING_INDEX(name, ' ', 1)), '-', id) AS u_id
+                        ");
+        $this->db->where('id', $lastInsertedId);
+        $u_id = $this->db->get('agent')->row_array();
+        // print_r($insert);die;
+        $this->db->where('id', $lastInsertedId);
+        $this->db->set('u_id', $u_id['u_id']);
+        $update = $this->db->update('agent');
+        $this->writeJsonFile();
+        return $update;
     }
     public function writeJsonFile(){
         $this->db->select('id, u_id, name');

@@ -83,28 +83,37 @@ public function add_follow_up_employee($followup_detail){
 public function add_follow_up_employer($followup_detail){
            return $this->db->insert('employer_follow_up', $followup_detail);        
 }
-public function get_follow_up_employee($id, $filter, $sort){  
-                if(empty($id)){                                        
+public function get_follow_up_employee($id, $filter, $sort, $limit, $offset){  
+                if(empty($id)){ 
+                  // get last follow up of each employee                                       
                   $this->db->where('id IN (SELECT MAX(id) FROM employee_follow_up GROUP BY employee_id)'); 
                 }else{
+                  // get all follow up of perticular employee
                   $this->db->where('employee_id', $id); 
                 }             
                 if (!empty($filter['next_followup_date'])) {
                   $next_followup_date = $filter['next_followup_date'];
                   $this->db->where('next_followup_date', $next_followup_date);
                   }
+                if (!empty($filter['status'])) {
+                  $status = $filter['status'];
+                  $this->db->where('status', $status);
+                  }
                 if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
                   $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
                   } 
                 $this->db->select(" *,
 	                                  (SELECT name FROM employee WHERE employee_id = employee_follow_up.employee_id) AS employee_name,
-                                    (SELECT profile_photo FROM employee WHERE employee_id = employee_follow_up.employee_id) AS employee_profile_image");               
-                return $res = $this->db->get('employee_follow_up')->result_array();
+                                    (SELECT profile_photo FROM employee WHERE employee_id = employee_follow_up.employee_id) AS employee_profile_image"); 
+                $this->db->limit($limit, $offset);              
+                $result = $this->db->get('employee_follow_up')->result_array();
                 // print_r($this->db->last_query());
-                // return array('followup'=>$res);
+                // $total_rows = $this->db->where($where)->where('is_deleted !=', 1)->from('view_applied_employee')->count_all_results();
+                $total_rows = $this->db->count_all_results();
+              return array('total_rows' => $total_rows, 'data' => $result);
   }
 
-public function get_follow_up_employer($id, $filter, $sort){ 
+public function get_follow_up_employer($id, $filter, $sort, $limit, $offset){ 
                 if(empty($id)){                                        
                   $this->db->where('id IN (SELECT MAX(id) FROM employer_follow_up GROUP BY company_id)'); 
                 }else{
@@ -114,13 +123,18 @@ public function get_follow_up_employer($id, $filter, $sort){
                   $next_followup_date = $filter['next_followup_date'];
                   $this->db->where('next_followup_date', $next_followup_date);
                   }
+                if (!empty($filter['status'])) {
+                  $status = $filter['status'];
+                  $this->db->where('status', $status);
+                  }
                 if (!empty($sort['column_name']) && !empty($sort['sort_order'])) {
                   $this->db->order_by($sort['column_name'] . ' ' . $sort['sort_order']);
                   }
-                
-                return $res = $this->db->get('employer_follow_up')->result_array();
+                $this->db->limit($limit, $offset);
+                $result = $this->db->get('employer_follow_up')->result_array();
                 // print_r($this->db->last_query());
-                // return array('followup'=>$res);
+                $total_rows = $this->db->count_all_results();
+                return array('total_rows' => $total_rows, 'data' => $result);
   }
 
 public function getAllAdmin($details, $filter, $search, $limit, $offset, $sort){

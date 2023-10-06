@@ -250,13 +250,6 @@ $route['admin/getAllJobsCategory'] = 'api/employer_api/allJobCategory';
 $route['admin/getAllEmployer'] = 'api/employer_api/allEmployer';
 
 
-
-$route['admin/addFollowUpEmployee'] = 'api/admin_api/addFollowUpEmployee';
-$route['admin/getFollowUpEmployee'] = 'api/admin_api/getFollowUpEmployee';
-
-$route['admin/addFollowUpEmployer'] = 'api/admin_api/addFollowUpEmployer';
-$route['admin/getFollowUpEmployer'] = 'api/admin_api/getFollowUpEmployer';
-
 $route['admin/addAdmin'] = 'api/admin_api/addAdmin';
 
 
@@ -537,6 +530,7 @@ $route['deleteLmiaSubstageJob'] = 'api/Lmia_controller/deleteLmiaSubstageJob';
 */
 $route['addUpdateVisa'] = 'api/employee_api/addUpdateVisa';
 $route['getVisa'] = 'api/employee_api/getVisa';
+$route['deleteVisa'] = 'api/employee_api/deleteVisa';
 /*
 ||----------------------------------------------------------------------------------------
 || Interview
@@ -581,6 +575,8 @@ $route['setting/getParentSetting'] = 'api/setting_controller/getParentSetting';
 || Agent
 ||----------------------------------------------------------------------------------------
 */
+$route['agent/signup'] = 'api/agent_controller/signup';
+$route['agent/login'] = 'api/agent_controller/login';
 $route['agent/addUpadateAgent'] = 'api/agent_controller/addUpadateAgent';
 $route['agent/getAgent'] = 'api/agent_controller/getAgent';
 $route['agent/deleteAgent'] = 'api/agent_controller/deleteAgent';
@@ -591,3 +587,14 @@ $route['agent/deleteAgent'] = 'api/agent_controller/deleteAgent';
 */
 $route['setEmployeeReserve'] = 'api/employee_api/setEmployeeReserve';
 $route['removeEmployeeReserve'] = 'api/employee_api/removeEmployeeReserve';
+/*
+||----------------------------------------------------------------------------------------
+|| Follow-up(Notes)
+||----------------------------------------------------------------------------------------
+*/
+
+$route['admin/addFollowUpEmployee'] = 'api/admin_api/addFollowUpEmployee';
+$route['admin/getFollowUpEmployee'] = 'api/admin_api/getFollowUpEmployee';
+
+$route['admin/addFollowUpEmployer'] = 'api/admin_api/addFollowUpEmployer';
+$route['admin/getFollowUpEmployer'] = 'api/admin_api/getFollowUpEmployer';

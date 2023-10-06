@@ -695,6 +695,7 @@ public function addUpdateInterview($interview_detail){
         // print_r($this->db->last_query());
         
       }
+      return $res;
       // print_r($res);die;
 
 }

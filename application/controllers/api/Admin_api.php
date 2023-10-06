@@ -7,9 +7,10 @@ Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
 Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 
 defined('BASEPATH') OR exit('No direct script access allowed');
+// require APPPATH.'libraries/REST_Controller.php';
+require APPPATH.'controllers/api/My_REST_Controller.php';
 
-require APPPATH.'libraries/REST_Controller.php';
-class Admin_api extends REST_Controller{
+class Admin_api extends My_REST_Controller{
   public function __construct(){
     parent::__construct();
     $this->load->database();
@@ -213,10 +214,10 @@ class Admin_api extends REST_Controller{
 
      $data = json_decode(file_get_contents("php://input"));
     //  print_r($data);die;
-      if(isset($data->employee_id) && isset($data->remark))
+      if(isset($data->employee_id))
       { 
          $error_flag = 0;  
-        if(empty($data->employee_id) || empty($data->remark))
+        if(empty($data->employee_id))
         {
 
             $error_flag = 1;
@@ -231,12 +232,16 @@ class Admin_api extends REST_Controller{
         }
         $followup_detail = array(
           "employee_id" => $data->employee_id,
-          "remark" => $data->remark,
         );
         if(!empty($this->admin_id)){
           $followup_detail['created_by'] =  $this->admin_id;
           $followup_detail['type'] = $this->user_type;
-        }  
+        }
+        if(isset($data->remark)){
+          if(!empty($data->remark)){
+            $followup_detail["remark"]=$data->remark;
+          }
+        } 
         if(isset($data->next_date)){
           if(!empty($data->next_date)){
             $followup_detail["next_followup_date"]=$data->next_date;
@@ -246,6 +251,9 @@ class Admin_api extends REST_Controller{
           if(!empty($data->subject)){
             $followup_detail["subject"]=$data->subject;
           }
+        }
+        if(isset($data->status) && $data->status >= 0){
+            $followup_detail["status"]=$data->status;
         }
         // print_r($followup_detail);die;
      if($this->admin_model->add_follow_up_employee($followup_detail)){
@@ -339,10 +347,10 @@ public function addFollowUpEmployer_post(){
 
      $data = json_decode(file_get_contents("php://input"));
     //  print_r($data);die;
-      if(isset($data->company_id) && isset($data->remark))
+      if(isset($data->company_id))
       { 
          $error_flag = 0;  
-        if(empty($data->company_id) || empty($data->remark))
+        if(empty($data->company_id))
         {
 
             $error_flag = 1;
@@ -357,12 +365,16 @@ public function addFollowUpEmployer_post(){
         }
         $followup_detail = array(
           "company_id" => $data->company_id,
-          "remark" => $data->remark,
         );
         if(!empty($this->admin_id)){
           $followup_detail['created_by'] =  $this->admin_id;
           $followup_detail['type'] = $this->user_type;
         }  
+        if(isset($data->remark)){
+          if(!empty($data->remark)){
+            $followup_detail["remark"]=$data->remark;
+          }
+        } 
         if(isset($data->next_date)){
           if(!empty($data->next_date)){
             $followup_detail["next_followup_date"]=$data->next_date;
@@ -372,6 +384,9 @@ public function addFollowUpEmployer_post(){
           if(!empty($data->subject)){
             $followup_detail["subject"]=$data->subject;
           }
+        }
+         if(isset($data->status) && $data->status >= 0){
+            $followup_detail["status"]=$data->status;
         }
         // print_r($followup_detail);die;
      if($this->admin_model->add_follow_up_employer($followup_detail)){
@@ -506,13 +521,23 @@ public function getFollowUpEmployee_post(){
       $id = $data->employee_id;
     }
    
-    $filter = array('next_followup_date'=> $data->next_followup_date ?? null);
+    $filter = array(
+      'next_followup_date'=> $data->next_followup_date ?? null,
+      'status'=> $data->status ?? null
+    );
+    $search = isset($data->search) ? $data->search : '';
+
     $sort = [
-      'column_name' => $data->column_name ?? 'created_at',
-      'sort_order' => $data->sort_order ?? 'DESC'
+      'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "created_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
+
+    $page = isset($data->page) ? $data->page : 1;
+    $limit = isset($data->limit) ? $data->limit : 10;
+    $offset = ($page - 1) * $limit;
+
     // print_r($id);die;
-      $response = $this->admin_model->get_follow_up_employee($id, $filter, $sort);
+      $response = $this->admin_model->get_follow_up_employee($id, $filter, $sort, $limit, $offset);
       if($response){
         $this->response(array(
           "status" => 1,
@@ -533,13 +558,21 @@ public function getFollowUpEmployee_post(){
     if(isset($data->company_id)){
       $id = $data->company_id;
     }
-    $filter = array('next_followup_date'=> $data->next_followup_date ?? null);
+    $filter = array(
+      'next_followup_date'=> $data->next_followup_date ?? null,
+      'status'=> $data->status ?? null
+    );
      $sort = [
-      'column_name' => $data->column_name ?? 'created_at',
-      'sort_order' => $data->sort_order ?? 'DESC'
+     'column_name' => (isset($data->column_name) && $data->column_name !== null && $data->column_name !== "") ? $data->column_name : "created_at" ,
+      'sort_order' => (isset($data->sort_order) && $data->sort_order !== null && $data->sort_order !== "") ? $data->sort_order : "DESC"
     ];
+
+    $page = isset($data->page) ? $data->page : 1;
+    $limit = isset($data->limit) ? $data->limit : 10;
+    $offset = ($page - 1) * $limit;
+    
     // print_r($id);die;
-      $response = $this->admin_model->get_follow_up_employer($id, $filter, $sort);
+      $response = $this->admin_model->get_follow_up_employer($id, $filter, $sort, $limit, $offset);
       if($response){
         $this->response(array(
           "status" => 1,
