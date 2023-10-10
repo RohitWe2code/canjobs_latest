@@ -1584,7 +1584,7 @@ public function addUpdateInterview_post(){
         }
         $response = $this->employer_model->addUpdateInterview($interview_detail);
         // print_r($response);die;
-        if($interview_detail){
+        if($response){
           $employee_id = $data->employee_id;         
           $unique_id = $this->common_model->getLastRecord_email()['id'] ?? 1;
           $unique_id .= mt_rand(1000, 9999);

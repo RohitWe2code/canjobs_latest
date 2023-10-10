@@ -117,7 +117,7 @@ public function get_lmia($filter, $search, $limit, $offset, $sort, $details){
     if(!empty($details['company_id'])){                  
         $where .= " AND company_id = ".$details['company_id'];
     }
-    $q = "SELECT `id`,`lmia_status`,`expected_time_of_completion`,`job_id`,`job_title`,`company_id`,`company_name`,`employee_id`,`name`,`email`,`contact_no`,`date_of_birth`,`description`,`gender`,`marital_status`,`nationality`,`current_location`,`currently_located_country`,`language`,`interested_in`,`experience`,`resume`,`profile_photo`,`education`,`specialization`,`skill` FROM `view_applied_employee` WHERE id IS NOT NULL AND is_deleted = 0
+    $q = "SELECT `apply_id`,`id`,`lmia_status`,`expected_time_of_completion`,`job_id`,`job_title`,`company_id`,`company_name`,`employee_id`,`name`,`email`,`contact_no`,`date_of_birth`,`description`,`gender`,`marital_status`,`nationality`,`current_location`,`currently_located_country`,`language`,`interested_in`,`experience`,`resume`,`profile_photo`,`education`,`specialization`,`skill` FROM `view_applied_employee` WHERE id IS NOT NULL AND is_deleted = 0
 		".$where." ".$order." LIMIT ".$limit." OFFSET ".$offset;
     $result = $this->db->query($q)->result_array();
 //----------------------------------------------------------------------------------------------------------------

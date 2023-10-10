@@ -177,8 +177,8 @@ class Payment_gateway_controller extends My_REST_Controller{
         }
         // print_r($this->user_type);die;
           $payment_detail  = array(
-            'user_id' => $this->admin_id,
-            'user_role' => $this->user_type,
+            'user_id' => $data->id,
+            'user_role' => $data->user_type,
             // 'order_id' => $data->razorpay0rderId,
             'payment_id' => $data->payment_id,
             'payment_mode' => $data->payment_mode,

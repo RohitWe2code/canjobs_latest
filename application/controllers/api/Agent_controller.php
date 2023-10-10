@@ -405,7 +405,9 @@ public function addUpadateAgent_put(){
 }
 public function getAgent_post(){
   $user = $this->validateToken();
-   if(isset($this->admin_id) && ($this->user_type === 'super-admin' || $this->user_type === 'admin' || $this->user_type === 'manager')){
+  // print_r($user['data']->user_type);die;
+  $user_type = $user['data']->user_type;
+   if($user_type === 'super-admin' || $user_type === 'admin' || $user_type === 'agent'){
     $data = json_decode(file_get_contents("php://input"));
     // if(isset($data->id)){
     //     if(empty($data->id)){

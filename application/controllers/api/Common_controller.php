@@ -415,10 +415,11 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 //           }
 
 //    }
-public function testApi_post(){
-    $data = json_decode(file_get_contents("php://input"));
-    // phpinfo();
-          $server = "{imap.gmail.com:993/imap/ssl}INBOX";
+public function testApi_get(){
+    // $data = json_decode(file_get_contents("php://input"));
+        // phpinfo();
+
+          $server = "{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX";
           $username = "rahul.verma.we2code@gmail.com";
           $password = "sfbmekwihdamgxia";
           
@@ -427,18 +428,15 @@ public function testApi_post(){
               die("Failed to connect: " . imap_last_error());
           }
           echo"Connected successfully ...</br>";
-          var_dump($mailbox);die;
+          print_r($mailbox);die;
           if ($mailbox) {
                 // Search for emails in the inbox
                 $emails = imap_search($mailbox, 'ALL');
-          var_dump($emails);die;
 
                 if ($emails) {
                     foreach ($emails as $email_id) {
                         // Fetch email details
-                      print_r($mailbox);
-                      print_r($email_id);
-                        // $email_data = imap_fetch_overview($mailbox, $email_id);
+                        $email_data = imap_fetch_overview($mailbox, $email_id);
 
                         // Process email data
                         // $email_data contains information like subject, sender, date, etc.
@@ -452,12 +450,13 @@ public function testApi_post(){
                 // Handle connection error
                 show_error("Unable to connect to the IMAP server");
             }
-          // }else{
-          //    $this->response(array(
-          //     "status" => 0,
-          //     "messsage" => "No data found"
-          //   ), REST_Controller::HTTP_OK);
-          //   return;
-          // }
+
+//           // }else{
+//           //    $this->response(array(
+//           //     "status" => 0,
+//           //     "messsage" => "No data found"
+//           //   ), REST_Controller::HTTP_OK);
+//           //   return;
+//           // }
 }
 }

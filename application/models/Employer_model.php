@@ -684,12 +684,13 @@ public function addUpdateInterview($interview_detail){
             }
 
       $res = $this->db->insert('job_interviews', $interview_detail);
-      if($res){
+      $lastInsertedId = $this->db->insert_id();
+      if($res && $lastInsertedId){
         // print_r($job_id);
         // print_r($employee_id);
         $query = "SELECT *,
         (SELECT email FROM employer WHERE company_id = view_applied_employee.company_id) AS company_email
-        FROM view_applied_employee WHERE job_id = '". $job_id."' AND employee_id ='".$employee_id."'";
+        FROM view_applied_employee WHERE interview_id = '".$lastInsertedId."'";
         return $this->db->query($query)->row();
         // return $for_mail = $this->db->get_where('view_applied_employee', array('job_id' => $job_id,'employee_id' => $employee_id))->row();
         // print_r($this->db->last_query());
@@ -843,6 +844,7 @@ public function viewJobsAdmin($filter, $search, $limit, $offset,$sort,$details){
     if(!empty($details['manager_id'])){                  
         $where .= " AND manager_id = ".$details['manager_id'];
     }
+    $where .= " ORDER BY ".$sort['column_name']." ".$sort['sort_order']." ";
     // if(!empty($details['admin_id'])){                  
     //     $where .= " AND created_by_admin = ".$details['admin_id'];
     // }

@@ -522,6 +522,7 @@ public function getFollowUpEmployee_post(){
     }
    
     $filter = array(
+      'employee_name'=> $data->employee_name ?? null,
       'next_followup_date'=> $data->next_followup_date ?? null,
       'status'=> $data->status ?? null
     );
@@ -537,7 +538,7 @@ public function getFollowUpEmployee_post(){
     $offset = ($page - 1) * $limit;
 
     // print_r($id);die;
-      $response = $this->admin_model->get_follow_up_employee($id, $filter, $sort, $limit, $offset);
+      $response = $this->admin_model->get_follow_up_employee($id, $search, $filter, $sort, $limit, $offset);
       if($response){
         $this->response(array(
           "status" => 1,
@@ -558,7 +559,10 @@ public function getFollowUpEmployee_post(){
     if(isset($data->company_id)){
       $id = $data->company_id;
     }
+    $search = isset($data->search) ? $data->search : '';
+
     $filter = array(
+      'employer_name'=> $data->employer_name ?? null,
       'next_followup_date'=> $data->next_followup_date ?? null,
       'status'=> $data->status ?? null
     );
@@ -572,7 +576,7 @@ public function getFollowUpEmployee_post(){
     $offset = ($page - 1) * $limit;
     
     // print_r($id);die;
-      $response = $this->admin_model->get_follow_up_employer($id, $filter, $sort, $limit, $offset);
+      $response = $this->admin_model->get_follow_up_employer($id, $search, $filter, $sort, $limit, $offset);
       if($response){
         $this->response(array(
           "status" => 1,
