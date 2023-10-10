@@ -417,21 +417,47 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 //    }
 public function testApi_post(){
     $data = json_decode(file_get_contents("php://input"));
-    $admin_id = $data->id;
-          $res =  $this->common_model->checkAdminEmailPermission($admin_id);
-          // print_r($type['email_employee']['interview']);die;
-          // print_r($res);die;
-          // if(isset($res['email_employee']['lmia']) && $res['email_employee']['lmia'] == 1){
-          if(isset($res['notification_employee']['lmia']) && $res['notification_employee']['lmia'] == 1){
-            print_r($res);die;
-
-            // echo"if ---- true ---- chck";die;
-          }else{
-             $this->response(array(
-              "status" => 0,
-              "messsage" => "No data found"
-            ), REST_Controller::HTTP_OK);
-            return;
+    // phpinfo();
+          $server = "{imap.gmail.com:993/imap/ssl}INBOX";
+          $username = "rahul.verma.we2code@gmail.com";
+          $password = "sfbmekwihdamgxia";
+          
+          $mailbox = imap_open($server, $username, $password);
+          if (!$mailbox) {
+              die("Failed to connect: " . imap_last_error());
           }
+          echo"Connected successfully ...</br>";
+          var_dump($mailbox);die;
+          if ($mailbox) {
+                // Search for emails in the inbox
+                $emails = imap_search($mailbox, 'ALL');
+          var_dump($emails);die;
+
+                if ($emails) {
+                    foreach ($emails as $email_id) {
+                        // Fetch email details
+                      print_r($mailbox);
+                      print_r($email_id);
+                        // $email_data = imap_fetch_overview($mailbox, $email_id);
+
+                        // Process email data
+                        // $email_data contains information like subject, sender, date, etc.
+                        // You can access this information as $email_data[0]->subject, $email_data[0]->from, etc.
+                    }
+                }
+
+                // Close the IMAP mailbox
+                imap_close($mailbox);
+          } else {
+                // Handle connection error
+                show_error("Unable to connect to the IMAP server");
+            }
+          // }else{
+          //    $this->response(array(
+          //     "status" => 0,
+          //     "messsage" => "No data found"
+          //   ), REST_Controller::HTTP_OK);
+          //   return;
+          // }
 }
 }
