@@ -417,7 +417,7 @@ if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 //    }
 public function testApi_get(){
     // $data = json_decode(file_get_contents("php://input"));
-        // phpinfo();
+        phpinfo();
 
           $server = "{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX";
           $username = "rahul.verma.we2code@gmail.com";

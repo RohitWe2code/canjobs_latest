@@ -316,22 +316,22 @@ if(isset($data->employee_id)){
                     $employee_info['nationality'] = $data->nationality;
           }
         }
-        if(isset($data->resume)){
+         if(isset($data->resume)){
           if(!empty($data->resume)){
-          
-                // Decode the base64 encoded PDF data
-                   $cv_data = base64_decode($data->resume);
-                   // Set the file name
-                   $file_name_for_upload = time().'.pdf';
-                   // Set the file path
+            $resumeBase64Encoded = $data->resume;
+            if (preg_match('/^data:application\/(\w+);base64,/', $resumeBase64Encoded, $ext_type)) {
+              $resumeBase64Encoded = substr($resumeBase64Encoded, strpos($resumeBase64Encoded, ',') + 1);
+            $file_extension = strtolower($ext_type[1]);
+                   $cv_data = base64_decode($resumeBase64Encoded);
+                   $file_name_for_upload = time().'.'.$file_extension;
                    $file_path = FCPATH . 'uploads/' . $file_name_for_upload;
-                   // Write the file to the server
                    if(file_put_contents($file_path, $cv_data)) {
-                       // File was successfully uploaded
                        $cv = base_url() . 'uploads/' . $file_name_for_upload;
                    }
-
              $employee_info["resume"] = $cv;
+                  }else{
+                     unset($employee_info["resume"]);
+                  }
           }
         }
          if(isset($data->profile_photo)){
